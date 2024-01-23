@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Exo_2 } from "next/font/google";
 import { Nav } from "@components/Components";
+import { motion } from "framer-motion";
+import PageAnimatePresence from '@components/PageAnimatePresence'
 import "@styles/globals.css";
 
 const Exo2 = Exo_2({ subsets: ["latin"] });
@@ -28,9 +30,11 @@ export default function RootLayout({
         <div>
           <Nav />
         </div>
-        <main className="min-h-screen items-center bg-primary_dark w-full">
+        <PageAnimatePresence>
+          <main className="bg-primary_dark h-screen">
           {children}
-        </main>
+          </main>
+        </PageAnimatePresence>
       </body>
     </html>
   );
