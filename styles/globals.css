@@ -33,3 +33,11 @@
 .flex-between {
   @apply flex justify-between items-center;
 }
+
+.button-primary-dark {
+  @apply bg-tertiary_dark hover:bg-tertiary_light text-secondary_light hover:text-tertiary_dark transition duration-100;
+}
+
+.button-primary-light{
+  @apply bg-tertiary_light hover:bg-tertiary_dark text-secondary_dark hover:text-tertiary_light transition duration-100;
+}

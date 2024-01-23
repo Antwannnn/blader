@@ -6,12 +6,12 @@ import "@styles/globals.css";
 const josefin = Josefin_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "blade | Typing Speed Test",
-  description: "Discover blade, the ultimate type tester.",
+  title: "blader. | Typing Speed Test",
+  description: "Discover blader, the ultimate type tester.",
   icons: {
     icon: [
       {
-        url: "/public/assets/images/logo.png",
+        url: "/assets/images/logo.png",
       }
     ]
   }
