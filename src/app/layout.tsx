@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "blader | Home",
-  description: "Discover blader, the ultimate typing test and racer game.",
+  description: "Discover blader, the ultimate typing test game.",
 };
 
 export default function RootLayout({
