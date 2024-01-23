@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Exo_2 } from "next/font/google";
 import { Nav } from "@components/Components";
 import { motion } from "framer-motion";
-import PageAnimatePresence from '@components/PageAnimatePresence'
 import "@styles/globals.css";
 
 const Exo2 = Exo_2({ subsets: ["latin"] });
@@ -25,16 +24,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${Exo2.className}`}>
+    <html lang="en" className="bg-primary_dark">
+      <body className={` ${Exo2.className}`}>
         <div>
           <Nav />
         </div>
-        <PageAnimatePresence>
-          <main className="bg-primary_dark h-screen">
+        <main className="">
           {children}
-          </main>
-        </PageAnimatePresence>
+        </main>
       </body>
     </html>
   );

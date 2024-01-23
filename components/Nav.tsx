@@ -7,18 +7,18 @@ import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 
 const Nav = () => {
 
-  const isUserLoggedIn = false;
+  const isUserLoggedIn = true;
   const username = 'testuser';
 
 
   const navlinks = [
-    { name: 'Type Tester', link: '/game/typetester' },
+    { name: 'Type Tester', link: '/game/typetester'},
     { name: 'Type Racer', link: '/game/typeracer' },
     { name: 'Leaderboard', link: '/leaderboard' },
   ]
 
   return (
-    <nav className="flex-between w-full  bg-secondary_dark text-sm py-3 fixed px-5">
+    <nav className="flex-between w-full z-20 bg-secondary_dark text-sm py-3 fixed px-5">
       <Link href="/" className='flex gap-2 flex-center overflow-hidden'>
         <Image
           className='logo cursor-pointer rounded-full'
