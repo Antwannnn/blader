@@ -12,9 +12,9 @@ const Nav = () => {
 
 
   const navlinks = [
-    { name: 'Type Tester', link: '/game/typetester'},
-    { name: 'Type Racer', link: '/game/typeracer' },
-    { name: 'Leaderboard', link: '/leaderboard' },
+    { name: 'Type Tester', link: '/game/typetester', icon: "/assets/svgs/stopwatch.svg"},
+    { name: 'Type Racer', link: '/game/typeracer', icon: '/assets/svgs/race.svg' },
+    { name: 'Leaderboard', link: '/leaderboard', icon: '/assets/svgs/crown.svg' },
   ]
 
   return (
@@ -32,7 +32,10 @@ const Nav = () => {
       <div className='sm:flex navlinks justify-evenly hidden gap-3'>
         {navlinks.map((link, index) => (
         <Link key={index} href={link.link}>
-          <div className='navlink'>{link.name}</div>
+          <div className='navlink gap-1'>
+            {link.name} 
+            <img className='w-4 h-4' src={link.icon} alt="leaderboard icon" />
+          </div>
         </Link>
         ))}
       </div>

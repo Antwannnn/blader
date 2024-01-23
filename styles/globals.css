@@ -57,7 +57,7 @@
 .navlink {
   @apply text-tertiary_light;
   opacity: 60%;
-  display: inline-block;
+  display: inline-flex;
   position: relative;
   transition: opacity 0.2s ease-out;
 }
