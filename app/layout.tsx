@@ -24,11 +24,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={Exo2.className}>
-        <div className="flex-center">
+      <body className={`${Exo2.className}`}>
+        <div>
           <Nav />
         </div>
-        <main className="min-h-screen bg-primary_dark w-full">
+        <main className="min-h-screen items-center bg-primary_dark w-full">
           {children}
         </main>
       </body>
