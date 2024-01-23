@@ -26,6 +26,10 @@
   @apply flex justify-start items-start;
 }
 
+.flex-around {
+  @apply flex justify-around items-center;
+}
+
 .flex-end {
   @apply flex justify-end items-center;
 }
@@ -35,9 +39,41 @@
 }
 
 .button-primary-dark {
-  @apply bg-tertiary_dark hover:bg-tertiary_light text-secondary_light hover:text-tertiary_dark transition duration-100;
+  @apply bg-tertiary_dark hover:bg-tertiary_light text-secondary_light hover:text-tertiary_dark transition duration-200;
 }
 
 .button-primary-light{
-  @apply bg-tertiary_light hover:bg-tertiary_dark text-secondary_dark hover:text-tertiary_light transition duration-100;
+  @apply bg-tertiary_light hover:bg-tertiary_dark text-secondary_dark hover:text-tertiary_light transition duration-200;
+}
+
+.navlink {
+  @apply text-tertiary_light;
+  opacity: 60%;
+  display: inline-block;
+  position: relative;
+  transition: opacity 0.2s ease-out;
+}
+
+.navlink::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: 0;
+  left: 0;
+  @apply bg-tertiary_light;
+  opacity: 60%;
+  transform-origin: bottom right;
+  transition: transform 0.2s ease-out;
+}
+
+.navlink:hover::after {
+  opacity: 100%;
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+.navlink:hover{
+  opacity: 100%;
 }

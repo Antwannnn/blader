@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Josefin_Sans } from "next/font/google";
+import { Exo_2 } from "next/font/google";
 import { Nav } from "@components/Components";
 import "@styles/globals.css";
 
-const josefin = Josefin_Sans({ subsets: ["latin"] });
+const Exo2 = Exo_2({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "blader. | Typing Speed Test",
@@ -24,11 +24,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={josefin.className}>
-        <div>
+      <body className={Exo2.className}>
+        <div className="flex-center">
           <Nav />
         </div>
-        <main className="min-h-screen bg-primary_dark w-full p-8">
+        <main className="min-h-screen bg-primary_dark w-full">
           {children}
         </main>
       </body>
