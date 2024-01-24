@@ -76,7 +76,8 @@
   transition: transform 0.2s ease-out;
 }
 
-.navlink:hover::after {
+.navlink:hover::after, 
+.navlink.active::after {
   opacity: 100%;
   transform: scaleX(1);
   transform-origin: bottom left;
@@ -85,3 +86,4 @@
 .navlink:hover{
   opacity: 100%;
 }
+

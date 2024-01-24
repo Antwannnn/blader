@@ -2,21 +2,23 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 
+const activeStyle = 'active !opacity-100'
+
 const Nav = () => {
 
+  const router = usePathname();
   const isUserLoggedIn = true;
   const username = 'testuser';
-
 
   const navlinks = [
     { name: 'Type Tester', link: '/game/typetester', icon: "/assets/svgs/stopwatch.svg"},
     { name: 'Type Racer', link: '/game/typeracer', icon: '/assets/svgs/race.svg' },
     { name: 'Leaderboard', link: '/leaderboard', icon: '/assets/svgs/crown.svg' },
   ]
-
   return (
     <nav className="flex-between w-full z-20 bg-secondary_dark text-sm py-3 fixed px-5">
       <Link href="/" className='flex gap-2 flex-center overflow-hidden'>
@@ -32,7 +34,7 @@ const Nav = () => {
       <div className='sm:flex navlinks justify-evenly hidden gap-3'>
         {navlinks.map((link, index) => (
         <Link key={index} href={link.link}>
-          <div className='navlink gap-1'>
+          <div className={`navlink gap-1 ${(router == link.link ? activeStyle : "")}`}>
             {link.name} 
             <img className='w-4 h-4' src={link.icon} alt="leaderboard icon" />
           </div>
