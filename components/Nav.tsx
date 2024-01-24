@@ -2,25 +2,63 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { motion, useAnimation} from 'framer-motion';
+import AccountManagementLayout from './subcomponents/AccountManagementLayout';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 
 const activeStyle = 'active !opacity-100'
 
+const appearVariants = {
+  hidden: {
+    opacity: 0,
+    x: 100,
+  },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: "spring",
+      duration: 0.2,
+      stiffness: 100,
+      mass: 0.5,
+      damping: 10,
+    },
+  },
+};
+
+
+const navlinks = [
+  { name: 'Type Tester', link: '/game/typetester', icon: "/assets/svgs/stopwatch.svg"},
+  { name: 'Type Racer', link: '/game/typeracer', icon: '/assets/svgs/race.svg' },
+  { name: 'Leaderboard', link: '/leaderboard', icon: '/assets/svgs/crown.svg' },
+]
+
 const Nav = () => {
 
+
+  const [toggleDropdown, setToggleDropdown] = useState(false);
+
+  const appear = useAnimation();
   const router = usePathname();
-  const isUserLoggedIn = true;
+  const isUserLoggedIn = false;
   const username = 'testuser';
 
-  const navlinks = [
-    { name: 'Type Tester', link: '/game/typetester', icon: "/assets/svgs/stopwatch.svg"},
-    { name: 'Type Racer', link: '/game/typeracer', icon: '/assets/svgs/race.svg' },
-    { name: 'Leaderboard', link: '/leaderboard', icon: '/assets/svgs/crown.svg' },
-  ]
+  const handleDropdown = () => {
+    if(toggleDropdown){
+      appear.start('hidden');
+      setTimeout(() => {
+        setToggleDropdown(false);
+      }, 200);
+    } else{
+      setToggleDropdown(true);
+      appear.start('visible');
+    }
+  }
+
+
   return (
-    <nav className="flex-between w-full z-20 bg-secondary_dark text-sm py-3 fixed px-5">
+    <nav className="flex-between w-full z-20 overflow-visible bg-secondary_dark text-sm py-3 fixed px-5">
       <Link href="/" className='flex gap-2 flex-center overflow-hidden'>
         <Image
           className='logo cursor-pointer rounded-full'
@@ -31,7 +69,7 @@ const Nav = () => {
         />
         <p className='text-xl text-secondary_light'>blader.</p>
       </Link>
-      <div className='sm:flex navlinks justify-evenly hidden gap-3'>
+      <div className='sm:flex navlinks justify-evenly hidden gap-2 lg:gap-3'>
         {navlinks.map((link, index) => (
         <Link key={index} href={link.link}>
           <div className={`navlink gap-1 ${(router == link.link ? activeStyle : "")}`}>
@@ -42,43 +80,40 @@ const Nav = () => {
         ))}
       </div>
       <div className='sm:flex loginrelated hidden '>
-        {isUserLoggedIn ? (
-          <div className='flex gap-2 justify-around'>
-            <Link href="/signout">
-              <div className='flex gap-2 px-4 py-1 rounded-full text-md button-primary-dark'>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1" stroke="currentColor" className="w-5 h-5">
-                  <path d="M8 18.9282C9.21615 19.6303 10.5957 20 12 20C13.4043 20 14.7838 19.6303 16 18.9282C17.2162 18.2261 18.2261 17.2162 18.9282 16C19.6303 14.7838 20 13.4043 20 12C20 10.5957 19.6303 9.21615 18.9282 8C18.2261 6.78385 17.2162 5.77394 16 5.0718C14.7838 4.36965 13.4043 4 12 4C10.5957 4 9.21615 4.36965 8 5.0718" strokeWidth="1.5" />
-                  <path fill='currentColor' d="M2 12L1.21913 11.3753L0.719375 12L1.21913 12.6247L2 12ZM11 13C11.5523 13 12 12.5523 12 12C12 11.4477 11.5523 11 11 11V13ZM5.21913 6.3753L1.21913 11.3753L2.78087 12.6247L6.78087 7.6247L5.21913 6.3753ZM1.21913 12.6247L5.21913 17.6247L6.78087 16.3753L2.78087 11.3753L1.21913 12.6247ZM2 13H11V11H2V13Z" strokeWidth="1" />
-                </svg>Logout</div>
-            </Link>
-            <Link href="/account/profile">
-              <div className='flex gap-2 px-4 py-1 rounded-full text-md button-primary-dark'>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1" stroke="currentColor" className="w-5 h-5">
-                  <circle cx="12" cy="6" r="4" strokeWidth="1.5" />
-                  <path d="M15 20.6151C14.0907 20.8619 13.0736 21 12 21C8.13401 21 5 19.2091 5 17C5 14.7909 8.13401 13 12 13C15.866 13 19 14.7909 19 17C19 17.3453 18.9234 17.6804 18.7795 18" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>{username}</div>
-            </Link>
+        <AccountManagementLayout isUserLoggedIn={isUserLoggedIn} username={username} className='flex gap-2 justify-evenly' />
+      </div>
+      <div className='sm:hidden flex-col gap-3 absolute items-end top-6 right-0 flex overflow-x-hidden'>
+        <button onClick={() => handleDropdown()} className='flex gap-2 mr-3'>
+          <svg className="w-6 h-6 text-secondary_light opacity-70 hover:opacity-100 transition duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            {toggleDropdown ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+            )}
+          </svg>
+        </button>
+        <motion.div className='bg-secondary_dark rounded-md shadow-lg'
+            initial= {'hidden'}
+            variants={appearVariants}
+            animate={appear}
+        >
+          {toggleDropdown && (
+            <div className='flex flex-col items-center gap-5 px-4 py-5'>
 
+              <AccountManagementLayout isUserLoggedIn={isUserLoggedIn} username={username} className='flex flex-col-reverse gap-2 justify-evenly' />
 
-          </div>
-        ) :
-          (<div className='flex gap-2 justify-around'>
-            <Link href='/account/login'>
-              <div className='flex gap-2 px-4 py-1 rounded-full text-md button-primary-dark'>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
-                  <circle cx="12" cy="6" r="4" strokeWidth="1.5" />
-                  <path d="M20.4141 18.5H18.9999M18.9999 18.5H17.5857M18.9999 18.5L18.9999 17.0858M18.9999 18.5L18.9999 19.9142" strokeWidth="1.5" strokeLinecap="round" />
-                  <path d="M12 13C14.6083 13 16.8834 13.8152 18.0877 15.024M15.5841 20.4366C14.5358 20.7944 13.3099 21 12 21C8.13401 21 5 19.2091 5 17C5 15.6407 6.18652 14.4398 8 13.717" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>Login</div>
-            </Link>
-            <Link href='/account/signup'>
-              <div className='flex gap-2 px-3 py-1 rounded-full text-md button-primary-dark'>
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth="1" stroke='currentColor' xmlns="http://www.w3.org/2000/svg">
-                  <path d="M4.92893 19.0711C6.32746 20.4696 8.10929 21.422 10.0491 21.8079C11.9889 22.1937 13.9996 21.9957 15.8268 21.2388C17.6541 20.4819 19.2159 19.2002 20.3147 17.5557C21.4135 15.9112 22 13.9778 22 12C22 10.0222 21.4135 8.08879 20.3147 6.4443C19.2159 4.79981 17.6541 3.51808 15.8268 2.76121C13.9996 2.00433 11.9889 1.8063 10.0491 2.19215C8.10929 2.578 6.32746 3.53041 4.92893 4.92893" strokeWidth="1.5" />
-                  <path fill="currentColor" d="M15 12L15.7809 11.3753L16.2806 12L15.7809 12.6247L15 12ZM3 13C2.44771 13 2 12.5523 2 12C2 11.4477 2.44771 11 3 11V13ZM11.7809 6.3753L15.7809 11.3753L14.2191 12.6247L10.2191 7.6247L11.7809 6.3753ZM15.7809 12.6247L11.7809 17.6247L10.2191 16.3753L14.2191 11.3753L15.7809 12.6247ZM15 13H3V11H15V13Z" />
-                </svg>Sign-up</div>
-            </Link></div>)}
-
+              <div className='separator w-full'/>
+              {navlinks.map((link, index) => (
+                <Link key={index} href={link.link}>
+                  <div className={`navlink gap-1 ${(router == link.link ? activeStyle : "")}`}>
+                    {link.name}
+                    <img className='w-4 h-4' src={link.icon} alt="leaderboard icon" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </motion.div>
       </div>
     </nav>
   )

@@ -87,3 +87,9 @@
   opacity: 100%;
 }
 
+.separator{
+  @apply bg-tertiary_light;
+  opacity: 60%;
+  height: 1px;
+}
+

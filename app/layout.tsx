@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Exo_2 } from "next/font/google";
 import { Nav } from "@components/Components";
 import { motion } from "framer-motion";
+import Provider from "@components/Provider";
 import "@styles/globals.css";
 
 const Exo2 = Exo_2({ subsets: ["latin"] });
@@ -25,14 +26,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-primary_dark">
-      <body className={` ${Exo2.className}`}>
-        <div>
-          <Nav />
-        </div>
-        <main className="">
-          {children}
-        </main>
-      </body>
+      <Provider>
+        <body className={` ${Exo2.className}`}>
+
+          <div>
+            <Nav />
+          </div>
+          <main className="">
+            {children}
+          </main>
+
+        </body>
+      </Provider>
+
     </html>
   );
 }
