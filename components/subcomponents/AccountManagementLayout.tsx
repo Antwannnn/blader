@@ -3,8 +3,8 @@ import { signOut } from "next-auth/react"
 import Link from 'next/link';
 
 type AccountManagementLayoutProps = {
-    isUserLoggedIn: Session,
-    username: string,
+    isUserLoggedIn: boolean,
+    username: string | undefined,
     className?: string
 }
 

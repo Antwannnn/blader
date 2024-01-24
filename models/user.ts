@@ -1,15 +1,22 @@
-import { Schema, model, models } from 'mongoose';
+import { HydratedDocument, Schema, model, models } from 'mongoose';
+import { connectToDatabase } from '@utils/database';
 
-const UserSchema = new Schema({
+interface IUser {
+    email: string;
+    username: string;
+    image: string;
+}
+
+const UserSchema = new Schema<IUser>({
     email: {
         type: String,
-        unique: [true, 'Email already exists.'],
-        required: [true, 'Email field is required.'],
+        unique: true,
+        required: true,
     },
     username: {
         type: String,
-        required: [true, 'Username field is required.'],
-        match: [/^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/, "Username invalid, it should contain 8-20 alphanumeric letters and be unique!"],
+        required: true,
+        //match: true,
     },
     image: {
         type: String,
@@ -17,5 +24,11 @@ const UserSchema = new Schema({
 });
 
 const User = models.User || model('User', UserSchema);
+
+const c: HydratedDocument<IUser> = new User({
+    email: 'test',
+    username: 'test',
+    image: 'test',
+});
 
 export default User;

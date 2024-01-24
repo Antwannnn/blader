@@ -1,23 +1,24 @@
 import mongoose from "mongoose";
 
-let isConnected: boolean = false;
+let isConnected = false;
 
 export const connectToDatabase = async () => {
     mongoose.set('strictQuery', true);
 
     if (isConnected) {
+        console.log('Already connected to MongoDB')
         return;
     }
 
     try {
-        await mongoose.connect(process.env.MONGODB_URI ?? '', {
-            dbName: process.env.MONGODB_DBNAME ?? '',
+        mongoose.connect(process.env.MONGODB_URI, {
+            dbName: 'blader',
         });
 
         isConnected = true;
         console.log("Connected to MongoDB");
     } catch (error) {
-        console.log("Error connecting to MongoDB");
+        console.log(error);
     }
 
 }
