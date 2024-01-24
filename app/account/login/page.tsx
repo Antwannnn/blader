@@ -2,18 +2,21 @@
 
 import React, { useEffect, useState } from 'react';
 import { getProviders } from 'next-auth/react';
+import { LiteralUnion } from 'next-auth/react';
+import { ClientSafeProvider } from 'next-auth/react';
+import { BuiltInProviderType }  from 'next-auth/providers';
 
 
 const Login = () => {
 
-  const [providers, setProviders] = useState(null);
+  const [providers, setProviders] = useState<Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null>(null);
 
   useEffect(() => {
-    const setProviders = async (response: any) => {
+    const setUpProviders = async () => {
       const resp = await getProviders();
       setProviders(resp);
     };
-    setProviders(null);
+    setUpProviders();
   }, []);
 
   return (

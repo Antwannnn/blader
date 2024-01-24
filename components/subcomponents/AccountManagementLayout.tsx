@@ -1,8 +1,9 @@
+import { Session } from "inspector";
 import { signOut } from "next-auth/react"
 import Link from 'next/link';
 
 type AccountManagementLayoutProps = {
-    isUserLoggedIn: boolean,
+    isUserLoggedIn: Session,
     username: string,
     className?: string
 }

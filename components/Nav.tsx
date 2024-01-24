@@ -6,6 +6,8 @@ import { motion, useAnimation} from 'framer-motion';
 import AccountManagementLayout from './subcomponents/AccountManagementLayout';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+
 
 const activeStyle = 'active !opacity-100'
 
@@ -37,12 +39,14 @@ const navlinks = [
 const Nav = () => {
 
 
+
+
   const [toggleDropdown, setToggleDropdown] = useState(false);
 
   const appear = useAnimation();
   const router = usePathname();
-  const isUserLoggedIn = false;
-  const username = 'testuser';
+  const { data: session, status } = useSession();
+  const username = session?.user?.name?.toString();
 
   const handleDropdown = () => {
     if(toggleDropdown){
@@ -79,8 +83,9 @@ const Nav = () => {
         </Link>
         ))}
       </div>
+       
       <div className='sm:flex loginrelated hidden '>
-        <AccountManagementLayout isUserLoggedIn={isUserLoggedIn} username={username} className='flex gap-2 justify-evenly' />
+        <AccountManagementLayout isUserLoggedIn={session?.user === null} username={username} className='flex gap-2 justify-evenly' />
       </div>
       <div className='sm:hidden flex-col gap-3 absolute items-end top-6 right-0 flex overflow-x-hidden'>
         <button onClick={() => handleDropdown()} className='flex gap-2 mr-3'>
@@ -100,7 +105,7 @@ const Nav = () => {
           {toggleDropdown && (
             <div className='flex flex-col items-center gap-5 px-4 py-5'>
 
-              <AccountManagementLayout isUserLoggedIn={isUserLoggedIn} username={username} className='flex flex-col-reverse gap-2 justify-evenly' />
+              <AccountManagementLayout isUserLoggedIn={session?.user === null} username={username} className='flex flex-col-reverse gap-2 justify-evenly' />
 
               <div className='separator w-full'/>
               {navlinks.map((link, index) => (
