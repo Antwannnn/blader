@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { signIn, getProviders } from 'next-auth/react';
 import { LiteralUnion } from 'next-auth/react';
 import { ClientSafeProvider } from 'next-auth/react';
@@ -30,8 +31,8 @@ const Login = () => {
           <div className=" flex flex-col items-center justify-center gap-5">
             <input placeholder='Email' type="text" className="text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full px-6 py-3 w-full placeholder:opacity-50" />
             <input placeholder='Password' type="password" className="text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full px-6 py-3 w-full  placeholder:opacity-50" />
-            <button className="w-full rounded-full py-1 button-primary-dark">Login</button>
-            {providers && Object.values(providers).map((provider) => (<button type='button' onClick={() => signIn(provider.id)} key={provider.name} className='w-full rounded-full py-1 button-primary-dark'>Continue with {provider.name}</button>))}
+            <button className="w-full rounded-full py-2 button-primary-dark">Login</button>
+            {providers && Object.values(providers).map((provider) => (<button type='button' onClick={() => {signIn(provider.id, {callbackUrl: '/'})}} key={provider.name} className='w-full rounded-full flex justify-center gap-4 py-3 button-primary-dark'><p>Continue with {provider.name}</p> <Image width="24" height="24" alt={`${provider.name}' logo`} src={`/assets/svgs/providers/${provider.name.toLowerCase()}.svg`} alt="" /></button>))}
           </div>
         </form>
       </div>

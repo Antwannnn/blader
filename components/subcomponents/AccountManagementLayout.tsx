@@ -1,4 +1,4 @@
-import { Session } from "inspector";
+import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react"
 import Link from 'next/link';
 
@@ -9,6 +9,9 @@ type AccountManagementLayoutProps = {
 }
 
 const AccountManagementLayout = ({isUserLoggedIn, username, className}: AccountManagementLayoutProps) => {
+
+  const { data: session, status } = useSession();
+
   return (
     <>
     {isUserLoggedIn ? (

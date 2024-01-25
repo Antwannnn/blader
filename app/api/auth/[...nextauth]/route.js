@@ -1,48 +1,56 @@
-import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import NextAuth from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
 import User from '@models/user';
-import { connectToDatabase } from "@utils/database";
+import { redirect } from 'next/dist/server/api-utils';
 
-const handler = NextAuth({
+const authOptions = {
     providers: [
         GoogleProvider({
-        clientId: process.env.GOOGLE_ID ?? '',
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
-        }),
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET
+        })
     ],
 
-    async session({session}){
-        const sessionUser = await User.findOne({ email: session.user.email });
-        session.user.id = sessionUser?._id.toString() ?? '';
+    callbacks: {
 
-        return session;
-    },
+        async session( {session} ) {
+            const sessionUser = await User.findOne({email: session.user.email});
+            session.user.id = sessionUser._id.toString();
 
-    async signIn({ profile }){
-        try {
+            return session;
+        },
 
-            await connectToDatabase();
-            connected = 'Connected to MongoDB';
-            console.log(profile);
+        async signIn({ user, account }) {
 
-            const userExists = await User.findOne({ email: profile.email });
+            console.log(user);
+            if (account.provider === 'google') {
 
-            if(!userExists){
-                await User.create({
-                    email: profile.email,
-                    username: profile.name.replace(" ", "").toLowerCase(),
-                    image: profile.picture,
-                });
-                console.log("User already exists");
-                return true;
+                try {
+                    const res = await fetch('http://localhost:3000/api/user', {
+                        method: 'POST',
+                        body: JSON.stringify(user),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    });
+
+                    if (res.ok) {
+                        return user;
+                    } else if(res.status === 200){
+                        return user;
+                    }
+
+                } catch (error) {
+                    console.log(error);
+                }
             }
-        } catch (error) {
-            console.log(error);
-            return false;
+        },
+        async redirect({url, baseUrl}){
+            return baseUrl;
         }
-    },
+    }
+};
 
-    });
-
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST }

@@ -1,19 +1,12 @@
 import { HydratedDocument, Schema, model, models } from 'mongoose';
-import { connectToDatabase } from '@utils/database';
 
-interface IUser {
-    email: string;
-    username: string;
-    image: string;
-}
-
-const UserSchema = new Schema<IUser>({
+const UserSchema = new Schema({
     email: {
         type: String,
         unique: true,
         required: true,
     },
-    username: {
+    name: {
         type: String,
         required: true,
         //match: true,
@@ -21,14 +14,10 @@ const UserSchema = new Schema<IUser>({
     image: {
         type: String,
     },
-});
+},
+    { timestamps: true }
+);
 
 const User = models.User || model('User', UserSchema);
-
-const c: HydratedDocument<IUser> = new User({
-    email: 'test',
-    username: 'test',
-    image: 'test',
-});
 
 export default User;

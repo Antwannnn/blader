@@ -26,18 +26,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-primary_dark">
-      <Provider>
-        <body className={` ${Exo2.className}`}>
 
+      <body className={` ${Exo2.className}`}>
+        <Provider>
           <div>
             <Nav />
           </div>
           <main className="">
             {children}
           </main>
+        </Provider>
+      </body>
 
-        </body>
-      </Provider>
 
     </html>
   );
