@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import User from '@models/user';
+require('dotenv').config();
+import User from '/models/user';
 import { redirect } from 'next/dist/server/api-utils';
 
 const authOptions = {
@@ -20,29 +21,34 @@ const authOptions = {
             return session;
         },
 
-        async signIn({ user, account }) {
+        async signIn({ user, profile, account }) {
 
             console.log(user);
-            if (account.provider === 'google') {
 
-                try {
-                    const res = await fetch('http://localhost:3000/api/user', {
-                        method: 'POST',
-                        body: JSON.stringify(user),
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                    });
+            const { id, name, email, image } = user;
 
-                    if (res.ok) {
-                        return user;
-                    } else if(res.status === 200){
-                        return user;
-                    }
+            try {
+                const res = await fetch('http://localhost:3000/api/user', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        password: id,
+                        image
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
 
-                } catch (error) {
+                if (res.ok) {
+                    return user;
+                } else if(res.status === 200){
+                    return user;
+                } 
+                    
+            } catch (error) {
                     console.log(error);
-                }
             }
         },
         async redirect({url, baseUrl}){

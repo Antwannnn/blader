@@ -62,8 +62,8 @@ const Nav = () => {
 
 
   return (
-    <nav className="flex-between w-full z-20 overflow-visible bg-secondary_dark text-sm py-3 fixed px-5">
-      <Link href="/" className='flex gap-2 flex-center overflow-hidden'>
+    <nav className="grid grid-rows-1 place-items-center grid-cols-4 w-full z-20 overflow-visible bg-secondary_dark text-sm py-3 fixed px-3">
+      <Link href="/" className='flex place-self-start gap-2 flex-center overflow-hidden'>
         <Image
           className='logo cursor-pointer rounded-full'
           src="/assets/images/logo-white.png"
@@ -73,7 +73,7 @@ const Nav = () => {
         />
         <p className='text-xl text-secondary_light'>blader.</p>
       </Link>
-      <div className='sm:flex navlinks justify-evenly hidden gap-2 lg:gap-3'>
+      <div className='lg:flex col-span-2 navlinks justify-evenly hidden gap-2 lg:gap-3'>
         {navlinks.map((link, index) => (
         <Link key={index} href={link.link}>
           <div className={`navlink gap-1 ${(router == link.link ? activeStyle : "")}`}>
@@ -84,10 +84,10 @@ const Nav = () => {
         ))}
       </div>
        
-      <div className='sm:flex loginrelated hidden '>
+      <div className='lg:flex items-center h-full place-self-end loginrelated hidden '>
         <AccountManagementLayout isUserLoggedIn={status === 'authenticated'} username={username} className='flex gap-2 justify-evenly' />
       </div>
-      <div className='sm:hidden flex-col gap-3 absolute items-end top-6 right-0 flex overflow-x-hidden'>
+      <div className='lg:hidden flex-col gap-3 absolute items-end top-6 right-0 flex overflow-x-hidden'>
         <button onClick={() => handleDropdown()} className='flex gap-2 mr-3'>
           <svg className="w-6 h-6 text-secondary_light opacity-70 hover:opacity-100 transition duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             {toggleDropdown ? (
@@ -97,7 +97,7 @@ const Nav = () => {
             )}
           </svg>
         </button>
-        <motion.div className='bg-secondary_dark rounded-md shadow-lg'
+        <motion.div className='place-self-end bg-secondary_dark rounded-md shadow-lg'
             initial= {'hidden'}
             variants={appearVariants}
             animate={appear}

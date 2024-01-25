@@ -62,6 +62,10 @@
   transition: opacity 0.2s ease-out;
 }
 
+.account-related-form-input{
+  @apply text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full px-6 py-3 w-full placeholder:opacity-50
+}
+
 .navlink::after {
   content: '';
   position: absolute;

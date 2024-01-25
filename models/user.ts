@@ -6,6 +6,12 @@ const UserSchema = new Schema({
         unique: true,
         required: true,
     },
+
+    password: {
+        type: String,
+        required: true,
+    },
+
     name: {
         type: String,
         required: true,
@@ -13,6 +19,36 @@ const UserSchema = new Schema({
     },
     image: {
         type: String,
+    },
+
+    isAdmin: {
+        type: Boolean,
+        default: false,
+    },
+
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
+
+    averageWPM: {
+        type: Number,
+        default: 0,
+    },
+
+    averageAccuracy: {
+        type: Number,
+        default: 0,
+    },
+
+    averageErrors: {
+        type: Number,
+        default: 0,
+    },
+
+    totalWords: {
+        type: Number,
+        default: 0,
     },
 },
     { timestamps: true }
