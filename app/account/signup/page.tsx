@@ -18,7 +18,7 @@ const Signup = () => {
 
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const res = await fetch('/api/auth/callback/credentials/signup',{
+    const res = await fetch('/api/auth/signup',{
       
       method: 'POST',
       body: JSON.stringify({name: formData.get('name'), email: formData.get('email'), password: formData.get('password')}),
@@ -27,17 +27,10 @@ const Signup = () => {
       }
     });
 
-
     if(res.ok){
-      const json = await res.json();
-      if(json.error){
-        console.log(json.error);
-      }else{
-        //signIn('credentials', {email: formData.get('email'), password: formData.get('password'), callbackUrl: '/'});
-      }
-    
-    router.push("/account/login");
-  }
+      signIn('credentials', {email: formData.get('email'), password: formData.get('password'), callbackUrl: '/'});
+    }
+
 }
 
   const [providers, setProviders] = useState<Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null>(null);

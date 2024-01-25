@@ -14,7 +14,6 @@ export async function POST(request) {
 
             const salt = bcrypt.genSaltSync(SALT_WORK_FACTOR);
             const hash = bcrypt.hashSync(password, salt);
-        
 
             await User.create({
                 name: name,

@@ -1,4 +1,5 @@
 import { HydratedDocument, Schema, model, models } from 'mongoose';
+import { unique } from 'next/dist/build/utils';
 
 const UserSchema = new Schema({
     email: {
@@ -14,6 +15,7 @@ const UserSchema = new Schema({
 
     name: {
         type: String,
+        unique: true,
         required: true,
         //match: true,
     },
