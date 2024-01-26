@@ -50,3 +50,17 @@ export async function POST(request) {
 function validateUser(password, hash){
     return bcrypt.compareSync(password, hash);
 }
+
+export async function GET(request) {
+
+    const { username } = request.params;
+
+    try {
+        await connectToDatabase();
+        const users = await User.find({ });
+        return new Response(JSON.stringify(users), { status: 200 });
+    } catch (error) {
+        console.log(error);
+        return new Response("An error occurred", { status: 500 });
+    }
+}

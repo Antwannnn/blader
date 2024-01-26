@@ -23,7 +23,7 @@ const AccountManagementLayout = ({isUserLoggedIn, username, className}: AccountM
                 <path fill='currentColor' d="M2 12L1.21913 11.3753L0.719375 12L1.21913 12.6247L2 12ZM11 13C11.5523 13 12 12.5523 12 12C12 11.4477 11.5523 11 11 11V13ZM5.21913 6.3753L1.21913 11.3753L2.78087 12.6247L6.78087 7.6247L5.21913 6.3753ZM1.21913 12.6247L5.21913 17.6247L6.78087 16.3753L2.78087 11.3753L1.21913 12.6247ZM2 13H11V11H2V13Z" strokeWidth="1" />
               </svg>Logout</div>
           </button>
-          <Link href='account/profile'>
+          <Link href='/account/profile'>
             <div className='flex gap-2 px-4 py-1 rounded-full text-md button-primary-dark'>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1" stroke="currentColor" className="w-5 h-5">
                 <circle cx="12" cy="6" r="4" strokeWidth="1.5" />
@@ -35,7 +35,7 @@ const AccountManagementLayout = ({isUserLoggedIn, username, className}: AccountM
         </div>
       ) :
         (<div className={className}>
-          <Link href='/account/login'>
+          <Link href='/auth/login'>
             <div className='flex gap-2 px-4 py-1 rounded-full text-md button-primary-dark'>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
                 <circle cx="12" cy="6" r="4" strokeWidth="1.5" />
@@ -43,7 +43,7 @@ const AccountManagementLayout = ({isUserLoggedIn, username, className}: AccountM
                 <path d="M12 13C14.6083 13 16.8834 13.8152 18.0877 15.024M15.5841 20.4366C14.5358 20.7944 13.3099 21 12 21C8.13401 21 5 19.2091 5 17C5 15.6407 6.18652 14.4398 8 13.717" strokeWidth="1.5" strokeLinecap="round" />
               </svg>Login</div>
           </Link>
-          <Link href='/account/signup'>
+          <Link href='/auth/signup'>
             <div className='flex gap-2 px-3 py-1 rounded-full text-md button-primary-dark'>
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth="1" stroke='currentColor' xmlns="http://www.w3.org/2000/svg">
                 <path d="M4.92893 19.0711C6.32746 20.4696 8.10929 21.422 10.0491 21.8079C11.9889 22.1937 13.9996 21.9957 15.8268 21.2388C17.6541 20.4819 19.2159 19.2002 20.3147 17.5557C21.4135 15.9112 22 13.9778 22 12C22 10.0222 21.4135 8.08879 20.3147 6.4443C19.2159 4.79981 17.6541 3.51808 15.8268 2.76121C13.9996 2.00433 11.9889 1.8063 10.0491 2.19215C8.10929 2.578 6.32746 3.53041 4.92893 4.92893" strokeWidth="1.5" />

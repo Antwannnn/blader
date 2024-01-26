@@ -1,5 +1,5 @@
 import User from '/models/user';
-import { connectToDatabase } from "@utils/mongodb";
+import dbConnect from '@utils/dbConnect';
 
 const bcrypt = require('bcrypt');
 const SALT_WORK_FACTOR = 10;
@@ -10,9 +10,11 @@ export async function POST(request) {
     const { name, email, password } = await request.json();
 
     try {
-        await connectToDatabase();
+        await dbConnect();
         const userExists = await User.findOne({ email: email })
         if (!userExists) {
+
+            console.log("user does not exist")
 
             const salt = bcrypt.genSaltSync(SALT_WORK_FACTOR);
             const hash = bcrypt.hashSync(password, salt);
@@ -33,6 +35,7 @@ export async function POST(request) {
 
             return new Response("User created", { status: 201 });
         } else {
+            console.log("user already exists")
             return new Response("User already exists", { status: 200 }); 
         }
 
