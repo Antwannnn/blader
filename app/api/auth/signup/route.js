@@ -22,13 +22,6 @@ export async function POST(request, response) {
                 name: name,
                 email: email,
                 password: hash,
-                image: 'default.svg',
-                isAdmin: false,
-                isVerified: false,
-                averageWPM: 0,
-                averageAccuracy: 0,
-                averageErrors: 0,
-                totalGamesPlayed: 0,
             });
 
             return new Response(JSON.stringify({ success: 'Account created successfully.' }), {

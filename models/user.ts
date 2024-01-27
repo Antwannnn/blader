@@ -21,9 +21,10 @@ const UserSchema = new Schema({
     },
     image: {
         type: String,
-        default: 'default.svg'
+        default: '/assets/icons/default.png'
     },
 
+    /*
     isAdmin: {
         type: Boolean,
         default: false,
@@ -52,7 +53,7 @@ const UserSchema = new Schema({
     totalWords: {
         type: Number,
         default: 0,
-    },
+    },*/
 },
     { timestamps: true }
 );

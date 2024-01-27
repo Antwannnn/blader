@@ -1,3 +1,5 @@
+"use client"
+
 import { PageLoader } from "./Loader"
 
 type LoadableWrapperProps = {

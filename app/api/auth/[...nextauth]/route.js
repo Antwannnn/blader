@@ -18,11 +18,23 @@ const handler = NextAuth({
             id: "google",
             type: "oauth",
             clientId: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+
+            async jwt(token, _user, account, _profile, _isNewUser) {
+                if (account?.accessToken) {
+                    token.accessToken = account.accessToken;
+                }
+                return token;
+            },
 
         }),
         CredentialProvider({
             name: "credentials",
+
+            credentials: {
+                email: {  type: "email", placeholder: "Email" },
+                password: { type: "password", placeholder: "Password" }
+            },
 
             async authorize(credentials, _req) {
 
@@ -51,18 +63,13 @@ const handler = NextAuth({
     ],
 
     session: {
-        strategy: "jwt"
+        strategy: "jwt",
     },
-
-    secret: process.env.NEXTAUTH_SECRET,
-
-    jwt: {
-        secret: process.env.NEXTAUTH_JWT_SECRET,
-    },
+    
     pages: {
         signIn: "/auth/login",
-        signOut: "/",
     },
+
     adapter: MongoDBAdapter(clientPromise),
 });
 

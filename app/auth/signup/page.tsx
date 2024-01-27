@@ -24,7 +24,7 @@ const Signup = () => {
     const formData = new FormData(e.currentTarget);
 
     if (!formData.get('name') || !formData.get('email') || !formData.get('password')) {
-      setError('Please fill in all the fields');
+      setError('Please fill in all the fields.');
       return;
     }
 
