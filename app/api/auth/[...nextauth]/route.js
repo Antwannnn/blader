@@ -19,42 +19,40 @@ const handler = NextAuth({
             type: "oauth",
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET
-            
+
         }),
         CredentialProvider({
             name: "credentials",
 
             async authorize(credentials, _req) {
 
-    
-                try{
-                const { email, password } = credentials;
-                console.log(email)
-                await dbConnect();
-                console.log("connected to db")
-                const userExists = await User.findOne({ email: email })
-                if (!userExists) {
-                    console.log("incorrect email or password")
-                    throw new Error("User does not exist");
+
+                try {
+                    const { email, password } = credentials;
+                    await dbConnect();
+                    const userExists = await User.findOne({ email: email })
+                    if (!userExists) {
+                        console.log("incorrect email or password")
+                        throw new Error("User does not exist");
+                    }
+
+                    if (!(bcrypt.compareSync(password, userExists.password)) || userExists.email !== email) {
+
+                        throw new Error("Incorrect email or password");
+                    }
+
+                    return userExists;
+
+                } catch (error) {
+
                 }
-
-                if (!(bcrypt.compareSync(password, userExists.password)) || userExists.email !== email) {
-
-                    throw new Error("Incorrect email or password");
-                }
-
-                return userExists;
-                
-            } catch(error){
-                
-            }
             },
         }),
     ],
 
     session: {
         strategy: "jwt"
-    },  
+    },
 
     secret: process.env.NEXTAUTH_SECRET,
 

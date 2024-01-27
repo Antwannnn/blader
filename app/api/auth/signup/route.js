@@ -4,21 +4,19 @@ import dbConnect from '@utils/dbConnect';
 const bcrypt = require('bcrypt');
 const SALT_WORK_FACTOR = 10;
 
-
-export async function POST(request) {
+export async function POST(request, response) {
 
     const { name, email, password } = await request.json();
 
-    try {
-        await dbConnect();
-        const userExists = await User.findOne({ email: email })
-        if (!userExists) {
 
-            console.log("user does not exist")
+    await dbConnect();
+    const userExistsByEmail = await User.findOne({ email: email })
+    const userExistsByName = await User.findOne({ name: name })
 
+    if (!userExistsByEmail) {
+        if (!userExistsByName) {
             const salt = bcrypt.genSaltSync(SALT_WORK_FACTOR);
             const hash = bcrypt.hashSync(password, salt);
-        
 
             await User.create({
                 name: name,
@@ -33,16 +31,22 @@ export async function POST(request) {
                 totalGamesPlayed: 0,
             });
 
-            return new Response("User created", { status: 201 });
+            return new Response(JSON.stringify({ success: 'Account created successfully.' }), {
+                headers: { 'Content-Type': 'application/json' },
+                status: 200,
+            });
+
         } else {
-            console.log("user already exists")
-            return new Response("User already exists", { status: 200 }); 
+            return new Response(JSON.stringify({ error: 'The username you specified is already linked to an account.' }), {
+                headers: { 'Content-Type': 'application/json' },
+                status: 201,
+            });
         }
-
-
-    } catch (error) {
-        console.log(error);
-        return new Response("An error occurred", { status: 500 });
+    } else {
+        return new Response(JSON.stringify({ error: 'The email you specified is already linked to an account.' }), {
+            headers: { 'Content-Type': 'application/json' },
+            status: 202,
+        });
     }
 }
 

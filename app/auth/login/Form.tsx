@@ -2,27 +2,31 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 import { ElementLoader } from '@components/subcomponents/Loader';
 import { signIn, getProviders } from 'next-auth/react';
 import { FormEvent } from 'react';
 import { LiteralUnion } from 'next-auth/react';
 import { ClientSafeProvider } from 'next-auth/react';
-import { redirect, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import ErrorBlock from '@components/subcomponents/ErrorBlock';
 import { BuiltInProviderType } from 'next-auth/providers/index';
 
 
 const Form = () => {
     const [providers, setProviders] = useState<Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null>(null);
 
+    const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const router = useRouter();
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const loginData = new FormData(e.currentTarget);
-        if(!loginData.get('email') || !loginData.get('password')) return (alert('Please fill in all fields'));
-
-
+        if(!loginData.get('email') || !loginData.get('password')){ 
+            setError('Please fill in all the fields')
+            return;
+        };
 
         const response = await signIn("credentials",
             {
@@ -33,9 +37,7 @@ const Form = () => {
         if (response?.ok) {
             router.push('/');
         } else{
-            if(response?.status === 401){
-                alert('Invalid credentials');
-            }
+            setError(response?.status === 401 ? 'Incorrect email or password' : 'Something went wrong');
         }
 
         console.log(response);
@@ -64,7 +66,7 @@ const Form = () => {
                 <h1 className="overflow-hidden font-bold text-4xl py-4 text-secondary_light">Login</h1>
                 <form className='w-full' onSubmit={handleSubmit}>
                     <div className=" flex flex-col items-center justify-center gap-5">
-
+                        <ErrorBlock error={error} className='shadow-sm text-red-500 px-3 py-1 rounded-xl relative' />
                         <input autoComplete='email' id="email" placeholder='Email' name='email' type="email" className="text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full px-6 py-3 w-full placeholder:opacity-50" />
                         <input autoComplete='password' id="password" placeholder='Password' name='password' type="password" className="text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full px-6 py-3 w-full  placeholder:opacity-50" />
                         <button type='submit' className="w-full rounded-full py-2 button-primary-dark">Login</button>
