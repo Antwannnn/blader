@@ -2,10 +2,10 @@ import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialProvider from 'next-auth/providers/credentials';
 require('dotenv').config();
-import User from '/models/user';
-import clientPromise from '@utils/mongodb';
+import User from '@models/User';
+import dbConnection from '@utils/mongodb'
 import dbConnect from '@utils/dbConnect';
-import { MongoDBAdapter } from '@auth/mongodb-adapter';
+import MongooseAdapter from '@utils/adapter/mongoose-adapter';
 
 const bcrypt = require('bcrypt');
 
@@ -65,12 +65,12 @@ const handler = NextAuth({
     session: {
         strategy: "jwt",
     },
-    
+
     pages: {
         signIn: "/auth/login",
     },
 
-    adapter: MongoDBAdapter(clientPromise),
+    adapter: MongooseAdapter(dbConnection),
 });
 
 

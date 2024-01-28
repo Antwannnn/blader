@@ -1,5 +1,5 @@
-import { HydratedDocument, Schema, model, models } from 'mongoose';
-import { unique } from 'next/dist/build/utils';
+import { Schema, model, models } from 'mongoose';
+import { AdapterUser } from 'next-auth/adapters';
 
 const UserSchema = new Schema({
     email: {
@@ -10,7 +10,6 @@ const UserSchema = new Schema({
 
     password: {
         type: String,
-        required: true,
     },
 
     name: {
@@ -24,7 +23,11 @@ const UserSchema = new Schema({
         default: '/assets/icons/default.png'
     },
 
-    /*
+    keyboard:{
+        type: String,
+        default: 'Some obscure keyboard...'
+    },
+
     isAdmin: {
         type: Boolean,
         default: false,
@@ -53,11 +56,11 @@ const UserSchema = new Schema({
     totalWords: {
         type: Number,
         default: 0,
-    },*/
+    },
 },
     { timestamps: true }
 );
 
-const User = models.User || model('User', UserSchema);
+const registeredModel = models.User;
 
-export default User;
+export default registeredModel || model<AdapterUser>('User', UserSchema);

@@ -1,21 +1,20 @@
 import dbConnect from '@utils/dbConnect';
-import User from '@models/user';
+import User from '@models/User';
+import UserStatistics from '@models/UserStatistics';
 
 export const GET = async (request, { params }) => {
-    try{
+    try {
 
         await dbConnect();
 
         const user = await User.findOne({ name: params.name });
 
-        if(!user){
+        if (!user) {
             return new Response(JSON.stringify({ error: 'User not found.' }), {
                 headers: { 'Content-Type': 'application/json' },
                 status: 404,
             });
-        } else{
-
-            console.log(JSON.stringify({ user }));
+        } else {
 
             return new Response(JSON.stringify({ user }), {
                 headers: { 'Content-Type': 'application/json' },
@@ -23,8 +22,12 @@ export const GET = async (request, { params }) => {
             });
         }
 
-    }catch(error){
-        
+    } catch (error) {
+        return new Response(JSON.stringify({ error: 'An error occurred' }),
+            {
+                headers: { 'Content-Type': 'application/json' },
+                status: 500,
+            });
     }
 
 }
