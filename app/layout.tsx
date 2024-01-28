@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Exo_2 } from "next/font/google";
 import { Nav } from "@components/Components";
-import { motion } from "framer-motion";
 import Provider from "@components/Provider";
 import "@styles/globals.css";
 

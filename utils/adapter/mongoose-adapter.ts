@@ -1,7 +1,7 @@
 /**
  * @file Mongoose Adapter
  * 
- * Taken from 
+ * Taken from msoyka : https://github.com/msoyka/next-auth-mongoose-adapter
  */
 
 import mongoose, {Mongoose, Model} from "mongoose";
