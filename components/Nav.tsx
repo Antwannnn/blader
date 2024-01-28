@@ -62,7 +62,7 @@ const Nav = () => {
 
 
   return (
-    <nav className="grid grid-rows-1 place-items-center grid-cols-4 w-full z-20 overflow-visible bg-secondary_dark text-sm py-3 fixed px-3">
+    <nav className="grid grid-rows-1 place-items-center grid-cols-2 lg:grid-cols-4 w-full z-20 overflow-visible bg-secondary_dark text-sm py-3 fixed px-3">
       <Link href="/" className='flex place-self-start gap-2 flex-center overflow-hidden'>
         <Image
           className='logo cursor-pointer rounded-full'
@@ -71,7 +71,7 @@ const Nav = () => {
           width={50}
           height={50}
         />
-        <p className='text-xl text-secondary_light'>blader.</p>
+        <p className='text-xl text-secondary_light text-pretty'>blader.</p>
       </Link>
       <div className='lg:flex col-span-2 navlinks justify-evenly hidden gap-2 lg:gap-3'>
         {navlinks.map((link, index) => (

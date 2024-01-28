@@ -11,12 +11,23 @@ import { signIn, getProviders } from 'next-auth/react';
 import ErrorBlock from '@components/subcomponents/ErrorBlock';
 import { FormEvent } from 'react';
 import Image from 'next/image';
-import { set } from 'mongoose';
+import Link from 'next/link';
 
 
 const Signup = () => {
 
   const [error, setError] = useState<string | null>(null);
+
+  async function isUsernameAvailable(username: string) {
+    const res = await fetch(`/api/user/${username}`);
+    const data = await res.json();
+    if (res.status === 404) {
+      setUsernameAvailable('available');
+    } else {
+      setUsernameAvailable('unavailable');
+    }
+  }
+
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
 
@@ -56,9 +67,13 @@ const Signup = () => {
   const [providers, setProviders] = useState<Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null>(null);
 
   const { data: session, status } = useSession();
+  const [username, setUsername] = useState<string>();
+  const [usernameAvailable, setUsernameAvailable] = useState<string>('unset');
   const router = useRouter();
 
   useEffect(() => {
+
+    isUsernameAvailable(username!);
 
     if (session) {
       router.push('/');
@@ -68,7 +83,7 @@ const Signup = () => {
       setProviders(resp);
     };
     setUpProviders();
-  }, [providers, session]);
+  }, [providers, session, username]);
 
   return (
 
@@ -81,11 +96,12 @@ const Signup = () => {
         <form className='w-full' onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 grid-rows-5 flex-col items-center justify-center gap-3">
             <ErrorBlock error={error} className='text-red-500' />
-            <input placeholder='Username' name='name' type="text" className='account-related-form-input ' />
+            <div className='text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full w-full placeholder:opacity-50'><input  className='account-related-form-input' placeholder='Username' name='name' type="text" />  </div>
             <input placeholder='Email' type="text" name='email' className="account-related-form-input" />
             <input placeholder='Password' type="password" name='password' className="account-related-form-input" />
             <button type='submit' className="w-full rounded-full py-2 button-primary-dark">Sign-up</button>
             {providers ? (<button type='button' onClick={() => { signIn('google', { callbackUrl: '/' }) }} className='w-full rounded-full flex justify-center gap-4 py-3 button-primary-dark'><p>Continue with Google</p> <Image width="24" height="24" alt={`google logo`} src={`/assets/svgs/providers/google.svg`} /></button>) : (<ElementLoader className='flex flex-col items-center justify-center gap-5' />)}
+            <Link href="/auth/login" className='text-tertiary_light opacity-60  underline underline-offset-4 hover:opacity-100 duration-200 transition'>Already have an account ?</Link>
           </div>
         </form>
       </div>
