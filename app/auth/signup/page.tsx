@@ -12,8 +12,6 @@ import ErrorBlock from '@components/subcomponents/ErrorBlock';
 import { FormEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { set } from 'mongoose';
-
 
 const Signup = () => {
 
@@ -106,7 +104,7 @@ const Signup = () => {
           <div className="grid grid-cols-1 grid-rows-5 flex-col items-center justify-center gap-3">
             <ErrorBlock error={error} className='text-red-500' />
             <div className='text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full w-full placeholder:opacity-50'>
-              <input value={username} onChange={async (e) => { setUsername(e.target.value); isUsernameAvailable(e.target.value) }} className='account-related-form-input' placeholder='Username' name='name' type="text" />
+              <input autoComplete="off" value={username} onChange={async (e) => { setUsername(e.target.value); isUsernameAvailable(e.target.value) }} className='account-related-form-input' placeholder='Username' name='name' type="text" />
               {username != '' ? (<div className='flex justify-center items-center mr-4'>
                 {usernameLoading ? (<IconLoader className='flex justify-center items-center' />) : <>{usernameAvailable ? (
                   <svg fill="#86FFA8" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
@@ -121,7 +119,7 @@ const Signup = () => {
               </div>) : (<></>)}
             </div>
             <div className='text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full w-full placeholder:opacity-50'>
-              <input placeholder='Email' type="text" name='email' className="account-related-form-input" />
+              <input autoComplete="off" placeholder='Email' type="text" name='email' className="account-related-form-input" />
             </div>
             <input placeholder='Password' type="password" name='password' className="account-related-form-input" />
             {(usernameAvailable && username) ? (<button type='submit' className="w-full rounded-full py-2 button-primary-dark">Sign-up</button>) : (<button disabled type='submit' className="w-full rounded-full py-2 button-primary-dark-disabled">Sign-up</button>)}

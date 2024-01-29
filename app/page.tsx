@@ -19,7 +19,7 @@ const Home = () => {
 
     <section
 
-      className="flex flex-col h-screen justify-center gap-5 py-24 items-center  overflow-hidden">
+      className="flex flex-col h-screen justify-center gap-1 py-24 items-center  overflow-hidden">
       <div className="hero flex flex-col items-center px-4 justify-center text-center">
 
         <Image
@@ -34,7 +34,7 @@ const Home = () => {
       </div>
       <div className="enterbar">
         <div className="flex flex-col items-center justify-center">
-          <input placeholder='Type "start" to enter.' type="text" value={inputState} onChange={(e) => { setInputState(e.target.value) }} className="text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full px-4 py-2 mt-5  placeholder:opacity-50" />
+          <input autoComplete="off" placeholder='Type "start" to enter.' type="text" value={inputState} onChange={(e) => { setInputState(e.target.value) }} className="text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full px-4 py-2 mt-5  placeholder:opacity-50" />
         </div>
       </div>
 
