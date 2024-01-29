@@ -6,7 +6,6 @@ import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import { usePathname } from "next/navigation"
 import Image from "next/image"
-import { url } from "inspector"
 
 
 const Profile = () => {
@@ -15,12 +14,8 @@ const Profile = () => {
     const [profileData, setProfileData] = useState<ProfileData>();
     const [loading, setLoading] = useState<boolean>(true);
 
-    
-
     const router = usePathname();
-
-
-
+    
     useEffect(() => {
         const fetcher = async () => {
 

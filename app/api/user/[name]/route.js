@@ -27,7 +27,7 @@ export const GET = async (request, { params }) => {
             {
                 headers: { 'Content-Type': 'application/json' },
                 status: 500,
-            });
+        });
     }
 
 }

@@ -8,7 +8,6 @@ export async function POST(request, response) {
 
     const { name, email, password } = await request.json();
 
-
     await dbConnect();
     const userExistsByEmail = await User.findOne({ email: email })
     const userExistsByName = await User.findOne({ name: name })

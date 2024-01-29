@@ -54,6 +54,14 @@
   @apply bg-tertiary_light hover:bg-tertiary_dark text-secondary_dark hover:text-tertiary_light transition duration-200;
 }
 
+.button-primary-dark-disabled{
+  @apply bg-tertiary_dark text-secondary_light opacity-50 cursor-not-allowed;
+}
+
+.button-primary-light-disabled{
+  @apply bg-tertiary_light text-secondary_dark opacity-50 cursor-not-allowed;
+}
+
 .navlink {
   @apply text-tertiary_light;
   opacity: 60%;

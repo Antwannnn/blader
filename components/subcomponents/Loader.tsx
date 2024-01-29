@@ -1,4 +1,4 @@
-import { ThreeDots, Puff} from 'react-loader-spinner'
+import { ThreeDots, Puff, TailSpin} from 'react-loader-spinner'
 
 type LoaderProps = {
     className?: string
@@ -30,4 +30,19 @@ const ElementLoader = ({ className }: LoaderProps) => {
     )
 }
 
-export { PageLoader, ElementLoader }
+const IconLoader = ({ className }: LoaderProps) => {
+    return (
+        <div className={className}><TailSpin
+        visible={true}
+        height="20"
+        width="20"
+        color="#CED4DA"
+        ariaLabel="tail-spin-loading"
+        radius="1"
+        wrapperStyle={{}}
+        wrapperClass=""
+        /></div>
+    )
+}
+
+export { PageLoader, ElementLoader, IconLoader }

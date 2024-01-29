@@ -1,31 +1,39 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { ElementLoader } from '@components/subcomponents/Loader';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { LiteralUnion } from 'next-auth/react';
 import { BuiltInProviderType } from 'next-auth/providers/index';
+import { ElementLoader, IconLoader } from '@components/subcomponents/Loader';
 import { ClientSafeProvider } from 'next-auth/react';
 import { signIn, getProviders } from 'next-auth/react';
 import ErrorBlock from '@components/subcomponents/ErrorBlock';
 import { FormEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { set } from 'mongoose';
 
 
 const Signup = () => {
 
   const [error, setError] = useState<string | null>(null);
 
-  async function isUsernameAvailable(username: string) {
-    const res = await fetch(`/api/user/${username}`);
-    const data = await res.json();
-    if (res.status === 404) {
-      setUsernameAvailable('available');
-    } else {
-      setUsernameAvailable('unavailable');
-    }
+  async function isUsernameAvailable(pUsername: string) {
+    if(pUsername == '') return;
+      setUsernameLoading(true);
+      const res = await fetch(`/api/user/${pUsername}`);
+      const data = await res.json();
+
+      if (res.status === 404) {
+        setUsernameAvailable(true);
+      }
+      else {
+        setUsernameAvailable(false);
+      }
+
+      setUsernameLoading(false);
+    
   }
 
 
@@ -40,7 +48,6 @@ const Signup = () => {
     }
 
     const res = await fetch('/api/auth/signup', {
-
 
       method: 'POST',
       body: JSON.stringify({ name: formData.get('name'), email: formData.get('email'), password: formData.get('password') }),
@@ -67,13 +74,13 @@ const Signup = () => {
   const [providers, setProviders] = useState<Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null>(null);
 
   const { data: session, status } = useSession();
-  const [username, setUsername] = useState<string>();
-  const [usernameAvailable, setUsernameAvailable] = useState<string>('unset');
+  const [username, setUsername] = useState<string>('');
+  const [usernameLoading, setUsernameLoading] = useState<boolean>(false);
+
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
-
-    isUsernameAvailable(username!);
 
     if (session) {
       router.push('/');
@@ -83,7 +90,9 @@ const Signup = () => {
       setProviders(resp);
     };
     setUpProviders();
-  }, [providers, session, username]);
+  }, [providers, session, usernameAvailable]);
+
+
 
   return (
 
@@ -96,10 +105,26 @@ const Signup = () => {
         <form className='w-full' onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 grid-rows-5 flex-col items-center justify-center gap-3">
             <ErrorBlock error={error} className='text-red-500' />
-            <div className='text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full w-full placeholder:opacity-50'><input  className='account-related-form-input' placeholder='Username' name='name' type="text" />  </div>
-            <input placeholder='Email' type="text" name='email' className="account-related-form-input" />
+            <div className='text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full w-full placeholder:opacity-50'>
+              <input value={username} onChange={async (e) => { setUsername(e.target.value); isUsernameAvailable(e.target.value) }} className='account-related-form-input' placeholder='Username' name='name' type="text" />
+              {username != '' ? (<div className='flex justify-center items-center mr-4'>
+                {usernameLoading ? (<IconLoader className='flex justify-center items-center' />) : <>{usernameAvailable ? (
+                  <svg fill="#86FFA8" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                  className='w-6 h-6' viewBox="0 0 335.765 335.765">
+                    <g>
+                      <g>
+                        <polygon points="311.757,41.803 107.573,245.96 23.986,162.364 0,186.393 107.573,293.962 335.765,65.795 		" />
+                      </g>
+                    </g>
+                  </svg>) : (<svg fill="#FF8686" className='w-6 h-6' viewBox="0 0 200 200" data-name="Layer 1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"><title /><path d="M114,100l49-49a9.9,9.9,0,0,0-14-14L100,86,51,37A9.9,9.9,0,0,0,37,51l49,49L37,149a9.9,9.9,0,0,0,14,14l49-49,49,49a9.9,9.9,0,0,0,14-14Z" /></svg>)}</>}
+                
+              </div>) : (<></>)}
+            </div>
+            <div className='text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full w-full placeholder:opacity-50'>
+              <input placeholder='Email' type="text" name='email' className="account-related-form-input" />
+            </div>
             <input placeholder='Password' type="password" name='password' className="account-related-form-input" />
-            <button type='submit' className="w-full rounded-full py-2 button-primary-dark">Sign-up</button>
+            {(usernameAvailable && username) ? (<button type='submit' className="w-full rounded-full py-2 button-primary-dark">Sign-up</button>) : (<button disabled type='submit' className="w-full rounded-full py-2 button-primary-dark-disabled">Sign-up</button>)}
             {providers ? (<button type='button' onClick={() => { signIn('google', { callbackUrl: '/' }) }} className='w-full rounded-full flex justify-center gap-4 py-3 button-primary-dark'><p>Continue with Google</p> <Image width="24" height="24" alt={`google logo`} src={`/assets/svgs/providers/google.svg`} /></button>) : (<ElementLoader className='flex flex-col items-center justify-center gap-5' />)}
             <Link href="/auth/login" className='text-tertiary_light opacity-60  underline underline-offset-4 hover:opacity-100 duration-200 transition'>Already have an account ?</Link>
           </div>
