@@ -62,6 +62,14 @@
   @apply bg-tertiary_light text-secondary_dark opacity-50 cursor-not-allowed;
 }
 
+footer > a{
+  @apply text-tertiary_light text-opacity-40 transition duration-200 hover:text-opacity-100;
+}
+
+footer > p{
+  @apply text-tertiary_light text-opacity-40;
+}
+
 .navlink {
   @apply text-tertiary_light;
   opacity: 60%;

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Exo_2 } from "next/font/google";
 import { Nav } from "@components/Components";
 import Provider from "@components/Provider";
+import Footer from "@components/Footer";
 import "@styles/globals.css";
 
 const Exo2 = Exo_2({ subsets: ["latin"] });
@@ -31,9 +32,10 @@ export default function RootLayout({
           <div>
             <Nav />
           </div>
-          <main className="">
+          <main>
             {children}
           </main>
+          <Footer />
         </Provider>
       </body>
 

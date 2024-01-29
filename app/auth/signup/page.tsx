@@ -12,26 +12,37 @@ import ErrorBlock from '@components/subcomponents/ErrorBlock';
 import { FormEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { clear } from 'console';
+import { set } from 'mongoose';
+
 
 const Signup = () => {
 
   const [error, setError] = useState<string | null>(null);
+  const [timer, setTimer] = useState<NodeJS.Timeout>();
 
   async function isUsernameAvailable(pUsername: string) {
-    if(pUsername == '') return;
+
       setUsernameLoading(true);
-      const res = await fetch(`/api/user/${pUsername}`);
-      const data = await res.json();
+      clearTimeout(timer);
 
-      if (res.status === 404) {
-        setUsernameAvailable(true);
-      }
-      else {
-        setUsernameAvailable(false);
-      }
+      const newTimer = setTimeout(async () => {
+        const res = await fetch(`/api/user/${pUsername}`);
+        const data = await res.json();
 
-      setUsernameLoading(false);
+        if (res.status === 404) {
+          setUsernameAvailable(true);
+        }
+        else {
+          setUsernameAvailable(false);
+        }
+        setUsernameLoading(false);
+      }, 1000)
+
+      setTimer(newTimer)
     
+
+
   }
 
 
@@ -108,14 +119,14 @@ const Signup = () => {
               {username != '' ? (<div className='flex justify-center items-center mr-4'>
                 {usernameLoading ? (<IconLoader className='flex justify-center items-center' />) : <>{usernameAvailable ? (
                   <svg fill="#86FFA8" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
-                  className='w-6 h-6' viewBox="0 0 335.765 335.765">
+                    className='w-6 h-6' viewBox="0 0 335.765 335.765">
                     <g>
                       <g>
                         <polygon points="311.757,41.803 107.573,245.96 23.986,162.364 0,186.393 107.573,293.962 335.765,65.795 		" />
                       </g>
                     </g>
                   </svg>) : (<svg fill="#FF8686" className='w-6 h-6' viewBox="0 0 200 200" data-name="Layer 1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"><title /><path d="M114,100l49-49a9.9,9.9,0,0,0-14-14L100,86,51,37A9.9,9.9,0,0,0,37,51l49,49L37,149a9.9,9.9,0,0,0,14,14l49-49,49,49a9.9,9.9,0,0,0,14-14Z" /></svg>)}</>}
-                
+
               </div>) : (<></>)}
             </div>
             <div className='text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full w-full placeholder:opacity-50'>
