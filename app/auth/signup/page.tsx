@@ -20,6 +20,13 @@ const Signup = () => {
 
   const [error, setError] = useState<string | null>(null);
   const [timer, setTimer] = useState<NodeJS.Timeout>();
+  const [providers, setProviders] = useState<Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null>(null);
+  const { data: session, status } = useSession();
+  const [username, setUsername] = useState<string>('');
+  const [usernameLoading, setUsernameLoading] = useState<boolean>(false);
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean>(false);
+  const router = useRouter();
+
 
   async function isUsernameAvailable(pUsername: string) {
 
@@ -28,7 +35,6 @@ const Signup = () => {
 
       const newTimer = setTimeout(async () => {
         const res = await fetch(`/api/user/${pUsername}`);
-        const data = await res.json();
 
         if (res.status === 404) {
           setUsernameAvailable(true);
@@ -40,9 +46,6 @@ const Signup = () => {
       }, 1000)
 
       setTimer(newTimer)
-    
-
-
   }
 
 
@@ -79,15 +82,6 @@ const Signup = () => {
     }
 
   }
-
-  const [providers, setProviders] = useState<Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null>(null);
-
-  const { data: session, status } = useSession();
-  const [username, setUsername] = useState<string>('');
-  const [usernameLoading, setUsernameLoading] = useState<boolean>(false);
-
-  const [usernameAvailable, setUsernameAvailable] = useState<boolean>(false);
-  const router = useRouter();
 
   useEffect(() => {
 
