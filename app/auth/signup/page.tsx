@@ -12,8 +12,6 @@ import ErrorBlock from '@components/subcomponents/ErrorBlock';
 import { FormEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { clear } from 'console';
-import { set } from 'mongoose';
 
 
 const Signup = () => {

@@ -1,6 +1,6 @@
 "use client"
 
-import { ProfileData } from "@app/account/profile/data"
+import { ProfileData } from "@app/types/Data"
 import LoadableWrapper from "@components/subcomponents/LoadableWrapper"
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"

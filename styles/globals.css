@@ -62,11 +62,11 @@
   @apply bg-tertiary_light text-secondary_dark opacity-50 cursor-not-allowed;
 }
 
-footer > a{
+footer a{
   @apply text-tertiary_light text-opacity-40 transition duration-200 hover:text-opacity-100;
 }
 
-footer > p{
+footer p{
   @apply text-tertiary_light text-opacity-40;
 }
 
@@ -76,6 +76,11 @@ footer > p{
   display: inline-flex;
   position: relative;
   transition: opacity 0.2s ease-out;
+}
+
+h1, text-4xl, text-5xl{
+  overflow: hidden;
+  padding: 5px;
 }
 
 .account-related-form-input{
