@@ -24,6 +24,7 @@ const TemplateInputComponent = ({ length, gameType, sentence }: TemplateProps) =
     const [input, setInput] = useState<string>("");
     const performanceMesure: PerformanceMesure = PerformanceMesure.getInstance();
     const [currentIndex, setCurrentIndex] = useState<number>(0);
+    const indexedError = useState<number[]>([])[0];
 
     const exampleSentence = "This is an example sentence";
 
@@ -40,12 +41,11 @@ const TemplateInputComponent = ({ length, gameType, sentence }: TemplateProps) =
     const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 
         if (e.key !== 'Backspace' && e.key !== 'Shift' && e.key !== 'Alt' && e.key !== 'Control' && e.key !== 'Meta' && e.key !== 'Tab' && e.key !== 'CapsLock' && e.key !== 'Enter' && e.key !== 'Escape' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'ArrowUp' && e.key !== 'ArrowDown' && e.key !== 'Home' && e.key !== 'End' && e.key !== 'PageUp' && e.key !== 'PageDown' && e.key !== 'Insert' && e.key !== 'F1' && e.key !== 'F2' && e.key !== 'F3' && e.key !== 'F4' && e.key !== 'F5' && e.key !== 'F6' && e.key !== 'F7' && e.key !== 'F8' && e.key !== 'F9' && e.key !== 'F10' && e.key !== 'F11' && e.key !== 'F12' && e.key !== 'ScrollLock' && e.key !== 'Pause' && e.key !== 'ContextMenu' && e.key !== 'PrintScreen' && e.key !== 'NumLock' && e.key !== 'Clear' && e.key !== 'OS') {
-
+            setCurrentIndex(currentIndex + 1);
             if(verifyInputMatching(e.key)){
-                setCurrentIndex(currentIndex + 1);
                 setInput(input + e.key);
             } else{
-                
+                indexedError.push(currentIndex);
             }
 
             /*if (!performanceMesure.hasStarted()) {
@@ -54,6 +54,9 @@ const TemplateInputComponent = ({ length, gameType, sentence }: TemplateProps) =
         } else{
             if(currentIndex > 0){
                 setInput(input.slice(0, -1));
+                if(indexedError.includes(currentIndex)){
+                    indexedError.pop();
+                }
                 setCurrentIndex(currentIndex - 1);
             }
         }
@@ -69,7 +72,7 @@ const TemplateInputComponent = ({ length, gameType, sentence }: TemplateProps) =
         <div className="flex flex-col items-center justify-center">
             <div>
                 <span className="absolute px-3 py-3 text-2xl pointer-events-none opacity-30">{exampleSentence.split('').map((e, index) => (
-                    <span key={index} className={`${index === currentIndex ? 'text-primary_light' : 'text-secondary_light'}`}>{e}</span>
+                    <span key={index} className={`${index===currentIndex && indexedError.includes(index) ? 'text-red-700' : 'text-secondary_light'}`}>{e}</span>
                     
                 ))}</span>
 
