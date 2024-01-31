@@ -6,6 +6,7 @@ import User from '@models/User';
 import dbConnection from '@utils/mongodb'
 import dbConnect from '@utils/dbConnect';
 import MongooseAdapter from '@utils/adapter/mongoose-adapter';
+import DiscordProvider from 'next-auth/providers/discord';
 
 const bcrypt = require('bcrypt');
 
@@ -28,6 +29,24 @@ const handler = NextAuth({
             },
 
         }),
+        
+        DiscordProvider({
+            name: "Discord",
+            id: "discord",
+            type: "oauth",
+            clientId: process.env.DISCORD_CLIENT_ID,
+            clientSecret: process.env.DISCORD_CLIENT_SECRET,
+
+            async jwt(token, _user, account, _profile, _isNewUser) {
+                if (account?.accessToken) {
+                    token.accessToken = account.accessToken;
+                }
+                return token;
+            },
+
+        }),
+
+
         CredentialProvider({
             name: "credentials",
 

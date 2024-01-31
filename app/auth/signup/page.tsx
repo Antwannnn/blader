@@ -28,22 +28,22 @@ const Signup = () => {
 
   async function isUsernameAvailable(pUsername: string) {
 
-      setUsernameLoading(true);
-      clearTimeout(timer);
+    setUsernameLoading(true);
+    clearTimeout(timer);
 
-      const newTimer = setTimeout(async () => {
-        const res = await fetch(`/api/user/${pUsername}`);
+    const newTimer = setTimeout(async () => {
+      const res = await fetch(`/api/user/${pUsername}`);
 
-        if (res.status === 404) {
-          setUsernameAvailable(true);
-        }
-        else {
-          setUsernameAvailable(false);
-        }
-        setUsernameLoading(false);
-      }, 1000)
+      if (res.status === 404) {
+        setUsernameAvailable(true);
+      }
+      else {
+        setUsernameAvailable(false);
+      }
+      setUsernameLoading(false);
+    }, 1000)
 
-      setTimer(newTimer)
+    setTimer(newTimer)
   }
 
 
@@ -104,7 +104,7 @@ const Signup = () => {
       <div className="hero w-4/6 sm:w-96 flex flex-col items-center justify-center text-center">
         <h1 className="overflow-hidden font-bold text-4xl py-4 text-secondary_light">Sign-up</h1>
         <form className='w-full' onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 grid-rows-5 flex-col items-center justify-center gap-3">
+          <div className="flex flex-col items-center overflow-hidden justify-center gap-4">
             <ErrorBlock error={error} className='text-red-500' />
             <div className='text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full w-full placeholder:opacity-50'>
               <input autoComplete="off" value={username} onChange={async (e) => { setUsername(e.target.value); isUsernameAvailable(e.target.value) }} className='account-related-form-input' placeholder='Username' name='name' type="text" />
@@ -126,7 +126,19 @@ const Signup = () => {
             </div>
             <input placeholder='Password' type="password" name='password' className="account-related-form-input" />
             {(usernameAvailable && username) ? (<button type='submit' className="w-full rounded-full py-2 button-primary-dark">Sign-up</button>) : (<button disabled type='submit' className="w-full rounded-full py-2 button-primary-dark-disabled">Sign-up</button>)}
-            {providers ? (<button type='button' onClick={() => { signIn('google', { callbackUrl: '/' }) }} className='w-full rounded-full flex justify-center gap-4 py-3 button-primary-dark'><p>Continue with Google</p> <Image width="24" height="24" alt={`google logo`} src={`/assets/svgs/providers/google.svg`} /></button>) : (<ElementLoader className='flex flex-col items-center justify-center gap-5' />)}
+            {providers ? (
+              <div className='flex flex-col m-2 gap-3 w-full'>
+                <button type='button' onClick={() => { signIn('google', { callbackUrl: '/' }) }} className='w-full rounded-full flex justify-center gap-4 py-3 button-primary-dark'>
+                  <p>Continue with Google</p>
+                  <Image width="24" height="24" alt={`google logo`} src={`/assets/svgs/providers/google.svg`} />
+                </button>
+                <button type='button' onClick={() => { signIn('discord', { callbackUrl: '/' }) }} className='w-full rounded-full flex justify-center gap-4 py-3 button-primary-dark'>
+                  <p>Continue with Discord</p>
+                  <Image width="24" height="24" alt={`google logo`} src={`/assets/svgs/providers/discord.svg`} />
+                </button>
+              </div>
+            ) : (<ElementLoader className='flex flex-col items-center justify-center gap-5' />
+            )}
             <Link href="/auth/login" className='text-tertiary_light opacity-60  underline underline-offset-4 hover:opacity-100 duration-200 transition'>Already have an account ?</Link>
           </div>
         </form>

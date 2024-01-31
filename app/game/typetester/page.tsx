@@ -24,6 +24,7 @@ const TypeTester = () => {
 
     const [lengthParameterSelector, setLengthParameterSelector] = useState<LengthParameter>(LengthParameter.MEDIUM);
     const [sentenceParameterSelector, setSentenceParameterSelector] = useState<SentenceParameter>(SentenceParameter.RANDOM);
+    const [sideEffectHasStarted, setSideEffectHasStarted] = useState<boolean>(false);
 
     return (
         <section className="flex flex-col h-screen justify-center gap-1 py-10 items-center  overflow-hidden text-secondary_light z-30">
@@ -47,7 +48,7 @@ const TypeTester = () => {
                 </div>
             </div>
             <div>
-                <TemplateInputComponent gameType={GameTypeParameter.TYPE_TESTER} length={lengthParameterSelector} sentence={sentenceParameterSelector} />
+                <TemplateInputComponent sideEffectHasStarted={sideEffectHasStarted} gameType={GameTypeParameter.TYPE_TESTER} length={lengthParameterSelector} sentence={sentenceParameterSelector} />
             </div>
             <Image width={300} height={300} alt='blader logo' className='absolute opacity-[2%] pointer-events-none' src='/assets/images/logo-white.png' />
 

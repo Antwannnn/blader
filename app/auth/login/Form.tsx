@@ -70,7 +70,17 @@ const Form = () => {
                         <input autoComplete='email' id="email" placeholder='Email' name='email' type="email" className="text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full px-6 py-3 w-full placeholder:opacity-50" />
                         <input autoComplete='password' id="password" placeholder='Password' name='password' type="password" className="text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full px-6 py-3 w-full  placeholder:opacity-50" />
                         <button type='submit' className="w-full rounded-full py-2 button-primary-dark">Login</button>
-                        {!isLoading ? (<button type='button' onClick={handleGoogleLogin} className='w-full rounded-full flex justify-center gap-4 py-3 button-primary-dark'><p>Continue with Google</p> <Image width="24" height="24" alt={`google logo`} src={`/assets/svgs/providers/google.svg`} /></button>) : (<ElementLoader className='flex flex-col items-center justify-center gap-5' />)}
+                        {!isLoading ? (
+                            <div className='flex flex-col gap-3 w-full'>
+                                <button type='button' onClick={() => { signIn('google', { callbackUrl: '/' }) }} className='w-full rounded-full flex justify-center gap-4 py-3 button-primary-dark'>
+                                    <p>Continue with Google</p>
+                                    <Image width="24" height="24" alt={`google logo`} src={`/assets/svgs/providers/google.svg`} />
+                                </button>
+                                <button type='button' onClick={() => { signIn('discord', { callbackUrl: '/' }) }} className='w-full rounded-full flex justify-center gap-4 py-3 button-primary-dark'>
+                                    <p>Continue with Discord</p>
+                                    <Image width="24" height="24" alt={`google logo`} src={`/assets/svgs/providers/discord.svg`} />
+                                </button>
+                            </div>) : (<ElementLoader className='flex flex-col items-center justify-center gap-5' />)}
                         <Link href="/auth/signup" className='text-tertiary_light opacity-60  underline underline-offset-4 hover:opacity-100 duration-200 transition'>Don't have an account ?</Link>
                     </div>
                 </form>
