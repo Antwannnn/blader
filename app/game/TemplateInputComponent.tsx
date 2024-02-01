@@ -107,7 +107,8 @@ const TemplateInputComponent = ({ length, gameType, sentence, onGameStarts, onGa
                 <textarea spellCheck={false} value={input} onKeyDown={handleKeyPress} onChange={(e) => { }} className={`w-full caret-transparent text-2xl outline-none p-3 rounded-xl resize-none bg-secondary_dark overflow-hidden min-h-52 text-green-600 max-h-72`} name="typingarea" id="" />
             </div>
 
-            <div className="flex flex-col items-center justify-center gap-3 mt-5">
+            <div className="flex  items-center justify-center gap-10 mt-5">
+                <h1 className="text-4xl">-  WPM</h1>
                 <h1 className="text-4xl">{time.time}</h1>
             </div>
         </div>
