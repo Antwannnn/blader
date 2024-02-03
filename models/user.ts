@@ -1,5 +1,6 @@
 import { Schema, model, models } from 'mongoose';
 import { AdapterUser } from 'next-auth/adapters';
+import { GameResults } from '@app/types/GameResults';
 
 const UserSchema = new Schema({
     email: {
@@ -37,26 +38,10 @@ const UserSchema = new Schema({
         type: Boolean,
         default: false,
     },
-
-    averageWPM: {
-        type: Number,
-        default: 0,
-    },
-
-    averageAccuracy: {
-        type: Number,
-        default: 0,
-    },
-
-    averageErrors: {
-        type: Number,
-        default: 0,
-    },
-
-    totalWords: {
-        type: Number,
-        default: 0,
-    },
+    statistics: [{
+        type: Schema.Types.ObjectId,
+        ref: 'UserStatistics',
+    }],
 },
     { timestamps: true }
 );

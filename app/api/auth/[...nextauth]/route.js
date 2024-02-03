@@ -21,15 +21,17 @@ const handler = NextAuth({
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 
-            async jwt(token, _user, account, _profile, _isNewUser) {
-                if (account?.accessToken) {
-                    token.accessToken = account.accessToken;
-                }
-                return token;
+            profile: (profileData) => {
+                return {
+                    id: profileData?.sub,
+                    name: profileData?.name,
+                    email: profileData?.email,
+                    image: profileData?.picture,
+                };
             },
 
         }),
-        
+
         DiscordProvider({
             name: "Discord",
             id: "discord",
@@ -37,13 +39,14 @@ const handler = NextAuth({
             clientId: process.env.DISCORD_CLIENT_ID,
             clientSecret: process.env.DISCORD_CLIENT_SECRET,
 
-            async jwt(token, _user, account, _profile, _isNewUser) {
-                if (account?.accessToken) {
-                    token.accessToken = account.accessToken;
-                }
-                return token;
+            profile: (profileData) => {
+                return {
+                    id: profileData?.id,
+                    name: profileData?.username,
+                    email: profileData?.email,
+                    image: 'https://cdn.discordapp.com/avatars/' + profileData?.id + '/' + profileData?.avatar + '.png',
+                };
             },
-
         }),
 
 
@@ -51,13 +54,11 @@ const handler = NextAuth({
             name: "credentials",
 
             credentials: {
-                email: {  type: "email", placeholder: "Email" },
+                email: { type: "email", placeholder: "Email" },
                 password: { type: "password", placeholder: "Password" }
             },
 
             async authorize(credentials, _req) {
-
-
                 try {
                     const { email, password } = credentials;
                     await dbConnect();
@@ -71,11 +72,10 @@ const handler = NextAuth({
 
                         throw new Error("Incorrect email or password");
                     }
-
                     return userExists;
 
                 } catch (error) {
-
+                    throw new Error(error.message);
                 }
             },
         }),
@@ -85,11 +85,30 @@ const handler = NextAuth({
         strategy: "jwt",
     },
 
+    secret: process.env.NEXTAUTH_SECRET,
+
     pages: {
         signIn: "/auth/login",
     },
 
     adapter: MongooseAdapter(dbConnection),
+
+    callbacks: {
+
+        jwt: ({ token, user }) => {
+            if (user) {
+                token.id = user._id;
+            }
+            return token;
+        },
+        session: ({ session, token }) => {
+            if (token) {
+                session.user.id = token.id;
+                console.log(session.user.id)
+            }
+            return session;
+        }
+    }
 });
 
 

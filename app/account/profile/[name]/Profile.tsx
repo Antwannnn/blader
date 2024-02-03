@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation"
 import Image from "next/image"
 
 
-const Profile = () => {
+const Profile = () => { 
 
     const { data: session, status } = useSession();
     const [profileData, setProfileData] = useState<ProfileData>();
@@ -27,7 +27,7 @@ const Profile = () => {
             const data = await res.json();
 
             if (res.status === 404) { setProfileData(undefined); setLoading(false); return };
-            const { name, email, image, keyboard, createdAt, isAdmin, isVerified, averageWPM, averageAccuracy, averageErrors, totalWords } = data.user;
+            const { name, email, image, keyboard, createdAt, isAdmin, isVerified, averageWpm, averageAccuracy, averageErrors, totalWords, totalCharacter, totalErrors } = data.user;
 
             const formattedDate = createdAt ? new Date(createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
 
@@ -40,10 +40,13 @@ const Profile = () => {
                 isAdmin: isAdmin,
                 isVerified: isVerified,
                 keyboard: keyboard,
-                averageWPM: averageWPM,
+                averageWPM: averageWpm,
                 averageAccuracy: averageAccuracy,
                 averageErrors: averageErrors,
                 totalWords: totalWords,
+                totalCharacters: totalCharacter,
+                totalErrors: totalErrors,
+                totalGames: 0,
                 accountCreated: formattedDate,
             })
 
@@ -97,6 +100,18 @@ const Profile = () => {
                     <div className="flex flex-col border-l-2 border-tertiary_light border-opacity-10 px-4">
                         <h3 className="text-2xl font-bold">Total Words</h3>
                         <p className="text-2xl text-secondary_light">{profileData?.totalWords}</p>
+                    </div>
+                    <div className="flex flex-col lg:border-t-2 border-tertiary_light border-opacity-10 px-4">
+                        <h3 className="text-2xl font-bold">Total Characters</h3>
+                        <p className="text-2xl text-secondary_light">{profileData?.totalCharacters}</p>
+                    </div>
+                    <div className="flex flex-col lg:border-t-2 border-tertiary_light border-opacity-10 px-4">
+                        <h3 className="text-2xl font-bold">Total Errors</h3>
+                        <p className="text-2xl text-secondary_light">{profileData?.totalErrors}</p>
+                    </div>
+                    <div className="flex flex-col lg:border-t-2 border-tertiary_light border-opacity-10 px-4">
+                        <h3 className="text-2xl font-bold">Total Games</h3>
+                        <p className="text-2xl text-secondary_light">{profileData?.totalGames}</p>
                     </div>
                 </div>
 

@@ -66,10 +66,12 @@ const Signup = () => {
       }
     });
 
+
     const response = await res.json();
 
     if (response?.success) {
       const signInRes = await signIn('credentials', { email: formData.get('email'), password: formData.get('password'), redirect: false });
+      console.log(signInRes);
       if (signInRes?.error) {
         setError(signInRes.error);
         return;

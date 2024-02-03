@@ -10,6 +10,9 @@ export type ProfileData = {
     averageAccuracy: number | undefined,
     averageErrors: number | undefined,
     totalWords: number | undefined,
+    totalGames: number | undefined,
+    totalCharacters: number | undefined,
+    totalErrors: number | undefined,
   }
 
   export type StatisticsData = {

@@ -5,21 +5,17 @@ import { Schema, model, models } from 'mongoose';
 const UserStatisticsSchema = new Schema({
 
     user: {
-        type: String,
+        type: Schema.Types.ObjectId,
         ref: 'User',
+        required: true,
     },
 
-    averageWPM: {
+    wpm: {
         type: Number,
         default: 0,
     },
 
-    averageAccuracy: {
-        type: Number,
-        default: 0,
-    },
-
-    averageErrors: {
+    accuracy: {
         type: Number,
         default: 0,
     },
@@ -29,17 +25,7 @@ const UserStatisticsSchema = new Schema({
         default: 0,
     },
 
-    totalGames: {
-        type: Number,
-        default: 0,
-    },
-
     totalCharacters: {
-        type: Number,
-        default: 0,
-    },
-
-    totalCorrectCharacters: {
         type: Number,
         default: 0,
     },
