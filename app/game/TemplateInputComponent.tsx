@@ -12,10 +12,10 @@ interface TemplateProps {
     sentence: SentenceParameter;
     gameStarted: boolean;
     onGameStarts: () => void;
-    onGameEnds: () => void;
+    onGameReset: () => void;
 }
 
-const TemplateInputComponent = ({ length, gameType, sentence, onGameStarts, onGameEnds, gameStarted }: TemplateProps) => {
+const TemplateInputComponent = ({ length, gameType, sentence, onGameStarts, onGameReset, gameStarted,  }: TemplateProps) => {
 
 
     const [input, setInput] = useState<string>("");
@@ -50,10 +50,10 @@ const TemplateInputComponent = ({ length, gameType, sentence, onGameStarts, onGa
         }
     }
 
-    const endGame = () => {
+    const resetGame = () => {
         time.stop();
         time.reset();
-        onGameEnds();
+        onGameReset();
         reset();
     }
 
@@ -91,7 +91,7 @@ const TemplateInputComponent = ({ length, gameType, sentence, onGameStarts, onGa
         if (e.key === 'Tab') {
             e.preventDefault();
             if (gameStarted) {
-                endGame();
+                resetGame();
             }
         }
 
@@ -143,7 +143,7 @@ const TemplateInputComponent = ({ length, gameType, sentence, onGameStarts, onGa
                     <h1>{time.time}</h1>
                 </div>
                 <div>
-                    <button className="opacity-30 hover:opacity-100 transition duration-200" onClick={endGame}>
+                    <button className="opacity-30 hover:opacity-100 transition duration-200" onClick={resetGame}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
                         </svg>

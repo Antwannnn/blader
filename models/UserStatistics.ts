@@ -4,7 +4,7 @@ import { Schema, model, models } from 'mongoose';
 
 const UserStatisticsSchema = new Schema({
 
-    user: {
+    userRef: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
@@ -34,7 +34,6 @@ const UserStatisticsSchema = new Schema({
         type: Number,
         default: 0,
     },
-
 });
 
 const UserStatistics = models.UserStatistics || model('UserStatistics', UserStatisticsSchema);

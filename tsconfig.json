@@ -21,6 +21,6 @@
       "@*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/api/user/[id]/route.js", "utils/mongodb.tmodels/User.tser.ts", "app/auth/login/page.jsx", "app/auth/login/page.jsx", "app/api/auth/[...nextauth]/route.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/api/user/statistics/route.js", "utils/mongodb.tmodels/User.tser.ts", "app/auth/login/page.jsx", "app/auth/login/page.jsx", "app/api/auth/[...nextauth]/route.ts"],
   "exclude": ["node_modules"]
 }

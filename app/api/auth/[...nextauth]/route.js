@@ -104,7 +104,6 @@ const handler = NextAuth({
         session: ({ session, token }) => {
             if (token) {
                 session.user.id = token.id;
-                console.log(session.user.id)
             }
             return session;
         }

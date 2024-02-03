@@ -44,12 +44,12 @@ const TypeTester = () => {
     const [gameStarted, setGameStarted] = useState<boolean>(false);
     const animate = useAnimation();
 
-    const handleGameStarts = () => {
+    const handleGameStart = () => {
         animate.start('hidden');
         setGameStarted(true);
     }
 
-    const handleGameEnds = () => {
+    const handleGameReset = () => {
         animate.start('visible');
         setGameStarted(false);
     }
@@ -83,7 +83,7 @@ const TypeTester = () => {
                 </div>
             </motion.div>
             <div className='w-full'>
-                <TemplateInputComponent gameType={GameTypeParameter.TYPE_TESTER} length={lengthParameterSelector} sentence={sentenceParameterSelector} gameStarted={gameStarted} onGameEnds={handleGameEnds} onGameStarts={handleGameStarts} />
+                <TemplateInputComponent gameType={GameTypeParameter.TYPE_TESTER} length={lengthParameterSelector} sentence={sentenceParameterSelector} gameStarted={gameStarted} onGameStarts={handleGameStart} onGameReset={handleGameReset}/>
             </div>
             <Image width={400} height={400} alt='blader logo' className='absolute opacity-[2%] pointer-events-none' src='/assets/images/logo-white.png' />
 

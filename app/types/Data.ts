@@ -1,4 +1,4 @@
-export type ProfileData = {
+export type UserData = {
     username: string | undefined,
     email: string | undefined,
     avatar: string | undefined,
@@ -6,13 +6,6 @@ export type ProfileData = {
     accountCreated: string | undefined,
     isAdmin: boolean | undefined,
     isVerified: boolean | undefined,
-    averageWPM: number | undefined,
-    averageAccuracy: number | undefined,
-    averageErrors: number | undefined,
-    totalWords: number | undefined,
-    totalGames: number | undefined,
-    totalCharacters: number | undefined,
-    totalErrors: number | undefined,
   }
 
   export type StatisticsData = {
@@ -22,6 +15,5 @@ export type ProfileData = {
     totalWords: number | undefined,
     totalGames: number | undefined,
     totalCharacters: number | undefined,
-    totalCorrectCharacters: number | undefined,
     totalErrors: number | undefined,
   }
