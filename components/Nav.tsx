@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, useAnimation} from 'framer-motion';
+import { motion, useAnimation } from 'framer-motion';
 import AccountManagementLayout from './subcomponents/AccountManagementLayout';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -31,7 +31,7 @@ const appearVariants = {
 
 
 const navlinks = [
-  { name: 'Type Tester', link: '/game/typetester', icon: "/assets/svgs/stopwatch.svg"},
+  { name: 'Type Tester', link: '/game/typetester', icon: "/assets/svgs/stopwatch.svg" },
   { name: 'Type Racer', link: '/game/typeracer', icon: '/assets/svgs/race.svg' },
   { name: 'Leaderboard', link: '/leaderboard', icon: '/assets/svgs/crown.svg' },
 ]
@@ -49,12 +49,12 @@ const Nav = () => {
   const username = session?.user?.name?.toString();
 
   const handleDropdown = () => {
-    if(toggleDropdown){
+    if (toggleDropdown) {
       appear.start('hidden');
       setTimeout(() => {
         setToggleDropdown(false);
       }, 200);
-    } else{
+    } else {
       setToggleDropdown(true);
       appear.start('visible');
     }
@@ -62,31 +62,33 @@ const Nav = () => {
 
 
   return (
-    <nav className="grid grid-rows-1 place-items-center grid-cols-2 lg:grid-cols-4 w-full z-20 overflow-visible bg-secondary_dark text-sm py-3 fixed px-3">
-      <Link href="/" className='flex place-self-start gap-2 flex-center overflow-hidden'>
-        <Image
-          className='logo cursor-pointer rounded-full'
-          src="/assets/images/logo-white.png"
-          alt="blader logo"
-          width={50}
-          height={50}
-        />
-        <p className='text-xl text-secondary_light text-pretty'>blader.</p>
-      </Link>
-      <div className='lg:flex col-span-2 navlinks justify-evenly hidden gap-2 lg:gap-3'>
-        {navlinks.map((link, index) => (
-        <Link key={index} href={link.link}>
-          <div className={`navlink gap-1 ${(router == link.link ? activeStyle : "")}`}>
-            {link.name} 
-            <img className='w-4 h-4' src={link.icon} alt="leaderboard icon" />
-          </div>
+    <div>
+      <nav className="lg:grid grid-rows-1 hidden place-items-center grid-cols-2 lg:grid-cols-4 w-full z-20 overflow-visible bg-secondary_dark text-sm py-3 fixed px-3">
+        <Link href="/" className='flex place-self-start gap-2 flex-center overflow-hidden'>
+          <Image
+            className='logo cursor-pointer rounded-full'
+            src="/assets/images/logo-white.png"
+            alt="blader logo"
+            width={50}
+            height={50}
+          />
+          <p className='text-xl text-secondary_light text-pretty'>blader.</p>
         </Link>
-        ))}
-      </div>
-       
-      <div className='lg:flex items-center h-full place-self-end loginrelated hidden '>
-        <AccountManagementLayout isUserLoggedIn={status === 'authenticated'} username={username} className='flex gap-2 justify-evenly' />
-      </div>
+        <div className='lg:flex col-span-2 navlinks justify-evenly hidden gap-2 lg:gap-3'>
+          {navlinks.map((link, index) => (
+            <Link key={index} href={link.link}>
+              <div className={`navlink gap-1 ${(router == link.link ? activeStyle : "")}`}>
+                {link.name}
+                <img className='w-4 h-4' src={link.icon} alt="leaderboard icon" />
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        <div className='lg:flex items-center h-full place-self-end loginrelated hidden '>
+          <AccountManagementLayout isUserLoggedIn={status === 'authenticated'} username={username} className='flex gap-2 justify-evenly' />
+        </div>
+      </nav>
       <div className='lg:hidden flex-col gap-3 absolute items-end top-6 right-0 flex overflow-x-hidden'>
         <button onClick={() => handleDropdown()} className='flex gap-2 mr-3'>
           <svg className="w-6 h-6 text-secondary_light opacity-70 hover:opacity-100 transition duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -97,30 +99,41 @@ const Nav = () => {
             )}
           </svg>
         </button>
-        <motion.div className='place-self-end bg-secondary_dark rounded-md shadow-lg'
-            initial= {'hidden'}
-            variants={appearVariants}
-            animate={appear}
+        <motion.div className='place-self-end bg-secondary_dark bg-opacity-40 rounded-md shadow-lg'
+          initial={'hidden'}
+          variants={appearVariants}
+          animate={appear}
         >
           {toggleDropdown && (
+
             <div className='flex flex-col items-center gap-5 px-4 py-5'>
 
-              <AccountManagementLayout isUserLoggedIn={status === 'authenticated'} username={username} className='flex flex-col-reverse gap-2 justify-evenly' />
-
-              <div className='separator w-full'/>
-              {navlinks.map((link, index) => (
-                <Link key={index} href={link.link}>
-                  <div className={`navlink gap-1 ${(router == link.link ? activeStyle : "")}`}>
-                    {link.name}
-                    <img className='w-4 h-4' src={link.icon} alt="leaderboard icon" />
-                  </div>
+              <Link href="/" className='flex gap-2 flex-center overflow-hidden'>
+                <Image
+                  className='logo cursor-pointer rounded-full'
+                  src="/assets/images/logo-white.png"
+                  alt="blader logo"
+                  width={50}
+                  height={50}
+                />
                 </Link>
-              ))}
+
+                <AccountManagementLayout isUserLoggedIn={status === 'authenticated'} username={username} className='flex flex-col-reverse gap-2 justify-evenly' />
+
+                <div className='separator w-full' />
+                {navlinks.map((link, index) => (
+                  <Link key={index} href={link.link}>
+                    <div className={`navlink gap-1 ${(router == link.link ? activeStyle : "")}`}>
+                      {link.name}
+                      <img className='w-4 h-4' src={link.icon} alt="leaderboard icon" />
+                    </div>
+                  </Link>
+                ))}
             </div>
           )}
         </motion.div>
       </div>
-    </nav>
+    </div>
   )
 }
 

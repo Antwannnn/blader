@@ -3,6 +3,8 @@ export type UserData = {
     email: string | undefined,
     avatar: string | undefined,
     keyboard: string | undefined,
+    bio: string | undefined,
+    badges: string[] | undefined,
     accountCreated: string | undefined,
     isAdmin: boolean | undefined,
     isVerified: boolean | undefined,

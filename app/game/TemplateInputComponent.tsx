@@ -109,11 +109,6 @@ const TemplateInputComponent = ({ length, gameType, sentence, onGameStarts, onGa
                     setTotalErrors(totalErrors + 1);
                 }
 
-                /*if (!performanceMesure.hasStarted()) {
-                    performanceMRemi a fesure.startGame();
-                    console.log("mesure started")
-                }*/
-
             } else {
                 if (currentIndexRef.current > 0) {
                     setCurrentIndex(currentIndex - 1);

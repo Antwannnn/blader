@@ -26,7 +26,17 @@ const UserSchema = new Schema({
 
     keyboard:{
         type: String,
-        default: 'Some obscure keyboard...'
+        default: 'This user has not set a keyboard yet.'
+    },
+
+    bio: {
+        type: String,
+        default: 'This user has not set a bio yet.'
+    },
+
+    badges: {
+        type: Array,
+        default: [],
     },
 
     isAdmin: {
@@ -38,10 +48,6 @@ const UserSchema = new Schema({
         type: Boolean,
         default: false,
     },
-    statistics: [{
-        type: Schema.Types.ObjectId,
-        ref: 'UserStatistics',
-    }],
 },
     { timestamps: true }
 );
