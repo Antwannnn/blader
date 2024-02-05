@@ -18,3 +18,9 @@ export enum GameTypeParameter {
     TYPE_RACER,
 }
 
+export enum GameState{
+    STARTED,
+    RESET,
+    ENDED
+}
+

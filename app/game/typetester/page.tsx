@@ -1,6 +1,6 @@
 "use client"
 
-import { GameTypeParameter, LengthParameter, SentenceParameter } from '@app/types/GameParameters'
+import { GameTypeParameter, LengthParameter, SentenceParameter, GameState } from '@app/types/GameParameters'
 import TemplateInputComponent from '../TemplateInputComponent';
 import { useEffect, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
@@ -41,21 +41,26 @@ const TypeTester = () => {
 
     const [lengthParameterSelector, setLengthParameterSelector] = useState<LengthParameter>(LengthParameter.MEDIUM);
     const [sentenceParameterSelector, setSentenceParameterSelector] = useState<SentenceParameter>(SentenceParameter.RANDOM);
-    const [gameStarted, setGameStarted] = useState<boolean>(false);
+    const [gameStatut, setGameStatut] = useState<GameState>(GameState.RESET);
     const animate = useAnimation();
 
     const handleGameStart = () => {
         animate.start('hidden');
-        setGameStarted(true);
+        setGameStatut(GameState.STARTED);
     }
 
     const handleGameReset = () => {
         animate.start('visible');
-        setGameStarted(false);
+        setGameStatut(GameState.RESET);
     }
 
+    const handleGameEnd = () => {
+        setGameStatut(GameState.ENDED);
+    }
+        
+
     return (
-        <section className="flex flex-col h-screen justify-center gap-1 py-10 items-center  overflow-hidden text-secondary_light z-30 sm:pb-20">
+         <section className="flex flex-col h-screen justify-center gap-1 py-10 items-center  overflow-hidden text-secondary_light z-30 sm:pb-20">
             <motion.div className='flex flex-col justify-center items-center'
                 variants={animationVariants}
                 animate={animate}
@@ -82,9 +87,9 @@ const TypeTester = () => {
                     </div>
                 </div>
             </motion.div>
-            <div className='w-full'>
-                <TemplateInputComponent gameType={GameTypeParameter.TYPE_TESTER} length={lengthParameterSelector} sentence={sentenceParameterSelector} gameStarted={gameStarted} onGameStarts={handleGameStart} onGameReset={handleGameReset}/>
-            </div>
+            {gameStatut !== GameState.ENDED ? (<div className='w-full'>
+                <TemplateInputComponent gameType={GameTypeParameter.TYPE_TESTER} length={lengthParameterSelector} sentence={sentenceParameterSelector} gameState={gameStatut} onGameStarts={handleGameStart} onGameReset={handleGameReset}/>
+            </div>) : (<div className='flex flex-col gap-3'/>)}
             <Image width={400} height={400} alt='blader logo' className='absolute opacity-[2%] pointer-events-none' src='/assets/images/logo-white.png' />
 
         </section>

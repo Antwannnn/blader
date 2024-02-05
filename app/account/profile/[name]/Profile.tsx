@@ -67,6 +67,7 @@ const Profile = () => {
 
         <LoadableWrapper clasName="flex h-screen w-full items-center justify-center" condition={!loading}>
             {userData !== undefined ? (
+                
                 <section className="flex flex-col items-center justify-center sm:justify-start gap-5 md:pt-0 w-5/6 text-primary_light ">
                     <div className="flex flex-col w-full md:flex-row gap-2 md:justify-start justify-center bg-secondary_dark p-5 rounded-xl bg-opacity-40">
                         <div className="flex flex-col w-full md:w-2/6 gap-2 justify-center items-center bg-tertiary_dark bg-opacity-40 p-2 rounded-xl">
@@ -122,6 +123,8 @@ const Profile = () => {
                             </div>
                         </div>
                     </div>
+                    <Image width={400} height={400} alt='blader logo' className='absolute opacity-[2%] pointer-events-none' src='/assets/images/logo-white.png' />
+                    
                 </section>) : (<div className="h-full w-full font-bold text-5xl text-primary_light flex justify-center items-center text-center">User not found <br /> (ㅠ﹏ㅠ)</div>)}
         </LoadableWrapper>
     )

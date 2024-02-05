@@ -4,9 +4,13 @@ import Profile from "@app/account/profile/[name]/Profile"
 
 const ProfilePage = () => {
 
-  
+
   return (
-      <Profile/>
+    <section>
+      <Profile />
+    </section>
+
+
   )
 }
 
