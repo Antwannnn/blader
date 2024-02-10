@@ -22,7 +22,7 @@ const TemplateInputComponent = ({ length, gameType, sentence, onGameStarts, onGa
     var [currentIndex, setCurrentIndex, currentIndexRef] = useState<number>(0);
     const indexedError = useState<number[]>([])[0];
 
-    const exampleSentence = "Minou c'est vraiment trop un queutard, il est là, il choppe gaga right in the pocket mon copain.";
+    const exampleSentence = "Example sentence to test how much character can fit in the page.";
     const splittedSentence = exampleSentence.split('');
 
     const reset = () => {
