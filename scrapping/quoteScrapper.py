@@ -44,5 +44,4 @@ def scrape_quotes():
 
     print("Les citations ont été enregistrées dans 'quotes.json'.")
 
-# Exécuter le scrapper
 scrape_quotes()
