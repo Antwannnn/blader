@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation'
 import ErrorBlock from '@components/subcomponents/ErrorBlock';
 import { BuiltInProviderType } from 'next-auth/providers/index';
 import Link from 'next/link';
-
+import { FaDiscord, FaGoogle } from 'react-icons/fa';
 
 const Form = () => {
     const [providers, setProviders] = useState<Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null>(null);
@@ -63,25 +63,27 @@ const Form = () => {
             className="flex flex-col h-screen justify-center gap-3 py-24 items-center ">
 
             <div className="hero w-4/6 sm:w-96 flex flex-col items-center justify-center text-center">
-                <h1 className="overflow-hidden font-bold text-4xl py-4 text-secondary_light">Login</h1>
+                <h1 className="overflow-hidden font-bold text-4xl py-4 text-text">Login</h1>
                 <form className='w-full' onSubmit={handleSubmit}>
-                    <div className=" flex flex-col items-center justify-center gap-5">
+                    <div className=" flex flex-col items-center justify-center gap-4">
+                        <div className='flex flex-col gap-3 w-full'>
                         <ErrorBlock error={error} className='shadow-sm text-red-500 px-3 py-1 rounded-xl relative' />
-                        <input autoComplete='email' id="email" placeholder='Email' name='email' type="email" className="text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full px-6 py-3 w-full placeholder:opacity-50" />
-                        <input autoComplete='password' id="password" placeholder='Password' name='password' type="password" className="text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full px-6 py-3 w-full  placeholder:opacity-50" />
-                        <button type='submit' className="w-full rounded-full py-2 button-primary-dark">Login</button>
+                        <input autoComplete='email' id="email" placeholder='Email' name='email' type="email" className="text-text flex items-center text-sm autofill:bg-secondary outline-none bg-secondary rounded-full px-6 py-3 w-full placeholder:opacity-50" />
+                        <input autoComplete='password' id="password" placeholder='Password' name='password' type="password" className="text-text flex items-center text-sm autofill:bg-secondary outline-none bg-secondary rounded-full px-6 py-3 w-full placeholder:opacity-50" />
+                        </div>
+                        <button type='submit' className="w-full rounded-full text-text py-2 bg-secondary hover:bg-tertiary transition duration-200">Login</button>
                         {!isLoading ? (
-                            <div className='flex flex-col gap-3 w-full'>
-                                <button type='button' onClick={() => { signIn('google', { callbackUrl: '/' }) }} className='w-full rounded-full flex justify-center gap-4 py-3 button-primary-dark'>
+                            <div className='flex flex-col gap-3 w-full text-text '>
+                                <button type='button' onClick={() => { signIn('google', { callbackUrl: '/' }) }} className='w-full rounded-full flex justify-center items-center gap-4 py-3 bg-secondary hover:bg-tertiary transition duration-200'>
                                     <p>Continue with Google</p>
-                                    <Image width="24" height="24" alt={`google logo`} src={`/assets/svgs/providers/google.svg`} />
+                                    <FaGoogle className='w-5 h-5' />
                                 </button>
-                                <button type='button' onClick={() => { signIn('discord', { callbackUrl: '/' }) }} className='w-full rounded-full flex justify-center gap-4 py-3 button-primary-dark'>
+                                <button type='button' onClick={() => { signIn('discord', { callbackUrl: '/' }) }} className='w-full rounded-full flex justify-center items-center gap-4 py-3 bg-secondary hover:bg-tertiary transition duration-200'>
                                     <p>Continue with Discord</p>
-                                    <Image width="24" height="24" alt={`google logo`} src={`/assets/svgs/providers/discord.svg`} />
+                                    <FaDiscord className='w-5 h-5' />
                                 </button>
                             </div>) : (<ElementLoader className='flex flex-col items-center justify-center gap-5' />)}
-                        <Link href="/auth/signup" className='text-tertiary_light opacity-60  underline underline-offset-4 hover:opacity-100 duration-200 transition'>Don't have an account ?</Link>
+                        <Link href="/auth/signup" className='text-text opacity-60  underline underline-offset-4 hover:opacity-100 duration-200 transition'>Don't have an account ?</Link>
                     </div>
                 </form>
             </div>

@@ -29,12 +29,12 @@ const Home = () => {
           width={150}
           height={150}
         />
-        <h1 className="overflow-hidden text-4xl text-secondary_light">Welcome to <span className="text-primary_light font-bold">blader</span>.</h1>
-        <p className="text-secondary_light text-xl">The ultimate typing speed tester.</p>
+        <h1 className="overflow-hidden text-4xl text-text">Welcome to <span className="text-text font-bold">blader</span>.</h1>
+        <p className="text-text text-xl">The ultimate typing speed tester.</p>
       </div>
       <div className="enterbar">
         <div className="flex flex-col items-center justify-center">
-          <input autoComplete="off" placeholder='Type "start" to enter.' type="text" value={inputState} onChange={(e) => { setInputState(e.target.value) }} className="text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full px-4 py-2 mt-5  placeholder:opacity-50" />
+          <input autoComplete="off" placeholder='Type "start" to enter.' type="text" value={inputState} onChange={(e) => { setInputState(e.target.value) }} className="text-text flex items-center text-sm outline-none bg-text/20 rounded-full px-4 py-2 mt-5  placeholder:opacity-50" />
         </div>
       </div>
 

@@ -10,11 +10,14 @@ import {
 import useState from "react-usestateref";
 import { useStopwatch } from "@app/hooks/Stopwatch";
 import { useEffect, useRef } from "react";
+import { GameResults } from "@app/types/GameResults";
 
 interface TemplateProps {
   gameType: GameTypeParameter;
   sentence: string | Quote;
   gameState: GameState;
+  gameResults: GameResults;
+  setGameResults: React.Dispatch<React.SetStateAction<GameResults>>;
   onGameStarts: () => void;
   onGameReset: () => void;
   inputRef?: React.RefObject<HTMLInputElement>;
@@ -22,6 +25,8 @@ interface TemplateProps {
 
 const TemplateInputComponent = ({
   gameType,
+  gameResults,
+  setGameResults,
   sentence,
   onGameStarts,
   onGameReset,
@@ -97,6 +102,8 @@ const TemplateInputComponent = ({
     if (gameState !== GameState.ENDED) {
       setWpm(getGrossWpm());
       setAccuracy(getAccuracy());
+    } else {
+      time.stop();
     }
   }, [gameState, time.rawTime]);
 
@@ -176,26 +183,22 @@ const TemplateInputComponent = ({
           }
         }
       }
+
+      if (!isNaN(wpm) && !isNaN(accuracy)) {
+        setGameResults({
+          wpmOverTime: [...gameResults.wpmOverTime, wpm],
+          accuracyOverTime: [...gameResults.accuracyOverTime, accuracy],
+          time: time.rawTime,
+          errors: totalErrors,
+          correct: input.length,
+        });
+      }
     }
   };
 
-  useEffect(() => {
-    const focusInput = () => {
-      if (inputRef?.current) {
-        inputRef?.current.focus(); // Forcer le focus sur l'input
-      }
-    };
-
-    document.addEventListener("click", focusInput);
-
-    return () => {
-      document.removeEventListener("click", focusInput);
-    };
-  }, []);
-
   return (
     <div className="flex flex-col items-center justify-center w-full">
-      <div className="w-5/6 text-3xl relative overflow-hidden flex justify-center py-20">
+      <div className="w-5/6 text-3xl text-text relative overflow-hidden flex justify-center py-20">
         <input
           ref={inputRef}
           autoFocus={true}
@@ -221,12 +224,12 @@ const TemplateInputComponent = ({
         </span>
       </div>
       {typeof sentence !== "string" && (
-        <div className=" p-2 text-secondary_light opacity-50">
+        <div className=" p-2 text-text opacity-50">
           <p>By {sentence.author}</p>
         </div>
       )}
       <div className="grid place-items-center sm:grid-cols-3 grid-cols-1 sm:grid-rows-1 grid-rows-3 gr sm:flex-row flex-col w-full justify-around">
-        <div className="flex flex-row sm:flex-col text-secondary_light text-md opacity-50">
+        <div className="flex flex-row sm:flex-col text-text text-md opacity-50">
           <h1>
             {gameState === GameState.STARTED ? wpm : "-"} WPM (Previsional)
           </h1>

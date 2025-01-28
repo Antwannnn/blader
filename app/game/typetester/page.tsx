@@ -7,11 +7,13 @@ import {
   GameState,
   Quote,
 } from "@app/types/GameParameters";
+import { GameResults } from "@app/types/GameResults";
 import TemplateInputComponent from "../TemplateInputComponent";
 import { useEffect, useRef, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { fetchRandomSentence, fetchQuote } from "../gameHandler";
 import Image from "next/image";
+import { IoReload } from "react-icons/io5";
 
 const animationVariants = {
   visible: {
@@ -37,9 +39,17 @@ const TypeTester = () => {
   const [sentence, setSentence] = useState<string | Quote>("");
   const inputRef = useRef<HTMLInputElement>(null);
   const animate = useAnimation();
+  const [gameResults, setGameResults] = useState<GameResults>({
+    wpmOverTime: [0],
+    accuracyOverTime: [0],
+    time: 0,
+    errors: 0,
+    correct: 0,
+  });
 
   const handleGameStart = () => {
     animate.start("hidden");
+
     setGameStatut(GameState.STARTED);
   };
 
@@ -83,7 +93,7 @@ const TypeTester = () => {
   }, [lengthParameterSelector, sentenceParameterSelector]);
 
   return (
-    <section className="flex flex-col h-screen justify-center gap-1 py-10 items-center  overflow-hidden text-secondary_light z-30 sm:pb-20">
+    <section className="flex flex-col h-screen justify-center gap-1 py-10 items-center  overflow-hidden text-text z-30 sm:pb-20">
       <motion.div
         className="flex flex-col justify-center items-center"
         variants={animationVariants}
@@ -96,22 +106,9 @@ const TypeTester = () => {
             <h3 className="opacity-50">Reload</h3>
             <button
               onClick={handleSetSentence}
-              className="px-4 py-1 w-fit rounded-md bg-secondary_dark text-secondary_light hover:bg-secondary_light hover:text-secondary_dark duration-200 transition"
+              className="px-4 py-1 w-fit rounded-md bg-tertiary text-text hover:bg-text hover:text-background duration-200 transition"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                className="size-5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3"
-                />
-              </svg>
+              <IoReload className="w-5 h-5" />
             </button>
           </div>
 
@@ -127,10 +124,7 @@ const TypeTester = () => {
                       setLengthParameterSelector(value as LengthParameter)
                     }
                     className={`px-4 py-1 rounded-md ${
-                      lengthParameterSelector === value
-                        ? "bg-primary_light text-primary_dark"
-                        : "bg-secondary_dark text-secondary_light hover:bg-secondary_light hover:text-secondary_dark"
-                    } duration-200 transition`}
+                      lengthParameterSelector === value ? "bg-text text-background" : " text-text hover:bg-tertiary"} duration-200 transition`}
                   >
                     {value}
                   </button>
@@ -146,7 +140,7 @@ const TypeTester = () => {
                   onClick={() =>
                     setSentenceParameterSelector(value as SentenceParameter)
                   }
-                  className={`px-4 py-1 rounded-md ${sentenceParameterSelector === value ? "bg-primary_light text-primary_dark" : "bg-secondary_dark text-secondary_light hover:bg-secondary_light hover:text-secondary_dark"} duration-200 transition`}
+                  className={`px-4 py-1 rounded-md ${sentenceParameterSelector === value ? "bg-text text-background" : " text-text hover:bg-tertiary"} duration-200 transition`}
                 >
                   {value}
                 </button>
@@ -161,6 +155,8 @@ const TypeTester = () => {
             gameType={GameTypeParameter.TYPE_TESTER}
             sentence={sentence}
             gameState={gameStatut}
+            gameResults={gameResults}
+            setGameResults={setGameResults}
             inputRef={inputRef}
             onGameStarts={handleGameStart}
             onGameReset={handleGameReset}

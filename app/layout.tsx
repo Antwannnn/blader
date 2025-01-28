@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Exo_2 } from "next/font/google";
 import { Nav } from "@components/Components";
 import Provider from "@components/Provider";
-import Footer from "@components/Footer";
 import "@styles/globals.css";
 
 const Exo2 = Exo_2({ subsets: ["latin"] });
@@ -25,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="bg-primary_dark">
+    <html lang="en" className="bg-background">
 
       <body className={` ${Exo2.className}`}>
         <Provider>
@@ -35,7 +34,6 @@ export default function RootLayout({
           <main>
             {children}
           </main>
-          <Footer />
         </Provider>
       </body>
 

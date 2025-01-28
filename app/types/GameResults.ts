@@ -1,7 +1,7 @@
 export type GameResults = {
-    WPM: number;
-    accuracy: number;
-    time: number;
-    errors: number;
-    correct: number;
-}
+  wpmOverTime: number[];
+  accuracyOverTime: number[];
+  time: number;
+  errors: number;
+  correct: number;
+};

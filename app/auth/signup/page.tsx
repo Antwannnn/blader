@@ -12,6 +12,7 @@ import ErrorBlock from '@components/subcomponents/ErrorBlock';
 import { FormEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { FaDiscord, FaGoogle } from '@node_modules/react-icons/fa';
 
 
 const Signup = () => {
@@ -98,50 +99,117 @@ const Signup = () => {
 
 
   return (
-
-    <section
-
-      className="flex flex-col h-screen justify-center gap-5 py-24 items-center ">
-
-      <div className="hero w-4/6 sm:w-96 flex flex-col items-center justify-center text-center">
-        <h1 className="overflow-hidden font-bold text-4xl py-4 text-secondary_light">Sign-up</h1>
+    <section className="flex flex-col min-h-screen justify-center gap-5 py-24 items-center bg-theme-background">
+      <div className="w-4/6 sm:w-96 flex flex-col items-center justify-center text-center">
+        <h1 className="font-bold text-4xl py-4 text-theme">Sign-up</h1>
         <form className='w-full' onSubmit={handleSubmit}>
-          <div className="flex flex-col items-center overflow-hidden justify-center gap-4">
-            <ErrorBlock error={error} className='text-red-500' />
-            <div className='text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full w-full placeholder:opacity-50'>
-              <input autoComplete="off" value={username} onChange={async (e) => { setUsername(e.target.value); isUsernameAvailable(e.target.value) }} className='account-related-form-input' placeholder='Username' name='name' type="text" />
-              {username != '' ? (<div className='flex justify-center items-center mr-4'>
-                {usernameLoading ? (<IconLoader className='flex justify-center items-center' />) : <>{usernameAvailable ? (
-                  <svg fill="#86FFA8" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
-                    className='w-6 h-6' viewBox="0 0 335.765 335.765">
-                    <g>
-                      <g>
-                        <polygon points="311.757,41.803 107.573,245.96 23.986,162.364 0,186.393 107.573,293.962 335.765,65.795 		" />
-                      </g>
-                    </g>
-                  </svg>) : (<svg fill="#FF8686" className='w-6 h-6' viewBox="0 0 200 200" data-name="Layer 1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"><title /><path d="M114,100l49-49a9.9,9.9,0,0,0-14-14L100,86,51,37A9.9,9.9,0,0,0,37,51l49,49L37,149a9.9,9.9,0,0,0,14,14l49-49,49,49a9.9,9.9,0,0,0,14-14Z" /></svg>)}</>}
+          <div className="flex flex-col items-center justify-center gap-4">
+            <ErrorBlock error={error} className='text-accent' />
+            
+            {/* Username Input */}
+            <div className='flex items-center text-sm bg-theme-secondary rounded-full w-full'>
+              <input 
+                autoComplete="new-password"
+                aria-autocomplete="none"
+                id='username'
+                value={username} 
+                onChange={async (e) => { 
+                  setUsername(e.target.value); 
+                  isUsernameAvailable(e.target.value) 
+                }} 
+                className='w-full px-6 py-3 bg-transparent text-theme outline-none autofill:bg-secondary rounded-full placeholder:text-theme-50'
+                placeholder='Username' 
+                name='name' 
+                type="text" 
+              />
+              {username && (
+                <div className='flex justify-center items-center mr-4'>
+                  {usernameLoading ? (
+                    <IconLoader className='w-6 h-6' />
+                  ) : (
+                    usernameAvailable ? (
+                      <svg fill="#86FFA8" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        className='w-6 h-6' viewBox="0 0 335.765 335.765">
+                        <polygon points="311.757,41.803 107.573,245.96 23.986,162.364 0,186.393 107.573,293.962 335.765,65.795" />
+                      </svg>
+                    ) : (
+                      <svg fill="#FF8686" className='w-6 h-6' viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M114,100l49-49a9.9,9.9,0,0,0-14-14L100,86,51,37A9.9,9.9,0,0,0,37,51l49,49L37,149a9.9,9.9,0,0,0,14,14l49-49,49,49a9.9,9.9,0,0,0,14-14Z" />
+                      </svg>
+                    )
+                  )}
+                </div>
+              )}
+            </div>
 
-              </div>) : (<></>)}
+            {/* Email Input */}
+            <div className='flex items-center text-sm bg-theme-secondary rounded-full w-full'>
+              <input 
+                autoComplete="new-password"
+                aria-autocomplete="none"
+                placeholder='Email' 
+                type="email" 
+                name='email' 
+                className='w-full px-6 py-3 bg-transparent text-theme outline-none rounded-full placeholder:text-theme-50'
+              />
             </div>
-            <div className='text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full w-full placeholder:opacity-50'>
-              <input autoComplete="off" placeholder='Email' type="text" name='email' className="account-related-form-input" />
+
+            {/* Password Input */}
+            <div className='flex items-center text-sm bg-theme-secondary rounded-full w-full'>
+              <input 
+                autoComplete="new-password"
+                aria-autocomplete="none"
+                placeholder='Password' 
+                type="password" 
+                name='password' 
+                className='w-full px-6 py-3 bg-transparent text-theme outline-none rounded-full placeholder:text-theme-50'
+              />
             </div>
-            <input placeholder='Password' type="password" name='password' className="account-related-form-input" />
-            {(usernameAvailable && username) ? (<button type='submit' className="w-full rounded-full py-2 button-primary-dark">Sign-up</button>) : (<button disabled type='submit' className="w-full rounded-full py-2 button-primary-dark-disabled">Sign-up</button>)}
+
+            {/* Submit Button */}
+            <button 
+              type='submit' 
+              disabled={!usernameAvailable || !username}
+              className={`w-full rounded-full py-3 transition duration-200 text-text bg-secondary ${
+                usernameAvailable && username 
+                  ? 'hover:bg-tertiary' 
+                  : 'cursor-not-allowed opacity-50'
+              }`}
+            >
+              Sign-up
+            </button>
+
+            {/* OAuth Providers */}
             {providers ? (
               <div className='flex flex-col m-2 gap-3 w-full'>
-                <button type='button' onClick={() => { signIn('google', { callbackUrl: '/' }) }} className='w-full rounded-full flex justify-center gap-4 py-3 button-primary-dark'>
+                <button 
+                  type='button' 
+                  onClick={() => signIn('google', { callbackUrl: '/' })} 
+                  className='w-full rounded-full  flex justify-center items-center gap-4 py-3 bg-secondary hover:bg-tertiary text-text transition duration-200'
+                >
                   <p>Continue with Google</p>
-                  <Image width="24" height="24" alt={`google logo`} src={`/assets/svgs/providers/google.svg`} />
+                  <FaGoogle className='w-5 h-5' />
                 </button>
-                <button type='button' onClick={() => { signIn('discord', { callbackUrl: '/' }) }} className='w-full rounded-full flex justify-center gap-4 py-3 button-primary-dark'>
+                <button 
+                  type='button' 
+                  onClick={() => signIn('discord', { callbackUrl: '/' })} 
+                  className='w-full rounded-full flex justify-center items-center gap-4 py-3 bg-secondary hover:bg-tertiary text-text transition duration-200'
+                >
                   <p>Continue with Discord</p>
-                  <Image width="24" height="24" alt={`google logo`} src={`/assets/svgs/providers/discord.svg`} />
+                  <FaDiscord className='w-5 h-5' />
                 </button>
               </div>
-            ) : (<ElementLoader className='flex flex-col items-center justify-center gap-5' />
+            ) : (
+              <ElementLoader className='flex flex-col items-center justify-center gap-5' />
             )}
-            <Link href="/auth/login" className='text-tertiary_light opacity-60  underline underline-offset-4 hover:opacity-100 duration-200 transition'>Already have an account ?</Link>
+
+            {/* Login Link */}
+            <Link 
+              href="/auth/login" 
+              className='text-text opacity-60 hover:opacity-100 transition duration-200 underline underline-offset-4'
+            >
+              Already have an account?
+            </Link>
           </div>
         </form>
       </div>

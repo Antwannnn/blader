@@ -9,6 +9,40 @@
   padding: 0;
 }
 
+@layer base {
+  :root {
+    /* Dark theme (default) */
+    --background: rgb(22, 25, 28);
+    --secondary: rgb(30, 34, 38);
+    --tertiary: rgb(44, 49, 54);
+    --text: rgb(233, 236, 239);
+    --accent: rgb(255, 107, 107);
+    --accent-hover: rgb(255, 79, 79);
+    --accent-disabled: rgb(178, 178, 178);
+    --accent-disabled-hover: rgb(150, 150, 150);
+  }
+
+  [data-theme='light'] {
+    --background: rgb(255, 255, 255);
+    --secondary: rgb(245, 245, 245);
+    --tertiary: rgb(232, 232, 232);
+    --text: rgb(22, 25, 28);
+    --accent: rgb(255, 107, 107);
+    --accent-hover: rgb(255, 79, 79);
+    --accent-disabled: rgb(178, 178, 178);
+    --accent-disabled-hover: #969696;
+  }
+}
+
+/* Utility classes using CSS variables */
+@layer utilities {
+  .bg-theme-background { background-color: var(--background); }
+  .bg-theme-secondary { background-color: var(--secondary); }
+  .bg-theme-tertiary { background-color: var(--tertiary); }
+  .text-theme { color: var(--text); }
+  .text-theme-accent { color: var(--accent); }
+}
+
 .logo{
   transition: transform 0.25s ease-out;
 }
@@ -17,104 +51,25 @@
   transform: rotate(90deg);
 }
 
-.dropdown {
-  @apply absolute right-0 top-full mt-3 w-full p-5 rounded-lg bg-white min-w-[210px] flex flex-col gap-2 justify-end items-end;
-}
-
-.dropdown_link {
-  @apply text-sm text-gray-700 hover:text-gray-500 font-medium;
-}
-
-
-.flex-center {
-  @apply flex justify-center items-center;
-}
-
-.flex-start {
-  @apply flex justify-start items-start;
-}
-
-.flex-around {
-  @apply flex justify-around items-center;
-}
-
-.flex-end {
-  @apply flex justify-end items-center;
-}
-
-.flex-between {
-  @apply flex justify-between items-center;
-}
-
-.button-primary-dark {
-  @apply bg-tertiary_dark hover:bg-tertiary_light text-secondary_light hover:text-tertiary_dark transition duration-200;
-}
-
-.button-primary-light{
-  @apply bg-tertiary_light hover:bg-tertiary_dark text-secondary_dark hover:text-tertiary_light transition duration-200;
-}
-
-.button-primary-dark-disabled{
-  @apply bg-tertiary_dark text-secondary_light opacity-50 cursor-not-allowed;
-}
-
-.button-primary-light-disabled{
-  @apply bg-tertiary_light text-secondary_dark opacity-50 cursor-not-allowed;
-}
-
-footer a{
-  @apply text-tertiary_light text-opacity-40 transition duration-200 hover:text-opacity-100;
-}
-
-footer p{
-  @apply text-tertiary_light text-opacity-40;
-}
-
-.navlink {
-  @apply text-tertiary_light;
-  opacity: 60%;
-  display: inline-flex;
-  position: relative;
-  transition: opacity 0.2s ease-out;
-}
-
-h1, text-4xl, text-5xl{
-  overflow: hidden;
-  padding: 5px;
-}
-
-.account-related-form-input{
-  @apply text-secondary_light flex items-center text-sm outline-none bg-secondary_dark rounded-full px-6 py-3 w-full placeholder:opacity-50
-}
-
-.navlink::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  transform: scaleX(0);
-  height: 1px;
-  bottom: 0;
-  left: 0;
-  @apply bg-tertiary_light;
-  opacity: 60%;
-  transform-origin: bottom right;
-  transition: transform 0.2s ease-out;
-}
-
-.navlink:hover::after, 
-.navlink.active::after {
-  opacity: 100%;
-  transform: scaleX(1);
-  transform-origin: bottom left;
-}
-
-.navlink:hover{
-  opacity: 100%;
-}
-
 .separator{
-  @apply bg-tertiary_light;
+  background-color: var(--tertiary);
   opacity: 60%;
   height: 1px;
+}
+
+/* Retire le style d'autocomplétion de Chrome/Safari */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px var(--secondary) inset !important;
+    -webkit-text-fill-color: var(--text) !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Pour Firefox */
+input:autofill {
+    background-color: var(--secondary) !important;
+    color: var(--text) !important;
 }
 
