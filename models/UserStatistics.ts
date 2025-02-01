@@ -3,6 +3,7 @@
 import { Schema, model, models } from "mongoose";
 
 const UserStatisticsSchema = new Schema({
+
   userRef: {
     type: Schema.Types.ObjectId,
     ref: "User",
@@ -10,29 +11,45 @@ const UserStatisticsSchema = new Schema({
   },
 
   wpm: {
-    type: Map<Date, Number>,
-    default: 0,
+    type: Number,
+    required: true,
   },
 
   accuracy: {
-    type: Map<Date, Number>,
-    default: 0,
+    type: Number,
+    required: true,
   },
 
   totalWords: {
     type: Number,
-    default: 0,
+    required: true,
   },
 
   totalCharacters: {
     type: Number,
-    default: 0,
+    required: true,
   },
 
   totalErrors: {
     type: Number,
-    default: 0,
+    required: true,
   },
+
+  sentenceParameter: {
+    type: String,
+    required: true,
+  },
+
+  lengthParameter: {
+    type: String,
+    required: true,
+  },
+
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+
 });
 
 const UserStatistics =

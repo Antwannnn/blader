@@ -20,12 +20,12 @@ const AccountManagementLayout = ({isUserLoggedIn, username, className}: AccountM
     {isUserLoggedIn ? (
         <div className={className}>
           <button type='button' onClick={() => signOut()}>
-            <div className='flex gap-2 px-4 lg:py-2 py-1 rounded-full items-center justify-center text-md text-text'>
+            <div className='flex gap-2 px-4 lg:py-2 py-1 rounded-full bg-secondary hover:bg-tertiary text-text transition duration-200 items-center justify-center text-md'>
               <CiLogout className='w-5 h-5' />
               Logout</div>
           </button>
           <Link className="flex justify-center py-1" href={`/account/profile/${session?.user?.name}`}>
-            <div className='flex gap-2 px-4 py-1 rounded-full items-center text-md button-primary-dark'>
+            <div className='flex gap-2 px-4 py-1 rounded-full items-center text-md bg-secondary hover:bg-tertiary text-text transition duration-200'>
               <Image
               src={session?.user?.image ? session?.user?.image : '/assets/icon/default.png'}
               alt='user profile image'
@@ -33,7 +33,7 @@ const AccountManagementLayout = ({isUserLoggedIn, username, className}: AccountM
               height={24}
               className='rounded-full'
               />
-              {username}</div>
+              {username?.length && username.length > 10 ? username.slice(0, 10).concat('...') : username}</div>
           </Link>
 
 

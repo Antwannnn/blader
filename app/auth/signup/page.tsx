@@ -99,17 +99,17 @@ const Signup = () => {
 
 
   return (
-    <section className="flex flex-col min-h-screen justify-center gap-5 py-24 items-center bg-theme-background">
+    <section className="flex flex-col min-h-screen justify-center gap-5 py-24 items-center bg-background">
       <div className="w-4/6 sm:w-96 flex flex-col items-center justify-center text-center">
-        <h1 className="font-bold text-4xl py-4 text-theme">Sign-up</h1>
+        <h1 className="font-bold text-4xl py-4 text-text">Sign-up</h1>
         <form className='w-full' onSubmit={handleSubmit}>
           <div className="flex flex-col items-center justify-center gap-4">
             <ErrorBlock error={error} className='text-accent' />
             
             {/* Username Input */}
-            <div className='flex items-center text-sm bg-theme-secondary rounded-full w-full'>
+            <div className='flex items-center text-sm bg-secondary rounded-full w-full'>
               <input 
-                autoComplete="new-password"
+                autoComplete="off"
                 aria-autocomplete="none"
                 id='username'
                 value={username} 
@@ -117,7 +117,7 @@ const Signup = () => {
                   setUsername(e.target.value); 
                   isUsernameAvailable(e.target.value) 
                 }} 
-                className='w-full px-6 py-3 bg-transparent text-theme outline-none autofill:bg-secondary rounded-full placeholder:text-theme-50'
+                className='w-full px-6 py-3 bg-secondary text-text outline-none autofill:bg-secondary rounded-full placeholder:text-theme-50'
                 placeholder='Username' 
                 name='name' 
                 type="text" 
@@ -150,7 +150,7 @@ const Signup = () => {
                 placeholder='Email' 
                 type="email" 
                 name='email' 
-                className='w-full px-6 py-3 bg-transparent text-theme outline-none rounded-full placeholder:text-theme-50'
+                className='w-full px-6 py-3 bg-secondary text-text outline-none autofill:bg-secondary rounded-full placeholder:text-theme-50'
               />
             </div>
 
@@ -162,7 +162,7 @@ const Signup = () => {
                 placeholder='Password' 
                 type="password" 
                 name='password' 
-                className='w-full px-6 py-3 bg-transparent text-theme outline-none rounded-full placeholder:text-theme-50'
+                className='w-full px-6 py-3 bg-secondary text-text outline-none autofill:bg-secondary rounded-full placeholder:text-theme-50'
               />
             </div>
 

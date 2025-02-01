@@ -24,6 +24,12 @@ export enum GameState {
   ENDED,
 }
 
+export enum TimedDuration {
+  THIRTY = 30,
+  SIXTY = 60,
+  ONE_TWENTY = 120,
+}
+
 export type Quote = {
   id: string;
   content: string;

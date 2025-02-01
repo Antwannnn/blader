@@ -1,0 +1,30 @@
+import React from 'react'
+
+interface LogoProps {
+  className?: string
+}
+
+const Logo = ({ className }: LogoProps) => {
+  return (
+    <div className='flex items-center justify-center gap-1'>
+      <svg 
+        className={`w-[50px] h-[50px] text-text logo cursor-pointer ${className}`}
+        viewBox="0 0 115 115"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g transform="translate(0.000000,115.000000) scale(0.100000,-0.100000)"
+          fill="currentColor" stroke="none">
+          <path d="M390 776 l0 -206 -62 0 -63 0 -56 -88 -57 -87 204 -3 204 -2 0 -63 0
+            -62 88 -57 87 -58 5 203 5 202 63 5 62 5 55 85 55 85 -205 3 -205 2 0 63 0 62
+            -62 40 c-33 22 -74 48 -89 58 l-29 19 0 -206z m170 -63 l0 -143 -80 0 -80 0 0
+            195 0 194 80 -51 80 -52 0 -143z m348 -63 l-51 -80 -143 0 -144 0 0 80 0 80
+            195 0 194 0 -51 -80z m-348 -170 l0 -80 -190 0 c-104 0 -190 3 -190 7 0 4 21
+            40 48 80 l47 73 143 0 142 0 0 -80z m170 -115 l0 -194 -80 51 -80 52 0 143 0
+            143 80 0 80 0 0 -195z" />
+        </g>
+      </svg>
+    </div>
+  )
+}
+
+export default Logo

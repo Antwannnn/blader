@@ -30,3 +30,24 @@ export const GET = async (request, { params }) => {
     }
 
 }
+
+export const PUT = async (request, { params }) => {
+    try {
+        const { bio, keyboard, avatar } = await request.json();
+        console.log(bio, keyboard, avatar);
+
+    await dbConnect();
+
+    const user = await User.findOneAndUpdate({ name: params.name }, { bio, keyboard, avatar });
+
+    return new Response(JSON.stringify({ message: 'Profile updated' }), {
+            headers: { 'Content-Type': 'application/json' },
+            status: 200,
+        });
+    } catch (error) {
+        return new Response(JSON.stringify({ error: 'An error occurred' }), {
+            headers: { 'Content-Type': 'application/json' },
+            status: 500,
+        });
+    }
+}

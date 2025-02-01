@@ -42,6 +42,8 @@ const TypeTester = () => {
   const [gameResults, setGameResults] = useState<GameResults>({
     wpmOverTime: [0],
     accuracyOverTime: [0],
+    totalWords: 0,
+    totalCharacters: 0,
     time: 0,
     errors: 0,
     correct: 0,
@@ -83,10 +85,20 @@ const TypeTester = () => {
         setSentence(fetchRandomSentence(lengthParameterSelector));
         break;
     }
+
     if (inputRef.current) {
       inputRef.current.focus();
     }
   };
+
+  useEffect(() => {
+    const lengthParameter = localStorage.getItem('lastGameLengthParameter') as LengthParameter;
+    const sentenceParameter = localStorage.getItem('lastGameSentenceParameter') as SentenceParameter;
+    console.log(lengthParameter);
+    console.log(sentenceParameter);
+    setLengthParameterSelector(lengthParameter);
+    setSentenceParameterSelector(sentenceParameter);
+  }, []);
 
   useEffect(() => {
     handleSetSentence();
@@ -106,7 +118,7 @@ const TypeTester = () => {
             <h3 className="opacity-50">Reload</h3>
             <button
               onClick={handleSetSentence}
-              className="px-4 py-1 w-fit rounded-md bg-tertiary text-text hover:bg-text hover:text-background duration-200 transition"
+              className="px-4 py-1 w-fit rounded-md bg-secondary text-text hover:bg-text hover:text-background duration-200 transition"
             >
               <IoReload className="w-5 h-5" />
             </button>
@@ -120,16 +132,17 @@ const TypeTester = () => {
                 .map((value) => (
                   <button
                     key={value}
-                    onClick={() =>
-                      setLengthParameterSelector(value as LengthParameter)
-                    }
+                    onClick={() => {
+                      setLengthParameterSelector(value as LengthParameter);
+                      localStorage.setItem('lastGameLengthParameter', value as LengthParameter);
+                    }}
                     className={`px-4 py-1 rounded-md ${
-                      lengthParameterSelector === value ? "bg-text text-background" : " text-text hover:bg-tertiary"} duration-200 transition`}
+                      lengthParameterSelector === value ? "bg-text text-background" : " text-text bg-secondary hover:bg-tertiary"} duration-200 transition`}
                   >
                     {value}
                   </button>
                 ))}
-            </div>
+            </div>  
           </div>
           <div className="flex flex-col justify-center gap-3 item-center">
             <h3 className="opacity-50">Sentence Type</h3>
@@ -137,10 +150,11 @@ const TypeTester = () => {
               {Object.values(SentenceParameter).map((value) => (
                 <button
                   key={value}
-                  onClick={() =>
-                    setSentenceParameterSelector(value as SentenceParameter)
-                  }
-                  className={`px-4 py-1 rounded-md ${sentenceParameterSelector === value ? "bg-text text-background" : " text-text hover:bg-tertiary"} duration-200 transition`}
+                  onClick={() => {
+                    setSentenceParameterSelector(value as SentenceParameter);
+                    localStorage.setItem('lastGameSentenceParameter', value as SentenceParameter);
+                  }}
+                  className={`px-4 py-1 rounded-md ${sentenceParameterSelector === value ? "bg-text text-background" : " text-text bg-secondary hover:bg-tertiary"} duration-200 transition`}
                 >
                   {value}
                 </button>
@@ -153,6 +167,8 @@ const TypeTester = () => {
         <div className="w-full">
           <TemplateInputComponent
             gameType={GameTypeParameter.TYPE_TESTER}
+            lengthParameter={lengthParameterSelector}
+            sentenceParameter={sentenceParameterSelector}
             sentence={sentence}
             gameState={gameStatut}
             gameResults={gameResults}

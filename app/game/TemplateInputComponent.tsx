@@ -11,9 +11,12 @@ import useState from "react-usestateref";
 import { useStopwatch } from "@app/hooks/Stopwatch";
 import { useEffect, useRef } from "react";
 import { GameResults } from "@app/types/GameResults";
+import { useRouter } from 'next/navigation';
 
 interface TemplateProps {
   gameType: GameTypeParameter;
+  sentenceParameter: SentenceParameter;
+  lengthParameter: LengthParameter;
   sentence: string | Quote;
   gameState: GameState;
   gameResults: GameResults;
@@ -25,6 +28,8 @@ interface TemplateProps {
 
 const TemplateInputComponent = ({
   gameType,
+  sentenceParameter,
+  lengthParameter,
   gameResults,
   setGameResults,
   sentence,
@@ -46,6 +51,15 @@ const TemplateInputComponent = ({
     : exampleSentence;
   const splittedSentence = finalSentence.split("");
 
+  const wordSplittedSentence = finalSentence.split(" ");
+
+  // Nettoyer le flag au démarrage d'une nouvelle partie
+  useEffect(() => {
+    if (gameState === GameState.STARTED || gameState === GameState.RESET) {
+      localStorage.removeItem('resultsSubmitted');
+    }
+  }, [gameState]);
+
   const reset = () => {
     setInput("");
     setCurrentIndex(0);
@@ -53,6 +67,7 @@ const TemplateInputComponent = ({
     setWpm(0);
     setAccuracy(0);
     indexedError.splice(0, indexedError.length);
+    localStorage.removeItem('resultsSubmitted'); // Nettoyer aussi lors du reset
   };
 
   // Statistics related variables
@@ -60,6 +75,8 @@ const TemplateInputComponent = ({
   const [accuracy, setAccuracy] = useState<number>(0);
   const time = useStopwatch();
   const [totalErrors, setTotalErrors] = useState<number>(0);
+
+  const router = useRouter();
 
   const verifyInputMatching = (key: string) => {
     if (
@@ -75,6 +92,15 @@ const TemplateInputComponent = ({
   const resetGame = () => {
     time.stop();
     time.reset();
+    setGameResults({
+      wpmOverTime: [0],
+      accuracyOverTime: [0],
+      totalWords: 0,
+      totalCharacters: 0,
+      time: 0,
+      errors: 0,
+      correct: 0,
+    });
     onGameReset();
     reset();
   };
@@ -86,7 +112,18 @@ const TemplateInputComponent = ({
 
   const getGrossWpm = () => {
     const timeInMinutes = time.rawTime / 60000;
-    return Math.floor(input.length / 5 / timeInMinutes);
+
+    
+    // Calculer le WPM en fonction de la progression
+    const progressRatio = input.length / splittedSentence.length;
+    const estimatedTotalWords = wordSplittedSentence.reduce((acc, word) => {
+      return acc + Math.max(1, word.length / 5);
+    }, 0);
+    
+    // WPM estimé basé sur la progression actuelle
+    const estimatedWpm = Math.round((estimatedTotalWords * progressRatio) / timeInMinutes);
+    
+    return Math.min(250, Math.max(0, estimatedWpm));
   };
 
   const getAccuracy = () => {
@@ -98,14 +135,102 @@ const TemplateInputComponent = ({
     return accuracy;
   };
 
+  const getNetWpm = () => {
+    const timeInMinutes = time.rawTime / 60000;
+    
+    if (timeInMinutes < 0.016667) {
+      return 0;
+    }
+
+    // Calculer le nombre de mots standardisé en fonction de leur longueur
+    const standardizedWordCount = wordSplittedSentence.reduce((acc, word) => {
+      // Un mot standard fait 5 caractères
+      // Si le mot est plus long, il compte pour plus d'un mot
+      return acc + Math.max(1, word.length / 5);
+    }, 0);
+    
+    const wpm = Math.round(standardizedWordCount / timeInMinutes);
+    return Math.min(250, Math.max(0, wpm));
+  };
+
   useEffect(() => {
-    if (gameState !== GameState.ENDED) {
-      setWpm(getGrossWpm());
-      setAccuracy(getAccuracy());
-    } else {
+    let intervalId: NodeJS.Timeout;
+
+    if (gameState === GameState.STARTED) {
+      // Créer un intervalle de 500ms pour capturer les stats
+      intervalId = setInterval(() => {
+          
+          // Vérifier si les nouvelles valeurs sont significativement différentes
+          const lastWpm = gameResults.wpmOverTime[gameResults.wpmOverTime.length - 1];
+          const lastAccuracy = gameResults.accuracyOverTime[gameResults.accuracyOverTime.length - 1];
+          
+          // Ne mettre à jour que si les changements sont significatifs
+          if (Math.abs(wpm - (lastWpm || 0)) > 5 || 
+              Math.abs(accuracy - (lastAccuracy || 0)) > 2) {
+            setGameResults({
+              wpmOverTime: [...gameResults.wpmOverTime, wpm],
+              accuracyOverTime: [...gameResults.accuracyOverTime, accuracy],
+              time: time.rawTime,
+              errors: totalErrors,
+              correct: input.length,
+              totalWords: wordSplittedSentence.length,
+              totalCharacters: splittedSentence.length,
+              finalWpm: wpm,
+              finalAccuracy: accuracy,
+            });
+          }
+        
+      }, 200);
+    } else if (gameState === GameState.ENDED) {
       time.stop();
     }
-  }, [gameState, time.rawTime]);
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [gameState]);
+
+  // Mettre à jour WPM et accuracy en temps réel pour l'affichage
+  useEffect(() => {
+    if (gameState === GameState.STARTED) {
+      const currentWpm = getGrossWpm();
+      const currentAccuracy = getAccuracy();
+      
+      if (!isNaN(currentWpm) && 
+          !isNaN(currentAccuracy) && 
+          currentWpm >= 0 && 
+          currentWpm < 300) {
+        setWpm(currentWpm);
+        setAccuracy(currentAccuracy);
+      }
+    }
+  }, [time.rawTime]);
+
+  const handleGameEnd = () => {
+    time.stop();
+    const finalResults = {
+      wpmOverTime: [...gameResults.wpmOverTime, wpm],
+      accuracyOverTime: [...gameResults.accuracyOverTime, accuracy],
+      time: time.rawTime,
+      errors: totalErrors,
+      correct: input.length,
+      totalWords: wordSplittedSentence.length,
+      totalCharacters: splittedSentence.length,
+      finalWpm: getNetWpm(),
+      finalAccuracy: accuracy
+    };
+    
+    // Sauvegarder les résultats dans localStorage pour la transition
+    localStorage.setItem('lastGameResults', JSON.stringify(finalResults));
+    console.log(lengthParameter);
+    console.log(sentenceParameter);
+
+    
+    // Rediriger vers la page des résultats
+    router.push('/game/results');
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.ctrlKey && "cvxspwuaz".indexOf(e.key) !== -1) {
@@ -168,7 +293,13 @@ const TemplateInputComponent = ({
         }
         setCurrentIndex(currentIndex + 1);
         if (verifyInputMatching(e.key)) {
-          setInput(input + e.key);
+          const newInput = input + e.key;
+          setInput(newInput);
+          
+          // Vérifier si c'est la fin de la phrase
+          if (newInput.length === splittedSentence.length) {
+            handleGameEnd();
+          }
         } else {
           indexedError.push(currentIndex);
           setTotalErrors(totalErrors + 1);
@@ -191,6 +322,8 @@ const TemplateInputComponent = ({
           time: time.rawTime,
           errors: totalErrors,
           correct: input.length,
+          totalWords: wordSplittedSentence.length,
+          totalCharacters: splittedSentence.length,
         });
       }
     }
@@ -210,13 +343,13 @@ const TemplateInputComponent = ({
           }}
           onChange={(e) => {}}
           onKeyDown={handleKeyPress}
-          className="w-full px-14 pb-10 h-full absolute z-[9999] opacity-0"
+          className="w-full px-14 pb-10 h-full absolute z-10 opacity-0"
         />
-        <span className="w-full pointer-events-none opacity-30">
+        <span className="w-full pointer-events-none ">
           {finalSentence.split("").map((e, index) => (
             <span
               key={index}
-              className={` ${indexedError.includes(index) ? `${e === " " && "bg-red-500"} text-red-500` : `${currentIndexRef.current > index && "text-green-500"}`}  ${currentIndexRef.current === index && "border-l-[2px] border-primary_light duration-200 transition"} `}
+              className={` ${indexedError.includes(index) ? `${e === " " && "bg-accent !opacity-100"} text-accent !opacity-100` : `${currentIndexRef.current > index ?  "text-text !opacity-100" : "text-text !opacity-20"}` }  ${currentIndexRef.current === index && "border-l-[2px] border-text duration-200 transition"} `}
             >
               {e}
             </span>

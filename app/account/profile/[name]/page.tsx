@@ -6,7 +6,7 @@ const ProfilePage = () => {
 
 
   return (
-    <section>
+    <section className="min-h-screen flex flex-col items-center justify-center w-full p-4">
       <Profile />
     </section>
 

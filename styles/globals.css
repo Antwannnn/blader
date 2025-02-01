@@ -9,30 +9,312 @@
   padding: 0;
 }
 
+input, textarea, button {
+  outline: none;
+}
+
 @layer base {
   :root {
     /* Dark theme (default) */
-    --background: rgb(22, 25, 28);
-    --secondary: rgb(30, 34, 38);
-    --tertiary: rgb(44, 49, 54);
-    --text: rgb(233, 236, 239);
-    --accent: rgb(255, 107, 107);
-    --accent-hover: rgb(255, 79, 79);
-    --accent-disabled: rgb(178, 178, 178);
-    --accent-disabled-hover: rgb(150, 150, 150);
+    --background: 22 25 28;
+    --secondary: 30 34 38;
+    --tertiary: 44 49 54;
+    --text: 233 236 239;
+    --text-secondary: 233 240 250;
+    --text-error: 249 92 92;
+    --accent: 255 107 107;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 150 150 150;
   }
 
   [data-theme='light'] {
-    --background: rgb(255, 255, 255);
-    --secondary: rgb(245, 245, 245);
-    --tertiary: rgb(232, 232, 232);
-    --text: rgb(22, 25, 28);
-    --accent: rgb(255, 107, 107);
-    --accent-hover: rgb(255, 79, 79);
-    --accent-disabled: rgb(178, 178, 178);
-    --accent-disabled-hover: #969696;
+    --background: 255 255 255;
+    --secondary: 245 242 242;
+    --tertiary: 210 208 208;
+    --text: 22 25 28;
+    --text-secondary: 22 25 28;
+    --text-error: 252 45 45;
+    --accent: 255 107 107;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='circuit'] {
+    --background: 41 41 43;
+    --secondary: 51 51 53;
+    --tertiary: 61 61 63;
+    --text: 226 208 103;
+    --text-secondary: 226 218 103;
+    --text-error: 246 91 91;
+    --accent: 255 107 107;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='deepsea'] {
+    --background: 16 28 41;
+    --secondary: 30 45 61;
+    --tertiary: 44 69 91;
+    --text: 233 236 239;
+    --text-secondary: 215 232 249;
+    --text-error: 241 70 70;
+    --accent: 255 107 107;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='celestial'] {
+    --background: 202 240 248;
+    --secondary: 179 218 226;
+    --tertiary: 136 188 198;
+    --text: 9 35 40;
+    --text-secondary: 9 35 40;
+    --text-error: 255 0 0;
+    --accent: 64 75 173;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme="hacker"] {
+    --background: 60 60 59;
+    --secondary: 70 70 69;
+    --tertiary: 80 80 79;
+    --text: 104 227 114;
+    --text-secondary: 104 255 114;
+    --text-error: 255 0 0;
+    --accent: 255 107 107;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='forest'] {
+    --background: 69 69 39;
+    --secondary: 100 101 54;
+    --tertiary: 118 119 68;
+    --text: 221 250 222;
+    --text-secondary: 221 255 222;
+    --text-error: 249 37 37;
+    --accent: 247 247 69;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='violet'] {
+    --background: 64 58 73;
+    --secondary: 79 71 88;
+    --tertiary: 98 83 111;
+    --text: 244 218 249;
+    --text-secondary: 244 237 249;
+    --text-error: 250 74 74;
+    --accent: 240 81 182;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='volcano'] {
+    --background: 73 27 24;
+    --secondary: 96 33 30;
+    --tertiary: 109 41 37;
+    --text: 255 203 203;
+    --text-secondary: 255 230 230;
+    --text-error: 255 0 0;
+    --accent: 240 132 60;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='aurora'] {
+    --background: 56 41 64;
+    --secondary: 73 51 83;
+    --tertiary: 100 61 111;
+    --text: 125 250 202;
+    --text-secondary: 125 250 202;
+    --text-error: 252 45 45;
+    --accent: 255 107 107;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+  [data-theme='cyberpunk'] {
+    --background: 186 52 117;
+    --secondary: 179 77 126;
+    --tertiary: 181 90 122;
+    --text: 247 236 106;
+    --text-secondary: 252 244 139;
+    --text-error: 255 0 0;
+    --accent: 0 255 157;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='solarized'] {
+    --background: 242 112 89;
+    --secondary: 244 132 95;
+    --tertiary: 252 146 96;
+    --text: 245 233 211;
+    --text-secondary: 247 223 178;
+    --text-error: 255 0 0;
+    --accent: 92 228 255;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='barbie'] {
+    --background: 251 111 146;
+    --secondary: 250 82 125;
+    --tertiary: 250 70 116;
+    --text: 255 229 236;
+    --text-secondary: 255 194 210;
+    --text-error: 255 0 0;
+    --accent: 255 196 0;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='candy'] {
+    --background: 255 207 210;
+    --secondary: 252 187 191;
+    --tertiary: 247 166 171;
+    --text: 142 125 190;
+    --text-secondary: 142 125 190;
+    --text-error: 255 0 0;
+    --accent: 176 121 130;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='neon'] {
+    --background: 57 12 163;
+    --secondary: 62 55 201;
+    --tertiary: 67 98 238;
+    --text: 255 0 115;
+    --text-secondary: 207 78 136;
+    --text-error: 255 0 0;
+    --accent: 255 204 0;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='cream'] {
+    --background: 242 233 228;
+    --secondary: 222 194 189;
+    --tertiary: 201 173 167;
+    --text: 34 34 59;
+    --text-secondary: 54 54 89;
+    --text-error: 255 0 0;
+    --accent: 127 85 57;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='bloodmoon'] {
+    --background: 19 0 7;
+    --secondary: 37 0 14;
+    --tertiary: 55 0 21;
+    --text: 255 179 204;
+    --text-secondary: 163 96 119;
+    --text-error: 255 0 0;
+    --accent: 212 17 84;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='dirty'] {
+    --background: 47 14 7;
+    --secondary: 67 22 11;
+    --tertiary: 87 32 16;
+    --text: 184 139 119;
+    --text-secondary: 145 115 102;
+    --text-error: 255 0 0;
+    --accent: 247 247 247;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='pastel'] {
+    --background: 191 159 199;
+    --secondary: 175 140 184;
+    --tertiary: 155 121 163;
+    --text: 35 28 53;
+    --text-secondary: 65 59 79;
+    --text-error: 255 0 0;
+    --accent: 235 198 245;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='ocean'] {
+    --background: 94 175 255;
+    --secondary: 68 161 252;
+    --tertiary: 37 142 245;
+    --text: 0 18 51;
+    --text-secondary: 41 56 84;
+    --text-error: 255 0 0;
+    --accent: 245 144 137;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='gunmetal'] {
+    --background: 34 51 59;
+    --secondary: 43 67 75;
+    --tertiary: 52 81 91;
+    --text: 234 224 213;
+    --text-secondary: 234 224 213;
+    --text-error: 255 0 0;
+    --accent: 221 95 49;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='grape'] {
+    --background: 44 43 60;
+    --secondary: 54 53 70;
+    --tertiary: 64 63 80;
+    --text: 183 109 104;
+    --text-secondary: 145 103 100;
+    --text-error: 255 0 0;
+    --accent: 201 52 52;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='amethyst'] {
+    --background: 153 51 255;
+    --secondary: 120 41 204;
+    --tertiary: 97 33 163;
+    --text: 226 207 238;
+    --text-secondary: 226 207 238;
+    --text-error: 255 0 0;
+    --accent: 201 52 52;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
   }
 }
+
+
 
 /* Utility classes using CSS variables */
 @layer utilities {
@@ -62,14 +344,14 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px var(--secondary) inset !important;
-    -webkit-text-fill-color: var(--text) !important;
+    -webkit-box-shadow: 0 0 0 30px rgb(var(--secondary)) inset !important;
+    -webkit-text-fill-color: rgb(var(--text)) !important;
     transition: background-color 5000s ease-in-out 0s;
 }
 
 /* Pour Firefox */
 input:autofill {
-    background-color: var(--secondary) !important;
-    color: var(--text) !important;
+    background-color: rgb(var(--secondary)) !important;
+    color: rgb(var(--text)) !important;
 }
 
