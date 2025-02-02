@@ -42,6 +42,7 @@ const TemplateInputComponent = ({
   var [currentIndex, setCurrentIndex, currentIndexRef] = useState<number>(0);
   const indexedError = useState<number[]>([])[0];
 
+
   const exampleSentence =
     "Example sentence displayed when no sentence is provided.";
   const quoteContentIfNotString =
@@ -75,6 +76,8 @@ const TemplateInputComponent = ({
   const [accuracy, setAccuracy] = useState<number>(0);
   const time = useStopwatch();
   const [totalErrors, setTotalErrors] = useState<number>(0);
+  const [totalCharactersWithoutSpaces, setTotalCharactersWithoutSpaces] = useState<number>(0);
+  const [averageWordLength, setAverageWordLength] = useState<number>(0);
 
   const router = useRouter();
 
@@ -112,18 +115,12 @@ const TemplateInputComponent = ({
 
   const getGrossWpm = () => {
     const timeInMinutes = time.rawTime / 60000;
+    if (timeInMinutes <= 0) return 0;
 
-    
-    // Calculer le WPM en fonction de la progression
-    const progressRatio = input.length / splittedSentence.length;
-    const estimatedTotalWords = wordSplittedSentence.reduce((acc, word) => {
-      return acc + Math.max(1, word.length / 5);
-    }, 0);
-    
-    // WPM estimé basé sur la progression actuelle
-    const estimatedWpm = Math.round((estimatedTotalWords * progressRatio) / timeInMinutes);
-    
-    return Math.min(250, Math.max(0, estimatedWpm));
+    // input.length + indexedError.length donne le nombre total de frappes
+    const totalKeystrokes = input.length + indexedError.length;
+    // On divise par 5 qui est la longueur standard d'un mot
+    return Math.round((totalKeystrokes / 5) / timeInMinutes);
   };
 
   const getAccuracy = () => {
@@ -135,26 +132,22 @@ const TemplateInputComponent = ({
     return accuracy;
   };
 
-  const getNetWpm = () => {
+  const getWpm = () => {
     const timeInMinutes = time.rawTime / 60000;
-    
-    if (timeInMinutes < 0.016667) {
-      return 0;
-    }
+    if (timeInMinutes <= 0) return 0;
 
-    // Calculer le nombre de mots standardisé en fonction de leur longueur
-    const standardizedWordCount = wordSplittedSentence.reduce((acc, word) => {
-      // Un mot standard fait 5 caractères
-      // Si le mot est plus long, il compte pour plus d'un mot
-      return acc + Math.max(1, word.length / 5);
-    }, 0);
-    
-    const wpm = Math.round(standardizedWordCount / timeInMinutes);
-    return Math.min(250, Math.max(0, wpm));
+    // On ne compte que les caractères corrects (input.length)
+    return Math.round((input.length / 5) / timeInMinutes);
   };
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
+
+    // Calcul correct de la longueur moyenne des mots
+    const totalCharactersWithoutSpaces = wordSplittedSentence.reduce((sum, word) => sum + word.length, 0);
+    setTotalCharactersWithoutSpaces(totalCharactersWithoutSpaces);
+    setAverageWordLength(Math.round(totalCharactersWithoutSpaces / wordSplittedSentence.length));
+
 
     if (gameState === GameState.STARTED) {
       // Créer un intervalle de 500ms pour capturer les stats
@@ -218,7 +211,7 @@ const TemplateInputComponent = ({
       correct: input.length,
       totalWords: wordSplittedSentence.length,
       totalCharacters: splittedSentence.length,
-      finalWpm: getNetWpm(),
+      finalWpm: getWpm(),
       finalAccuracy: accuracy
     };
     
