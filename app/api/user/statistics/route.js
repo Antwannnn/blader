@@ -1,5 +1,5 @@
-import dbConnect from "@utils/dbConnect";
 import UserStatistics from "@models/UserStatistics";
+import dbConnect from "@utils/dbConnect";
 
 export async function GET() {
     try {
@@ -24,6 +24,11 @@ export async function GET() {
                     averageWpm: { $avg: "$wpm" },
                     averageAccuracy: { $avg: "$accuracy" },
                     gamesPlayed: { $sum: 1 }
+                }
+            },
+            {
+                $match: {
+                    gamesPlayed: { $gte: 100 }
                 }
             },
             {

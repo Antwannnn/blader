@@ -136,7 +136,7 @@ const TypeTester = () => {
   };
 
   return (
-    <section onKeyDown={handleShortcuts} className="flex flex-col overflow-hidden md:h-screen justify-center gap-1 pt-20 items-center text-text z-30 sm:pb-20">
+    <section onKeyDown={handleShortcuts} className="flex flex-col overflow-auto  justify-center gap-1 pt-20 items-center text-text z-30 sm:pb-20">
       <motion.div
         className="flex flex-col justify-center items-center"
         variants={animationVariants}
@@ -158,7 +158,7 @@ const TypeTester = () => {
 
           <div className="flex flex-col justify-center gap-3 item-center">
             <h3 className="opacity-50">Paragraph Length</h3>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap justify-center gap-3">
               {Object.values(LengthParameter)
                 .filter((value) => typeof value === "string")
                 .map((value) => {

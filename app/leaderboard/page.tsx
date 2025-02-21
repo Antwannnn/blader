@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 interface LeaderboardEntry {
   _id: string;
@@ -17,23 +18,40 @@ interface LeaderboardEntry {
 const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [userGamesPlayed, setUserGamesPlayed] = useState<number | null>(null);
   const router = useRouter();
+  const { data: session } = useSession();
 
   useEffect(() => {
-    const fetchLeaderboard = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch('/api/user/statistics');
-        const data = await response.json();
-        setLeaderboard(data);
+        const [leaderboardResponse] = await Promise.all([
+          fetch('/api/user/statistics'),
+        ]);
+        
+        const leaderboardData = await leaderboardResponse.json();
+        setLeaderboard(leaderboardData);
+
+        if (session?.user?.name) {
+          // D'abord récupérer l'ID de l'utilisateur
+          const userResponse = await fetch(`/api/user/${session.user.name}`);
+          const userData = await userResponse.json();
+          if (userData.user._id) {
+            // Ensuite récupérer ses statistiques avec l'ID
+            const userStatsResponse = await fetch(`/api/user/statistics/${userData.user._id}`);
+            const userStats = await userStatsResponse.json();
+            setUserGamesPlayed(userStats?.totalGames || 0);
+          }
+        }
       } catch (error) {
-        console.error('Error fetching leaderboard:', error);
+        console.error('Error fetching data:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchLeaderboard();
-  }, []);
+    fetchData();
+  }, [session]);
 
   if (isLoading) {
     return (
@@ -48,6 +66,15 @@ const Leaderboard = () => {
   return (
     <div className="min-h-screen items-center pt-24">
       <h1 className="text-4xl font-bold text-text mb-8 text-center">Global Leaderboard</h1>
+      
+      {session?.user && userGamesPlayed !== null && userGamesPlayed < 100 && (
+        <div className="max-w-2xl mx-auto mb-8 p-4 bg-secondary/40 backdrop-blur-sm rounded-xl border border-text/20">
+          <p className="text-center text-text">
+            You need <span className="font-bold text-accent">{100 - userGamesPlayed}</span> more games to appear on the leaderboard.
+            Currently played: <span className="font-bold text-accent">{userGamesPlayed}</span>/100
+          </p>
+        </div>
+      )}
       
       {/* Podium Section */}
       <div className="max-w-4xl mx-auto mb-12 flex justify-center items-end h-[400px] gap-4">

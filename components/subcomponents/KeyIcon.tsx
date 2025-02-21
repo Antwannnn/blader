@@ -2,10 +2,11 @@
 interface KeyIconProps {
   keyChar: string;
   icon?: React.ReactNode;
+  className?: string;
   size?: 'sm' | 'md' | 'lg';
 }
 
-const KeyIcon = ({ keyChar, icon, size = 'md' }: KeyIconProps) => {
+const KeyIcon = ({ keyChar, icon, size = 'md', className }: KeyIconProps) => {
   const sizeClasses = {
     sm: 'h-6 text-xs',
     md: 'w-8 h-8 text-sm',
@@ -16,6 +17,7 @@ const KeyIcon = ({ keyChar, icon, size = 'md' }: KeyIconProps) => {
     <div 
       className={`
         ${sizeClasses[size]}
+        ${className}
         flex items-center justify-center
         w-fit
         px-2

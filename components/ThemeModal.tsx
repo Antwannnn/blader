@@ -10,18 +10,15 @@ interface ThemeModalProps {
 
 
 const ThemeModal = ({ onClose, currentTheme, onThemeChange }: ThemeModalProps) => {
-  // Stocker le thème original pour pouvoir le restaurer
   const [originalTheme] = useState(currentTheme);
 
   const handleMouseEnter = (theme: string) => {
-    // Appliquer le thème temporairement
     if (theme !== document.documentElement.getAttribute('data-theme')) {
       document.documentElement.setAttribute('data-theme', theme);
     }
   };
 
   const handleClose = () => {
-    // Restaurer le thème original à la fermeture
     document.documentElement.setAttribute('data-theme', originalTheme);
     onClose();
   };

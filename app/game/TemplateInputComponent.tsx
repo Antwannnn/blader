@@ -9,6 +9,7 @@ import {
   SentenceParameter,
 } from "@app/types/GameParameters";
 import { GameResults } from "@app/types/GameResults";
+import KeyboardLayout from "@components/KeyboardLayout";
 import KeyIcon from "@components/subcomponents/KeyIcon";
 import { useRouter } from 'next/navigation';
 import { useEffect } from "react";
@@ -234,7 +235,8 @@ const TemplateInputComponent = ({
       return;
     }
 
-    if (e.altKey) {
+    if(e.altKey && "®Òµ¬◊‡~".indexOf(e.key) !== -1) {
+      e.preventDefault();
       return;
     }
 
@@ -399,6 +401,7 @@ const TemplateInputComponent = ({
           </h1>
         </div>
       </div>
+      <KeyboardLayout />
     </div>
   );
 };
