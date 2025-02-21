@@ -10,7 +10,7 @@ const PageLoader = ({ className }: LoaderProps) => {
     visible={true}
     height="80"
     width="80"
-    color="#CED4DA"
+    color="rgb(var(--text))"
     ariaLabel="puff-loading"
     wrapperStyle={{}}
     wrapperClass="" /></div>
@@ -23,7 +23,7 @@ const ElementLoader = ({ className }: LoaderProps) => {
         visible={true}
         height="40"
         width="40"
-        color="#CED4DA"
+        color="rgb(var(--text))"
         ariaLabel="puff-loading"
         wrapperStyle={{}}
         wrapperClass="" /></div>
@@ -36,7 +36,7 @@ const IconLoader = ({ className }: LoaderProps) => {
         visible={true}
         height="20"
         width="20"
-        color="#CED4DA"
+        color="rgb(var(--text))"
         ariaLabel="tail-spin-loading"
         radius="1"
         wrapperStyle={{}}

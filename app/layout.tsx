@@ -1,12 +1,14 @@
 import type { Metadata, ResolvingMetadata } from "next";
-import { Exo_2 } from "next/font/google";
+import { DM_Mono, Exo_2, Fira_Mono, Geologica } from "next/font/google";
 import { Nav } from "@components/Components";
 import Provider from "@components/Provider";
 import ThemeProvider from "@components/ThemeProvider";
 import "@styles/globals.css";
 import { cookies } from 'next/headers';
 
-const Exo2 = Exo_2({ subsets: ["latin"] });
+const Exo2 = Exo_2({ subsets: ["latin"], fallback: ["monospace"], weight: "400", variable: "--font-exo2" });
+const Fira = Fira_Mono({ subsets: ["latin"], fallback: ["monospace"], weight: "400", variable: "--font-fira" });
+const DM = DM_Mono({ subsets: ["latin"], fallback: ["monospace"], weight: "400", variable: "--font-dm" });
 
 type Props = {
   params: Promise<{ id: string }>
@@ -38,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-background">
-      <body className={`${Exo2.className}`}>
+      <body className={`${DM.className}`}>
         <Provider>
           <div>
             <Nav />

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion, useAnimation } from 'framer-motion';
 import AccountManagementLayout from './subcomponents/AccountManagementLayout';
-import { CiStopwatch, CiTrophy, CiFlag1 } from 'react-icons/ci';
+import { CiStopwatch, CiTrophy, CiFlag1, CiSettings } from 'react-icons/ci';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
@@ -36,7 +36,6 @@ const appearVariants = {
 
 const navlinks = [
   { name: 'Type Tester', link: '/game/typetester', icon: <CiStopwatch className='w-4 h-4' /> },
-  { name: 'Type Racer', link: '/game/typeracer', icon: <CiFlag1 className='w-4 h-4' /> },
   { name: 'Leaderboard', link: '/leaderboard', icon: <CiTrophy className='w-4 h-4' /> },
 ]
 

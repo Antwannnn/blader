@@ -13,6 +13,15 @@ input, textarea, button {
   outline: none;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Sometype+Mono:ital,wght@0,400..700;1,400..700&display=swap');
+
+.sometype-mono-regular {
+  font-family: "Sometype Mono", monospace;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
 @layer base {
   :root {
     /* Dark theme (default) */
@@ -312,6 +321,96 @@ input, textarea, button {
     --accent-disabled: 178 178 178;
     --accent-disabled-hover: 96 96 96;
   }
+  [data-theme='dreamwood'] {
+    --background: 26 20 35;
+    --secondary: 36 29 45;
+    --tertiary: 46 38 55;
+    --text: 234 205 194;
+    --text-secondary: 189 172 166;
+    --text-error: 252 45 45;
+    --accent: 183 93 105;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='bloodstain'] {
+    --background: 43 43 43;
+    --secondary: 55 55 55;
+    --tertiary: 67 67 67;
+    --text: 227 52 52;
+    --text-secondary: 170 44 44;
+    --text-error: 255 0 0;
+    --accent: 230 184 184;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='military'] {
+    --background: 44 54 57;
+    --secondary: 54 64 67;
+    --tertiary: 64 74 77;
+    --text: 220 215 201;
+    --text-secondary: 125 123 116;
+    --text-error: 255 0 0;
+    --accent: 162 123 92;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='mirage'] {
+    --background: 255 208 157;
+    --secondary: 201 168 133;
+    --tertiary: 181 149 118;
+    --text: 18 79 99;
+    --text-secondary: 39 79 92;
+    --text-error: 255 0 0;
+    --accent: 201 139 44;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='electric'] {
+    --background: 27 38 44;
+    --secondary: 37 48 54;
+    --tertiary: 47 58 64;
+    --text: 0 174 255;
+    --text-secondary: 47 123 158;
+    --text-error: 255 0 0;
+    --accent: 255 220 46;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='twilight'] {
+    --background: 3 43 33;
+    --secondary: 5 56 43;
+    --tertiary: 11 66 56;
+    --text: 113 201 192;
+    --text-secondary: 92 153 147;
+    --text-error: 255 0 0;
+    --accent: 81 0 45;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='lavender'] {
+    --background: 42 36 56;
+    --secondary: 53 47 68;
+    --tertiary: 92 84 112;
+    --text: 219 216 224;
+    --text-secondary: 162 155 179;
+    --text-error: 252 45 45;
+    --accent: 86 110 81;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
 }
 
 
@@ -353,5 +452,9 @@ input:-webkit-autofill:active {
 input:autofill {
     background-color: rgb(var(--secondary)) !important;
     color: rgb(var(--text)) !important;
+}
+
+div{
+  overflow: visible;
 }
 

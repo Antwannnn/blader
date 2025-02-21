@@ -22,4 +22,11 @@ export const themes = [
     { name: 'Gunmetal', value: 'gunmetal', colors: { text: '#EAE0D5', background: '#22333B' } },
     { name: 'Grape', value: 'grape', colors: { text: '#B76D68', background: '#2c2b3c' } },
     { name: 'Amethyst', value: 'amethyst', colors: { text: '#E2CFEA', background: '#9933ff' } },
+    { name: 'Dreamwood', value: 'dreamwood', colors: { text: '#EACDC2', background: '#1a1423' } },
+    { name: 'Bloodstain', value: 'bloodstain', colors: { text: '#e33434', background: '#2b2b2b' } },
+    { name: 'Military', value: 'military', colors: { text: '#DCD7C9', background: '#2C3639' } },
+    { name: 'Mirage', value: 'mirage', colors: { text: '#124f63', background: '#FFCF9D' } },
+    { name: 'Electric', value: 'electric', colors: { text: '#00adff', background: '#1B262C' } },
+    { name: 'Twilight', value: 'twilight', colors: { text: '#032b21', background: '#71c9c0' } },
+    { name: 'Lavender', value: 'lavender', colors: { text: '#DBD8E3', background: '#2A2438' } },
   ];

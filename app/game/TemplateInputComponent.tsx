@@ -1,17 +1,20 @@
 "use client";
 
-import {
-  LengthParameter,
-  GameTypeParameter,
-  SentenceParameter,
-  GameState,
-  Quote,
-} from "@app/types/GameParameters";
-import useState from "react-usestateref";
 import { useStopwatch } from "@app/hooks/Stopwatch";
-import { useEffect, useRef } from "react";
+import {
+  GameState,
+  GameTypeParameter,
+  LengthParameter,
+  Quote,
+  SentenceParameter,
+} from "@app/types/GameParameters";
 import { GameResults } from "@app/types/GameResults";
+import KeyIcon from "@components/subcomponents/KeyIcon";
 import { useRouter } from 'next/navigation';
+import { useEffect } from "react";
+import { GoTab } from "react-icons/go";
+import useState from "react-usestateref";
+``
 
 interface TemplateProps {
   gameType: GameTypeParameter;
@@ -231,6 +234,10 @@ const TemplateInputComponent = ({
       return;
     }
 
+    if (e.altKey) {
+      return;
+    }
+
     if (e.key === "Tab") {
       e.preventDefault();
       if (gameState === GameState.STARTED) {
@@ -289,7 +296,6 @@ const TemplateInputComponent = ({
           const newInput = input + e.key;
           setInput(newInput);
           
-          // Vérifier si c'est la fin de la phrase
           if (newInput.length === splittedSentence.length) {
             handleGameEnd();
           }
@@ -323,8 +329,8 @@ const TemplateInputComponent = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full">
-      <div className="w-5/6 text-3xl text-text relative overflow-hidden flex justify-center py-20">
+    <div className="flex flex-col items-center justify-center w-full gap-10">
+      <div className="w-5/6 text-4xl text-text relative overflow-hidden flex justify-center">
         <input
           ref={inputRef}
           autoFocus={true}
@@ -355,11 +361,15 @@ const TemplateInputComponent = ({
         </div>
       )}
       <div className="grid place-items-center sm:grid-cols-3 grid-cols-1 sm:grid-rows-1 grid-rows-3 gr sm:flex-row flex-col w-full justify-around">
-        <div className="flex flex-row sm:flex-col text-text text-md opacity-50">
+        <div className="flex flex-row gap-2 sm:flex-col text-text text-md opacity-50">
           <h1>
             {gameState === GameState.STARTED ? wpm : "-"} WPM (Previsional)
           </h1>
           <h1>{time.time}</h1>
+          <div className="flex flex-row gap-2">
+            <KeyIcon keyChar="Tab" icon={<GoTab className="w-3 h-3"/>} size="sm" />
+            <span className="text-sm">To restart</span>
+          </div>
         </div>
         <div>
           <button

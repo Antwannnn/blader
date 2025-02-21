@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { themes } from '@app/constants/themes';
+import { useState } from 'react';
 
 interface ThemeModalProps {
   onClose: () => void;
@@ -28,7 +28,7 @@ const ThemeModal = ({ onClose, currentTheme, onThemeChange }: ThemeModalProps) =
 
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-secondary rounded-xl p-6 w-full max-h-[70vh] max-w-md">
+      <div className="bg-secondary rounded-xl p-6 w-full max-h-[70vh] max-w-md overflow-y-scroll scroll-background">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-text">Select Theme</h2>
           <button 
@@ -39,7 +39,7 @@ const ThemeModal = ({ onClose, currentTheme, onThemeChange }: ThemeModalProps) =
           </button>
         </div>
 
-        <div className="grid grid-cols-1 gap-2">
+        <div className="grid grid-cols-1 gap-2 !overflow-y-scroll">
           {themes.map((t) => (
             <button
               key={t.value}

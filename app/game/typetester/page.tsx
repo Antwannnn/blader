@@ -1,19 +1,20 @@
 "use client";
 
 import {
+  GameState,
   GameTypeParameter,
   LengthParameter,
-  SentenceParameter,
-  GameState,
   Quote,
+  SentenceParameter,
 } from "@app/types/GameParameters";
 import { GameResults } from "@app/types/GameResults";
-import TemplateInputComponent from "../TemplateInputComponent";
-import { useEffect, useRef, useState } from "react";
+import TooltipButton from "@components/subcomponents/TooltipButton";
 import { motion, useAnimation } from "framer-motion";
-import { fetchRandomSentence, fetchQuote } from "../gameHandler";
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { IoReload } from "react-icons/io5";
+import { fetchQuote, fetchRandomSentence } from "../gameHandler";
+import TemplateInputComponent from "../TemplateInputComponent";
 
 const animationVariants = {
   visible: {
@@ -32,9 +33,9 @@ const animationVariants = {
 
 const TypeTester = () => {
   const [lengthParameterSelector, setLengthParameterSelector] =
-    useState<LengthParameter>(LengthParameter.MEDIUM);
+    useState<LengthParameter>(LengthParameter.SHORT);
   const [sentenceParameterSelector, setSentenceParameterSelector] =
-    useState<SentenceParameter>(SentenceParameter.RANDOM);
+    useState<SentenceParameter>(SentenceParameter.QUOTE);
   const [gameStatut, setGameStatut] = useState<GameState>(GameState.RESET);
   const [sentence, setSentence] = useState<string | Quote>("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -64,24 +65,16 @@ const TypeTester = () => {
     setGameStatut(GameState.ENDED);
   };
 
-  const handleKeysPressed = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (gameStatut === GameState.STARTED) {
-      if (e.key === "Enter") {
-        handleGameEnd();
-      }
-    } else {
-      if (e.ctrlKey && e.key === "R") {
-        handleSetSentence();
-      }
-    }
-  };
 
   const handleSetSentence = () => {
+    console.log(sentenceParameterSelector);
     switch (sentenceParameterSelector) {
       case SentenceParameter.QUOTE:
+        console.log('fetchQuote');
         setSentence(fetchQuote(lengthParameterSelector));
         break;
       case SentenceParameter.RANDOM:
+        console.log('fetchRandomSentence');
         setSentence(fetchRandomSentence(lengthParameterSelector));
         break;
     }
@@ -104,8 +97,46 @@ const TypeTester = () => {
     handleSetSentence();
   }, [lengthParameterSelector, sentenceParameterSelector]);
 
+  // Gestionnaire de raccourcis clavier séparé
+  const handleShortcuts = (e: React.KeyboardEvent<HTMLInputElement>) => {
+
+    if (!e.altKey || gameStatut === GameState.STARTED) return;
+
+
+    e.preventDefault();
+    switch (e.key) {
+      case '®':
+        handleSetSentence();
+        break;
+      case 'Ò':
+        setLengthParameterSelector(LengthParameter.SHORT);
+        localStorage.setItem('lastGameLengthParameter', LengthParameter.SHORT);
+        break;
+      case 'µ':
+        setLengthParameterSelector(LengthParameter.MEDIUM);
+        localStorage.setItem('lastGameLengthParameter', LengthParameter.MEDIUM);
+        break;
+      case '¬':
+        setLengthParameterSelector(LengthParameter.LONG);
+        localStorage.setItem('lastGameLengthParameter', LengthParameter.LONG);
+        break;
+      case '◊':
+        setLengthParameterSelector(LengthParameter.VERY_LONG);
+        localStorage.setItem('lastGameLengthParameter', LengthParameter.VERY_LONG);
+        break;
+      case '‡':
+        setSentenceParameterSelector(SentenceParameter.QUOTE);
+        localStorage.setItem('lastGameSentenceParameter', SentenceParameter.QUOTE);
+          break;
+      case '‹':
+        setSentenceParameterSelector(SentenceParameter.RANDOM);
+        localStorage.setItem('lastGameSentenceParameter', SentenceParameter.RANDOM);
+        break;
+    }
+  };
+
   return (
-    <section className="flex flex-col h-screen justify-center gap-1 py-10 items-center  overflow-hidden text-text z-30 sm:pb-20">
+    <section onKeyDown={handleShortcuts} className="flex flex-col overflow-hidden md:h-screen justify-center gap-1 pt-20 items-center text-text z-30 sm:pb-20">
       <motion.div
         className="flex flex-col justify-center items-center"
         variants={animationVariants}
@@ -116,55 +147,81 @@ const TypeTester = () => {
         <div className="flex md:flex-row flex-col items-center gap-7 py-6">
           <div className="flex flex-col justify-center gap-3 item-center">
             <h3 className="opacity-50">Reload</h3>
-            <button
+            <TooltipButton
               onClick={handleSetSentence}
+              shortcut={{ key: 'R' }}
               className="px-4 py-1 w-fit rounded-md bg-secondary text-text hover:bg-text hover:text-background duration-200 transition"
             >
               <IoReload className="w-5 h-5" />
-            </button>
+            </TooltipButton>
           </div>
 
           <div className="flex flex-col justify-center gap-3 item-center">
             <h3 className="opacity-50">Paragraph Length</h3>
             <div className="flex gap-3">
               {Object.values(LengthParameter)
-                .filter((value) => typeof value === "string") // Filter out the string keys
-                .map((value) => (
-                  <button
-                    key={value}
-                    onClick={() => {
-                      setLengthParameterSelector(value as LengthParameter);
-                      localStorage.setItem('lastGameLengthParameter', value as LengthParameter);
-                    }}
-                    className={`px-4 py-1 rounded-md ${
-                      lengthParameterSelector === value ? "bg-text text-background" : " text-text bg-secondary hover:bg-tertiary"} duration-200 transition`}
-                  >
-                    {value}
-                  </button>
-                ))}
+                .filter((value) => typeof value === "string")
+                .map((value) => {
+                  const shortcut = {
+                    [LengthParameter.SHORT]: 'S',
+                    [LengthParameter.MEDIUM]: 'M',
+                    [LengthParameter.LONG]: 'L',
+                    [LengthParameter.VERY_LONG]: 'V',
+                  }[value];
+
+                  return (
+                    <TooltipButton
+                      key={value}
+                      onClick={() => {
+                        setLengthParameterSelector(value as LengthParameter);
+                        localStorage.setItem('lastGameLengthParameter', value as LengthParameter);
+                      }}
+                      shortcut={{ key: shortcut }}
+                      className={`px-4 py-1 rounded-md ${
+                        lengthParameterSelector === value 
+                          ? "bg-text text-background" 
+                          : "text-text bg-secondary hover:bg-tertiary"
+                      } duration-200 transition`}
+                    >
+                      {value}
+                    </TooltipButton>
+                  );
+                })}
             </div>  
           </div>
           <div className="flex flex-col justify-center gap-3 item-center">
             <h3 className="opacity-50">Sentence Type</h3>
             <div className="flex gap-3">
-              {Object.values(SentenceParameter).map((value) => (
-                <button
-                  key={value}
-                  onClick={() => {
-                    setSentenceParameterSelector(value as SentenceParameter);
-                    localStorage.setItem('lastGameSentenceParameter', value as SentenceParameter);
-                  }}
-                  className={`px-4 py-1 rounded-md ${sentenceParameterSelector === value ? "bg-text text-background" : " text-text bg-secondary hover:bg-tertiary"} duration-200 transition`}
-                >
-                  {value}
-                </button>
-              ))}
+              {Object.values(SentenceParameter).map((value) => {
+                const shortcut = {
+                  [SentenceParameter.QUOTE]: 'Q',
+                  [SentenceParameter.RANDOM]: 'N',
+                }[value];
+
+                return (
+                  <TooltipButton
+                    key={value}
+                    onClick={() => {
+                      setSentenceParameterSelector(value as SentenceParameter);
+                      localStorage.setItem('lastGameSentenceParameter', value as SentenceParameter);
+                    }}
+                    shortcut={{ key: shortcut }}
+                    className={`px-4 py-1 rounded-md ${
+                      sentenceParameterSelector === value 
+                        ? "bg-text text-background" 
+                        : "text-text bg-secondary hover:bg-tertiary"
+                    } duration-200 transition`}
+                  >
+                    {value}
+                  </TooltipButton>
+                );
+              })}
             </div>
           </div>
         </div>
       </motion.div>
       {gameStatut !== GameState.ENDED ? (
-        <div className="w-full">
+        <div className="w-full flex-grow">
           <TemplateInputComponent
             gameType={GameTypeParameter.TYPE_TESTER}
             lengthParameter={lengthParameterSelector}
