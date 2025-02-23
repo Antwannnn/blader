@@ -11,6 +11,7 @@ import {
 import { GameResults } from "@app/types/GameResults";
 import KeyboardLayout from "@components/KeyboardLayout";
 import KeyIcon from "@components/subcomponents/KeyIcon";
+import { useSettings } from "@contexts/SettingsContext";
 import { useRouter } from 'next/navigation';
 import { useEffect } from "react";
 import { GoTab } from "react-icons/go";
@@ -82,6 +83,7 @@ const TemplateInputComponent = ({
   const [totalErrors, setTotalErrors] = useState<number>(0);
   const [totalCharactersWithoutSpaces, setTotalCharactersWithoutSpaces] = useState<number>(0);
   const [averageWordLength, setAverageWordLength] = useState<number>(0);
+  const { parameters } = useSettings();
 
   const router = useRouter();
 
@@ -401,7 +403,7 @@ const TemplateInputComponent = ({
           </h1>
         </div>
       </div>
-      <KeyboardLayout />
+      {parameters.keyboard.show && <KeyboardLayout />}  
     </div>
   );
 };

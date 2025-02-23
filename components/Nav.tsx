@@ -1,14 +1,14 @@
 "use client";
 
-import Link from 'next/link';
-import Image from 'next/image';
+import { useSettings } from '@/contexts/SettingsContext';
 import { motion, useAnimation } from 'framer-motion';
-import AccountManagementLayout from './subcomponents/AccountManagementLayout';
-import { CiStopwatch, CiTrophy, CiFlag1, CiSettings } from 'react-icons/ci';
-import { usePathname, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { FaArrowCircleDown } from '@node_modules/react-icons/fa';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { CiStopwatch, CiTrophy } from 'react-icons/ci';
+import { IoSettingsOutline } from 'react-icons/io5';
+import AccountManagementLayout from './subcomponents/AccountManagementLayout';
 import Logo from './subcomponents/Logo';
 import ThemeModal from './ThemeModal';
 
@@ -50,6 +50,7 @@ const Nav = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const username = session?.user?.name?.toString();
+  const { openSettings } = useSettings();
 
 
   const handleDropdown = () => {
@@ -141,7 +142,13 @@ const Nav = () => {
             </Link>
           ))}
           <ThemeComponent orientation='right' />
-
+          <button
+            onClick={openSettings}
+            className="px-2 py-1 ml-0 lg:ml-2 rounded-xl hover:bg-tertiary bg-secondary transition-colors duration-200 flex items-center gap-2"
+            aria-label="Open settings"
+          >
+            <IoSettingsOutline className="w-4 h-4 text-text" />
+          </button>
         </div>
         <div className='flex items-center w-full gap-4'>
 
@@ -187,6 +194,13 @@ const Nav = () => {
                     </div>
                   </Link>
                 ))}
+                <button
+                  onClick={openSettings}
+                  className="flex text-text text-sm opacity-60 hover:opacity-100 gap-1"
+                >
+                  Settings
+                  <IoSettingsOutline className="w-4 h-4" />
+                </button>
             </div>
           )}
         </motion.div>

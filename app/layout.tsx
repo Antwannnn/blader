@@ -1,13 +1,14 @@
-import type { Metadata, ResolvingMetadata } from "next";
-import { DM_Mono, Exo_2, Fira_Mono, Geologica } from "next/font/google";
+import SettingsModal from '@/components/modals/SettingsModal';
+import { SettingsProvider } from '@/contexts/SettingsContext';
 import { Nav } from "@components/Components";
 import Provider from "@components/Provider";
 import ThemeProvider from "@components/ThemeProvider";
 import "@styles/globals.css";
+import type { Metadata, ResolvingMetadata } from "next";
+import { DM_Mono } from "next/font/google";
 import { cookies } from 'next/headers';
 
-const Exo2 = Exo_2({ subsets: ["latin"], fallback: ["monospace"], weight: "400", variable: "--font-exo2" });
-const Fira = Fira_Mono({ subsets: ["latin"], fallback: ["monospace"], weight: "400", variable: "--font-fira" });
+
 const DM = DM_Mono({ subsets: ["latin"], fallback: ["monospace"], weight: "400", variable: "--font-dm" });
 
 type Props = {
@@ -41,15 +42,18 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-background">
       <body className={`${DM.className}`}>
-        <Provider>
-          <div>
-            <Nav />
-            <ThemeProvider />
-          </div>
-          <main>
-            {children}
-          </main>
-        </Provider>
+        <SettingsProvider>
+          <Provider>
+            <div>
+              <Nav />
+              <ThemeProvider />
+            </div>
+            <main>
+              {children}
+            </main>
+            <SettingsModal />
+          </Provider>
+        </SettingsProvider>
       </body>
     </html>
   );

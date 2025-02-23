@@ -1,3 +1,6 @@
+'use client';
+
+import { useSettings } from '@contexts/SettingsContext';
 import { useEffect, useState } from 'react';
 import { BsShift } from "react-icons/bs";
 import { IoBackspaceOutline } from "react-icons/io5";
@@ -9,22 +12,25 @@ interface KeyboardLayoutProps {
 }
 
 const KeyboardLayout = ({ className }: KeyboardLayoutProps) => {
+  const [mounted, setMounted] = useState(false);
   const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
+  const { parameters } = useSettings();
 
   // Définition des rangées du clavier avec les touches utilitaires
-  const qwertyKeyboardRows = [
-    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0','(', 'Backspace'],
-    ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '{', '}', ')'],
-    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'", '+', 'Enter'],
-    ['Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'Shift']
-  ];
-
-  const azertyKeyboardRows = [
-    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0','(', 'Backspace'],
-    ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '{', '}', ')'],
-    ['q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'", '+', 'Enter'],
-    ['Shift', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'Shift']
-  ];
+  const keyboardLayouts = {
+    'qwerty': [
+      ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0','(',')','Backspace'],
+      ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '{', '}', '$'],
+      ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'", 'Enter'],
+      ['Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/']
+    ],
+    'azerty': [
+      ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0','(',')','Backspace'],
+      ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '{', '}', '$'],
+      ['q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', "'", 'Enter'],
+      ['Shift', 'w', 'x', 'c', 'v', 'b', 'n', ',', ';', '.', '/']
+    ]
+  };
 
   const specialKeyIcons = {
     'Backspace': <IoBackspaceOutline className="w-5 h-5" />,
@@ -35,8 +41,12 @@ const KeyboardLayout = ({ className }: KeyboardLayoutProps) => {
   const specialKeyWidths = {
     'Shift': 'w-14',
     'Enter': 'w-14',
-    'Backspace': 'w-14'
+    'Backspace': 'w-14',
   };
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -70,12 +80,13 @@ const KeyboardLayout = ({ className }: KeyboardLayoutProps) => {
     };
   }, []);
 
+  if (!mounted) return null;
+
   return (
     <div className={`sm:flex hidden flex-col opacity-50 items-center justify-center select-none gap-1 ${className}`}>
-      {qwertyKeyboardRows.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex items-center justify-center gap-1">
+      {keyboardLayouts[parameters.keyboard.layout].map((row, rowIndex) => (
+        <div key={rowIndex} className="flex w-fit gap-1">
           {/* Ajout d'un padding à gauche pour décaler les rangées (sauf la première) */}
-          {rowIndex > 0 && <div style={{ width: `${rowIndex * 20}px` }} />}
           {row.map((key) => (
             <KeyIcon
               key={key}
@@ -98,7 +109,7 @@ const KeyboardLayout = ({ className }: KeyboardLayoutProps) => {
         <KeyIcon
           keyChar="Space"
           className={`
-            w-[300px] h-10 transition-all duration-75
+            w-[200px] h-10 transition-all duration-75
             ${pressedKeys.has(' ') 
               ? 'bg-text text-background translate-y-[1px] shadow-inner' 
               : 'bg-background text-text hover:bg-text/10'

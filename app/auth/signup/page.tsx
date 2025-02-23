@@ -1,18 +1,13 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { LiteralUnion } from 'next-auth/react';
-import { BuiltInProviderType } from 'next-auth/providers/index';
-import { ElementLoader, IconLoader } from '@components/subcomponents/Loader';
-import { ClientSafeProvider } from 'next-auth/react';
-import { signIn, getProviders } from 'next-auth/react';
 import ErrorBlock from '@components/subcomponents/ErrorBlock';
-import { FormEvent } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { ElementLoader, IconLoader } from '@components/subcomponents/Loader';
 import { FaDiscord, FaGoogle } from '@node_modules/react-icons/fa';
+import { BuiltInProviderType } from 'next-auth/providers/index';
+import { ClientSafeProvider, getProviders, LiteralUnion, signIn, useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { FormEvent, useEffect, useState } from 'react';
 
 
 const Signup = () => {
@@ -117,7 +112,7 @@ const Signup = () => {
                   setUsername(e.target.value); 
                   isUsernameAvailable(e.target.value) 
                 }} 
-                className='w-full px-6 py-3 bg-secondary text-text outline-none autofill:bg-secondary rounded-full placeholder:text-theme-50'
+                className='w-full px-6 py-3 bg-secondary text-text outline-none autofill:bg-secondary rounded-full placeholder:text-text/80'
                 placeholder='Username' 
                 name='name' 
                 type="text" 
@@ -150,7 +145,7 @@ const Signup = () => {
                 placeholder='Email' 
                 type="email" 
                 name='email' 
-                className='w-full px-6 py-3 bg-secondary text-text outline-none autofill:bg-secondary rounded-full placeholder:text-theme-50'
+                className='w-full px-6 py-3 bg-secondary text-text outline-none autofill:bg-secondary rounded-full placeholder:text-text/80'
               />
             </div>
 
@@ -162,7 +157,7 @@ const Signup = () => {
                 placeholder='Password' 
                 type="password" 
                 name='password' 
-                className='w-full px-6 py-3 bg-secondary text-text outline-none autofill:bg-secondary rounded-full placeholder:text-theme-50'
+                className='w-full px-6 py-3 bg-secondary text-text outline-none autofill:bg-secondary rounded-full placeholder:text-text/80'
               />
             </div>
 

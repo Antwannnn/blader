@@ -1,6 +1,5 @@
 import { Schema, model, models } from 'mongoose';
 import { AdapterUser } from 'next-auth/adapters';
-import { GameResults } from '@app/types/GameResults';
 
 const UserSchema = new Schema({
     email: {

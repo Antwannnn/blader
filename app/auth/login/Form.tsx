@@ -1,16 +1,12 @@
 "use client"
 
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { ElementLoader } from '@components/subcomponents/Loader';
-import { signIn, getProviders } from 'next-auth/react';
-import { FormEvent } from 'react';
-import { LiteralUnion } from 'next-auth/react';
-import { ClientSafeProvider } from 'next-auth/react';
-import { useRouter } from 'next/navigation'
 import ErrorBlock from '@components/subcomponents/ErrorBlock';
+import { ElementLoader } from '@components/subcomponents/Loader';
 import { BuiltInProviderType } from 'next-auth/providers/index';
+import { ClientSafeProvider, getProviders, LiteralUnion, signIn } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { FormEvent, useEffect, useState } from 'react';
 import { FaDiscord, FaGoogle } from 'react-icons/fa';
 
 const Form = () => {
@@ -68,8 +64,8 @@ const Form = () => {
                     <div className=" flex flex-col items-center justify-center gap-4">
                         <div className='flex flex-col gap-3 w-full'>
                         <ErrorBlock error={error} className='shadow-sm text-red-500 px-3 py-1 rounded-xl relative' />
-                        <input autoComplete='email' id="email" placeholder='Email' name='email' type="email" className="text-text flex items-center text-sm autofill:bg-secondary outline-none bg-secondary rounded-full px-6 py-3 w-full placeholder:opacity-50" />
-                        <input autoComplete='password' id="password" placeholder='Password' name='password' type="password" className="text-text flex items-center text-sm autofill:bg-secondary outline-none bg-secondary rounded-full px-6 py-3 w-full placeholder:opacity-50" />
+                        <input autoComplete='email' id="email" placeholder='Email' name='email' type="email" className="text-text flex items-center text-sm autofill:bg-secondary outline-none bg-secondary placeholder:text-text/80 rounded-full px-6 py-3 w-full placeholder:opacity-50" />
+                        <input autoComplete='password' id="password" placeholder='Password' name='password' type="password" className="text-text flex items-center text-sm autofill:bg-secondary outline-none bg-secondary placeholder:text-text/80 rounded-full px-6 py-3 w-full placeholder:opacity-50" />
                         </div>
                         <button type='submit' className="w-full rounded-full text-text py-2 bg-secondary hover:bg-tertiary transition duration-200">Login</button>
                         {!isLoading ? (
