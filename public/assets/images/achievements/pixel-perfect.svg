@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="currentColor" class="text-text">
+  <!-- Cercle extérieur du badge -->
+  <circle cx="100" cy="100" r="90" fill="transparent" stroke="currentColor" stroke-width="3"/>
+  
+  <!-- Cercle intérieur décoratif -->
+  <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3,2"/>
+  
+  <!-- Icône de cible/précision -->
+  <circle cx="100" cy="85" r="25" fill="none" stroke="currentColor" stroke-width="2"/>
+  <circle cx="100" cy="85" r="15" fill="none" stroke="currentColor" stroke-width="2"/>
+  <circle cx="100" cy="85" r="5" fill="currentColor"/>
+  <line x1="100" y1="60" x2="100" y2="65" stroke="currentColor" stroke-width="2"/>
+  <line x1="100" y1="105" x2="100" y2="110" stroke="currentColor" stroke-width="2"/>
+  <line x1="75" y1="85" x2="80" y2="85" stroke="currentColor" stroke-width="2"/>
+  <line x1="120" y1="85" x2="125" y2="85" stroke="currentColor" stroke-width="2"/>
+  
+  <!-- Texte "100%" -->
+  <text x="100" y="140" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="currentColor">100%</text>
+  
+  <!-- Texte "PRECISION" -->
+  <text x="100" y="160" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="currentColor">PRECISION</text>
+</svg>

@@ -1,13 +1,14 @@
 "use client"
 
-import { UserData, StatisticsData } from "@app/types/Data"
-import LoadableWrapper from "@components/subcomponents/LoadableWrapper"
-import { useEffect, useState } from "react"
-import { useSession } from "next-auth/react"
-import { usePathname } from "next/navigation"
-import Image from "next/image"
-import { CiUser, CiCalendar, CiKeyboard, CiMedal, CiEdit } from "react-icons/ci"
+import { StatisticsData, UserData } from "@app/types/Data"
 import StatsModal from '@components/StatsModal'
+import LoadableWrapper from "@components/subcomponents/LoadableWrapper"
+import { getAchievement } from "@contexts/Achievements"
+import { useSession } from "next-auth/react"
+import Image from "next/image"
+import { usePathname } from "next/navigation"
+import { useEffect, useState } from "react"
+import { CiCalendar, CiEdit, CiKeyboard, CiMedal } from "react-icons/ci"
 
 const Profile = () => {
     const { data: session, status } = useSession();
@@ -81,6 +82,9 @@ const Profile = () => {
                 badges: badges,
                 accountCreated: formattedDate,
             });
+
+            console.log(badges)
+
 
             const stats = await fetch(`/api/user/statistics/${data.user._id}`);
             const statsData = await stats.json();
@@ -280,19 +284,31 @@ const Profile = () => {
                                 <h2 className="text-xl font-semibold text-text mb-4">Prefered Sentence Parameter</h2>
                                 <p className="text-text">{userStatistics?.preferedSentenceParameter || 'N/A'}</p>
                             </div>
-                            <div className="space-y-4 bg-tertiary/40 rounded-xl p-4 flex col-span-2 flex-col gap-2">
+                            <div className="space-y-4 bg-tertiary/40 rounded-xl justify-start p-4 flex col-span-2 flex-col gap-2">
                                 <h2 className="text-xl font-semibold text-text mb-4">Achievements</h2>
-
-                                {userData.badges && userData.badges.length > 0 ? (
-                                    userData.badges.map((badge, index) => (
-                                        <div key={index} className="flex items-center gap-2 text-text">
-                                            <CiMedal className="w-5 h-5 text-accent" />
-                                            <span>{badge}</span>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p className="text-text_secondary">No badges earned yet</p>
-                                )}
+                                <div className="flex flex-wrap gap-2">
+                                    {userData.badges && userData.badges.length > 0 ? (
+                                        userData.badges.map((badge, index) => {
+                                            const achievement = getAchievement(badge.id);
+                                            return (
+                                                <div 
+                                                    key={index} 
+                                                    className="w-16 h-16 text-text relative group"
+                                                    title={`${achievement?.name}\n${achievement?.description}`}
+                                                >
+                                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-tertiary rounded-lg text-text text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                                                        <span className="font-bold">{achievement?.name}</span>
+                                                        <br />
+                                                        <span className="text-text_secondary">{achievement?.description}</span>
+                                                    </div>
+                                                    {achievement?.image}
+                                                </div>
+                                            );
+                                        })
+                                    ) : (
+                                        <p className="text-text_secondary">No badges earned yet</p>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -1,5 +1,5 @@
-import dbConnect from '@utils/dbConnect';
 import UserStatistics from '@models/UserStatistics';
+import dbConnect from '@utils/dbConnect';
 
 export const GET = async (request, { params }) => {
     try {
@@ -42,11 +42,13 @@ export const GET = async (request, { params }) => {
             const totalErrors = statistics.reduce((acc, curr) => acc + curr.totalErrors, 0);
             const totalCharacters = statistics.reduce((acc, curr) => acc + curr.totalCharacters, 0);
             const totalGames = statistics.length;
+            const maxWpm = statistics.reduce((acc, curr) => Math.max(acc, curr.wpm), 0);
+            const maxAccuracy = statistics.reduce((acc, curr) => Math.max(acc, curr.accuracy), 0);
 
             const preferedLengthParameter = getPreferedLengthParameter(statistics);
             const preferedSentenceParameter = getPreferedSentenceParameter(statistics);
         
-            return new Response(JSON.stringify({ averageWpm, averageAccuracy, averageErrors, wpmOverTime, accuracyOverTime, errorsOverTime, totalWords, totalErrors, totalCharacters, totalGames, preferedLengthParameter, preferedSentenceParameter }), {
+            return new Response(JSON.stringify({ averageWpm, averageAccuracy, averageErrors, wpmOverTime, accuracyOverTime, errorsOverTime, totalWords, totalErrors, totalCharacters, totalGames, preferedLengthParameter, preferedSentenceParameter, maxWpm, maxAccuracy }), {
                 headers: { 'Content-Type': 'application/json' },
                 status: 200,
             });

@@ -1,10 +1,12 @@
+import { Achievement } from "./Achievement"
+
 export type UserData = {
     username: string | undefined,
     email: string | undefined,
     avatar: string | undefined,
     keyboard: string | undefined,
     bio: string | undefined,
-    badges: string[] | undefined,
+    badges: Achievement[] | undefined,
     accountCreated: string | undefined,
     isAdmin: boolean | undefined,
     isVerified: boolean | undefined,

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="currentColor">
+  <!-- Cercle extérieur du badge -->
+  <circle cx="100" cy="100" r="90" fill="transparent" stroke="currentColor" stroke-width="3"/>
+  
+  <!-- Cercle intérieur décoratif -->
+  <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3,2"/>
+  
+  <!-- Icône de vitesse (flèche/indicateur de vitesse stylisé) -->
+  <path d="M100,75 L85,110 L115,110 Z" fill="none" stroke="currentColor" stroke-width="3"/>
+  <line x1="100" y1="75" x2="100" y2="95" stroke="currentColor" stroke-width="3"/>
+  <path d="M70,90 A40,40 0 0,1 130,90" fill="none" stroke="currentColor" stroke-width="2"/>
+  
+  <!-- Texte "100+" -->
+  <text x="100" y="140" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="currentColor">100+</text>
+  
+  <!-- Texte "WPM" -->
+  <text x="100" y="160" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="currentColor">WPM</text>
+</svg>

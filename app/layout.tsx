@@ -1,8 +1,10 @@
 import SettingsModal from '@/components/modals/SettingsModal';
 import { SettingsProvider } from '@/contexts/SettingsContext';
+import AchievementsPopup from '@components/AchievementPopup';
 import { Nav } from "@components/Components";
 import Provider from "@components/Provider";
 import ThemeProvider from "@components/ThemeProvider";
+import { AchievementsProvider } from '@contexts/AchievementsContext';
 import "@styles/globals.css";
 import type { Metadata, ResolvingMetadata } from "next";
 import { DM_Mono } from "next/font/google";
@@ -43,16 +45,19 @@ export default function RootLayout({
     <html lang="en" className="bg-background">
       <body className={`${DM.className}`}>
         <SettingsProvider>
-          <Provider>
-            <div>
-              <Nav />
+            <Provider>
+            <AchievementsProvider>
+              <div>
+                <Nav />
               <ThemeProvider />
             </div>
             <main>
               {children}
             </main>
-            <SettingsModal />
-          </Provider>
+              <SettingsModal />
+              <AchievementsPopup />
+              </AchievementsProvider>
+            </Provider> 
         </SettingsProvider>
       </body>
     </html>

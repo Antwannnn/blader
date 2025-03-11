@@ -1,27 +1,28 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useAchievements } from '@/contexts/AchievementsContext';
 import { GameResults } from '@app/types/GameResults';
-import { useSession } from 'next-auth/react';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend
-} from 'recharts';
-import { useRouter } from 'next/navigation';
-import { LengthParameter, SentenceParameter } from '@app/types/GameParameters';
 import Link from '@node_modules/next/link';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
+} from 'recharts';
 
 const ResultsPage = () => {
   const [results, setResults] = useState<GameResults | null>(null);
   const router = useRouter();
   const { data: session } = useSession();
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const { checkAchievements, showUnlockAnimation } = useAchievements();
 
   useEffect(() => {
     const savedResults = localStorage.getItem('lastGameResults');
@@ -50,40 +51,47 @@ const ResultsPage = () => {
 
   const saveUserStatistics = async (gameResults: GameResults) => {
     try {
-        const user = await fetch(`/api/user/${session?.user?.name}`, {
-            method: 'GET',
-        });
+      const user = await fetch(`/api/user/${session?.user?.name}`, {
+        method: 'GET',
+      });
 
-        const userData = await user.json();
-        const userId = userData.user._id;
-        const lengthParameter = localStorage.getItem('lastGameLengthParameter');
-        const sentenceParameter = localStorage.getItem('lastGameSentenceParameter'); 
+      const userData = await user.json();
+      const userId = userData.user._id;
+      const lengthParameter = localStorage.getItem('lastGameLengthParameter');
+      const sentenceParameter = localStorage.getItem('lastGameSentenceParameter');
 
-        console.log(lengthParameter);
-        console.log(sentenceParameter);
+      // Sauvegarder les statistiques
+      const response = await fetch(`/api/user/statistics/${userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userRef: userId,
+          wpm: gameResults.finalWpm,
+          accuracy: gameResults.finalAccuracy,
+          totalWords: gameResults.totalWords,
+          totalCharacters: gameResults.totalCharacters,
+          totalErrors: gameResults.errors,
+          lengthParameter: lengthParameter,
+          sentenceParameter: sentenceParameter,
+        }),
+      });
 
-        const response = await fetch(`/api/user/statistics/${userId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                userRef: userId,
-                wpm: gameResults.finalWpm,
-                accuracy: gameResults.finalAccuracy,
-                totalWords: gameResults.totalWords,
-                totalCharacters: gameResults.totalCharacters,
-                totalErrors: gameResults.errors,
-                lengthParameter: lengthParameter,
-                sentenceParameter: sentenceParameter,
-            }),
-        });
+      if (!response.ok) {
+        throw new Error('Failed to save statistics');
+      }
 
-        if (!response.ok) {
-            throw new Error('Failed to save statistics');
-        }
+      // Vérifier les achievements
+      const newAchievements = await checkAchievements(userId);
+      
+      // Afficher les animations pour chaque nouvel achievement
+      newAchievements.forEach(achievement => {
+        showUnlockAnimation(achievement);
+      });
+
     } catch (error) {
-        console.error('Error saving statistics:', error);
+      console.error('Error saving statistics:', error);
     }
   };
 
