@@ -1,6 +1,7 @@
-import { LengthParameter, GameTypeParameter } from "./GameParameters";
 
 export interface GameResults {
+  sentence: string;
+  author?: string;
   wpmOverTime: number[];
   accuracyOverTime: number[];
   time: number;

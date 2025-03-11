@@ -1,6 +1,6 @@
 "use client"
 
-import { StatisticsData, UserData } from "@app/types/Data"
+import { ProfileStatisticsData, UserData } from "@app/types/Data"
 import StatsModal from '@components/StatsModal'
 import LoadableWrapper from "@components/subcomponents/LoadableWrapper"
 import { getAchievement } from "@contexts/Achievements"
@@ -13,7 +13,7 @@ import { CiCalendar, CiEdit, CiKeyboard, CiMedal } from "react-icons/ci"
 const Profile = () => {
     const { data: session, status } = useSession();
     const [userData, setUserData] = useState<UserData>();
-    const [userStatistics, setUserStatistics] = useState<StatisticsData>();
+    const [userStatistics, setUserStatistics] = useState<ProfileStatisticsData>();
     const [loading, setLoading] = useState<boolean>(true);
     const [isEditing, setIsEditing] = useState(false);
     const router = usePathname();
@@ -293,7 +293,7 @@ const Profile = () => {
                                             return (
                                                 <div 
                                                     key={index} 
-                                                    className="w-16 h-16 text-text relative group"
+                                                    className="w-20 h-20 text-text relative group"
                                                     title={`${achievement?.name}\n${achievement?.description}`}
                                                 >
                                                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-tertiary rounded-lg text-text text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
@@ -325,7 +325,7 @@ const Profile = () => {
                                     ? 'Accuracy History' 
                                     : 'Errors History'
                             }
-                            data={userStatistics as StatisticsData}
+                            data={userStatistics as ProfileStatisticsData}
                             defaultMetric={showStatsModal}
                         />
                     )}

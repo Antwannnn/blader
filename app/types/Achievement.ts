@@ -1,4 +1,5 @@
 import { ReactNode } from "@node_modules/@types/react";
+import { GameResults } from "./GameResults";
 
 export interface Achievement {
   id: string;
@@ -10,10 +11,6 @@ export interface Achievement {
 }
 
 export interface UserStats {
-  totalGames: number;
-  maxWpm: number;
-  averageWpm: number;
-  averageAccuracy: number;
-  gamesPlayed: number;
-  maxAccuracy: number;
+  gameStats: GameResults;
+  profileStats: any;
 } 

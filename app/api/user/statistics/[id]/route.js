@@ -45,10 +45,38 @@ export const GET = async (request, { params }) => {
             const maxWpm = statistics.reduce((acc, curr) => Math.max(acc, curr.wpm), 0);
             const maxAccuracy = statistics.reduce((acc, curr) => Math.max(acc, curr.accuracy), 0);
 
+            // Récupérer les 10 dernières accuracies
+            const last10Accuracies = statistics
+                .slice(-10)
+                .map(stat => stat.accuracy);
+
+            const daysSinceLastGame = statistics.length >= 2 ? 
+                Math.floor(
+                    (new Date(statistics[statistics.length - 1].createdAt) - new Date(statistics[statistics.length - 2].createdAt)) 
+                    / (1000 * 60 * 60 * 24)
+                ) : 0;
+
             const preferedLengthParameter = getPreferedLengthParameter(statistics);
             const preferedSentenceParameter = getPreferedSentenceParameter(statistics);
-        
-            return new Response(JSON.stringify({ averageWpm, averageAccuracy, averageErrors, wpmOverTime, accuracyOverTime, errorsOverTime, totalWords, totalErrors, totalCharacters, totalGames, preferedLengthParameter, preferedSentenceParameter, maxWpm, maxAccuracy }), {
+            // Listing all the statistics and calculated statistics
+            return new Response(JSON.stringify({ 
+                averageWpm, 
+                averageAccuracy, 
+                averageErrors, 
+                wpmOverTime, 
+                accuracyOverTime, 
+                errorsOverTime, 
+                totalWords, 
+                totalErrors, 
+                totalCharacters, 
+                totalGames, 
+                preferedLengthParameter, 
+                preferedSentenceParameter, 
+                maxWpm, 
+                maxAccuracy,
+                last10Accuracies,
+                daysSinceLastGame
+            }), {
                 headers: { 'Content-Type': 'application/json' },
                 status: 200,
             });

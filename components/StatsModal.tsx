@@ -1,22 +1,22 @@
 'use client';
 
-import { StatisticsData } from '@app/types/Data';
+import { ProfileStatisticsData } from '@app/types/Data';
 import { useState } from 'react';
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
   CartesianGrid,
-  Tooltip,
+  Legend,
+  Line,
+  LineChart,
   ResponsiveContainer,
-  Legend
+  Tooltip,
+  XAxis,
+  YAxis
 } from 'recharts';
 
 interface StatsModalProps {
   onClose: () => void;
   title: string;
-  data: StatisticsData;
+  data: ProfileStatisticsData;
   defaultMetric: 'wpm' | 'accuracy' | 'errors';
 }
 

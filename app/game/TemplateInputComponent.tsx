@@ -102,6 +102,8 @@ const TemplateInputComponent = ({
     time.stop();
     time.reset();
     setGameResults({
+      sentence: finalSentence,
+      author: (typeof sentence !== "string" ? sentence.author : ""),
       wpmOverTime: [0],
       accuracyOverTime: [0],
       totalWords: 0,
@@ -167,6 +169,8 @@ const TemplateInputComponent = ({
           if (Math.abs(wpm - (lastWpm || 0)) > 5 || 
               Math.abs(accuracy - (lastAccuracy || 0)) > 2) {
             setGameResults({
+              sentence: finalSentence,
+              author: (typeof sentence !== "string" ? sentence.author : ""),
               wpmOverTime: [...gameResults.wpmOverTime, wpm],
               accuracyOverTime: [...gameResults.accuracyOverTime, accuracy],
               time: time.rawTime,
@@ -210,6 +214,8 @@ const TemplateInputComponent = ({
   const handleGameEnd = () => {
     time.stop();
     const finalResults = {
+      sentence: finalSentence,
+      author: (typeof sentence !== "string" ? sentence.author : ""),
       wpmOverTime: [...gameResults.wpmOverTime, wpm],
       accuracyOverTime: [...gameResults.accuracyOverTime, accuracy],
       time: time.rawTime,
@@ -320,6 +326,8 @@ const TemplateInputComponent = ({
 
       if (!isNaN(wpm) && !isNaN(accuracy)) {
         setGameResults({
+          sentence: finalSentence,
+          author: (typeof sentence !== "string" ? sentence.author : ""),
           wpmOverTime: [...gameResults.wpmOverTime, wpm],
           accuracyOverTime: [...gameResults.accuracyOverTime, accuracy],
           time: time.rawTime,

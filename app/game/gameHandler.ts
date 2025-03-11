@@ -1,14 +1,10 @@
 import {
-  GameTypeParameter,
-  GameState,
   LengthParameter,
-  SentenceParameter,
   Quote,
-  getLengthByStringParameter,
   valueStringToKeyFormat,
 } from "@app/types/GameParameters";
-import words from "@scrapping/words.json";
 import quotes from "@scrapping/quotesSorted.json";
+import words from "@scrapping/words.json";
 
 const fetchQuote = (len: LengthParameter): Quote => {
   const quoteSection = quotes[valueStringToKeyFormat(len)];

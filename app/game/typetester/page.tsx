@@ -41,6 +41,8 @@ const TypeTester = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const animate = useAnimation();
   const [gameResults, setGameResults] = useState<GameResults>({
+    sentence: "",
+    author: "",
     wpmOverTime: [0],
     accuracyOverTime: [0],
     totalWords: 0,

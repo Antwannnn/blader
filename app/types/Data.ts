@@ -12,7 +12,7 @@ export type UserData = {
     isVerified: boolean | undefined,
   }
 
-  export type StatisticsData = {
+  export type ProfileStatisticsData = {
     averageWpm: number | undefined,
     averageAccuracy: number | undefined,
     averageErrors: number | undefined,
@@ -38,4 +38,5 @@ export type UserData = {
     preferedLengthParameter: string | undefined,
     preferedSentenceParameter: string | undefined,
     createdAt: string | undefined,
+    last10Accuracies: number[],
   }

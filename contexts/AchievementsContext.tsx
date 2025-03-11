@@ -1,10 +1,10 @@
 'use client';
 
 import { Achievement, UserStats } from '@app/types/Achievement';
+import { GameResults } from '@app/types/GameResults';
 import { useSession } from 'next-auth/react';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { achievements } from './Achievements';
-
 interface AchievementsContextType {
   unlockedAchievements: Achievement[];
   checkAchievements: (userId: string) => Promise<Achievement[]>;
@@ -40,13 +40,13 @@ export const AchievementsProvider = ({ children }: { children: React.ReactNode }
       const statsResponse = await fetch(`/api/user/statistics/${userId}`);
       const statsData = await statsResponse.json();
 
+      const gameResults: GameResults = JSON.parse(localStorage.getItem('lastGameResults') || '{}');
+
+      console.log(gameResults);
+
       const stats: UserStats = {
-        totalGames: statsData.totalGames || 0,
-        maxWpm: statsData.maxWpm || 0,
-        averageWpm: statsData.averageWpm || 0,
-        averageAccuracy: statsData.averageAccuracy || 0,
-        gamesPlayed: statsData.totalGames || 0,
-        maxAccuracy: statsData.maxAccuracy || 0
+        gameStats: gameResults,
+        profileStats: statsData
       };
 
       console.log(stats);
