@@ -13,10 +13,9 @@ import KeyboardLayout from "@components/KeyboardLayout";
 import KeyIcon from "@components/subcomponents/KeyIcon";
 import { useSettings } from "@contexts/SettingsContext";
 import { useRouter } from 'next/navigation';
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { GoTab } from "react-icons/go";
 import useState from "react-usestateref";
-``
 
 interface TemplateProps {
   gameType: GameTypeParameter;
@@ -46,7 +45,9 @@ const TemplateInputComponent = ({
   const [input, setInput] = useState<string>("");
   var [currentIndex, setCurrentIndex, currentIndexRef] = useState<number>(0);
   const indexedError = useState<number[]>([])[0];
-
+  const [lineCharCounts, setLineCharCounts] = useState<number[]>([]);
+  const [currentLineIndex, setCurrentLineIndex] = useState<number>(0);
+  const textContainerRef = useRef<HTMLDivElement>(null);
 
   const exampleSentence =
     "Example sentence displayed when no sentence is provided.";
@@ -340,9 +341,140 @@ const TemplateInputComponent = ({
     }
   };
 
+  // Utilisons useRef pour éviter des boucles infinies
+  const previousCalculatedLineIndex = useRef<number>(-1);
+  const previousLineCharCounts = useRef<number[]>([]);
+
+  // Calculer les lignes en fonction de la taille du conteneur - une seule fois au début et lors des redimensionnements
+  useEffect(() => {
+    const calculateLines = () => {
+      if (textContainerRef.current) {
+        const container = textContainerRef.current;
+        // On utilise une span temporaire pour mesurer la largeur d'un caractère
+        const tempSpan = document.createElement('span');
+        tempSpan.style.fontSize = '2.25rem'; // text-4xl equivalent
+        tempSpan.style.visibility = 'hidden';
+        tempSpan.textContent = 'M'; // Utiliser 'M' comme référence de largeur
+        container.appendChild(tempSpan);
+        
+        const charWidth = tempSpan.getBoundingClientRect().width;
+        const containerWidth = container.clientWidth;
+        
+        container.removeChild(tempSpan);
+        
+        // Calculer combien de caractères peuvent tenir sur une ligne
+        const maxCharsPerLine = Math.floor(containerWidth / charWidth) - 2;
+        
+        // Calculer les longueurs réelles de chaque ligne
+        const lineLengths: number[] = [];
+        let currentLine = '';
+        let currentWord = '';
+        
+        for (let i = 0; i < splittedSentence.length; i++) {
+          const char = splittedSentence[i];
+          currentWord += char;
+          
+          if (char === ' ' || i === splittedSentence.length - 1) {
+            if ((currentLine + currentWord).length > maxCharsPerLine) {
+              if (currentLine) {
+                lineLengths.push(currentLine.length);
+                currentLine = currentWord;
+              } else {
+                lineLengths.push(currentWord.length);
+                currentLine = '';
+              }
+            } else {
+              currentLine += currentWord;
+            }
+            currentWord = '';
+          }
+        }
+        
+        // Ajouter la dernière ligne si elle n'est pas vide
+        if (currentLine) {
+          lineLengths.push(currentLine.length);
+        }
+        
+        // Vérification stricte pour ne mettre à jour que si nécessaire
+        if (JSON.stringify(lineLengths) !== JSON.stringify(previousLineCharCounts.current)) {
+          previousLineCharCounts.current = lineLengths;
+          setLineCharCounts(lineLengths);
+        }
+      }
+    };
+
+    calculateLines();
+    window.addEventListener('resize', calculateLines);
+    
+    return () => window.removeEventListener('resize', calculateLines);
+  }, [splittedSentence]);
+
+  // Fonction pure pour calculer la ligne courante en fonction de l'index
+  const calculateCurrentLineIndex = useCallback((index: number, lineCounts: number[]) => {
+    if (lineCounts.length === 0 || index < 0) return 0;
+    if (index >= splittedSentence.length) return lineCounts.length - 1;
+    
+    let charCount = 0;
+    let lineIndex = 0;
+    
+    while (lineIndex < lineCounts.length) {
+      if (charCount <= index && index < charCount + lineCounts[lineIndex]) {
+        return lineIndex;
+      }
+      charCount += lineCounts[lineIndex];
+      lineIndex++;
+    }
+    
+    return Math.max(0, lineIndex - 1);
+  }, [splittedSentence.length]);
+
+  // Utiliser useEffect pour mettre à jour currentLineIndex une seule fois lorsque currentIndex change
+  useEffect(() => {
+    const newLineIndex = calculateCurrentLineIndex(currentIndex, lineCharCounts);
+    
+    // Vérifier si la ligne a changé pour éviter les mises à jour inutiles
+    if (newLineIndex !== previousCalculatedLineIndex.current) {
+      previousCalculatedLineIndex.current = newLineIndex;
+      setCurrentLineIndex(newLineIndex);
+    }
+  }, [currentIndex, lineCharCounts, calculateCurrentLineIndex]);
+
+  // Fonction pour obtenir les lignes visibles - rendue pure pour éviter les effets de bord
+  const getVisibleLines = useCallback(() => {
+    if (lineCharCounts.length === 0) {
+      return {
+        visibleLines: [],
+        gradientLine: '',
+        startLineIndex: 0
+      };
+    }
+    
+    const allLines: string[] = [];
+    let startIndex = 0;
+    
+    // Construire toutes les lignes
+    for (let i = 0; i < lineCharCounts.length; i++) {
+      const lineLength = lineCharCounts[i];
+      allLines.push(splittedSentence.slice(startIndex, startIndex + lineLength).join(''));
+      startIndex += lineLength;
+    }
+    
+    // Déterminer l'index de la ligne à partir de laquelle afficher
+    let startLineIndex = Math.max(0, currentLineIndex - 1);
+    
+    // Assurer que nous ne dépassons pas les bornes à la fin
+    startLineIndex = Math.min(startLineIndex, Math.max(0, allLines.length - 3));
+    
+    return {
+      visibleLines: allLines.slice(startLineIndex, startLineIndex + 3),
+      gradientLine: allLines[startLineIndex + 3] || '',
+      startLineIndex: startLineIndex
+    };
+  }, [lineCharCounts, currentLineIndex, splittedSentence]);
+
   return (
-    <div className="flex flex-col items-center justify-center w-full gap-10">
-      <div className="w-5/6 text-4xl text-text relative overflow-hidden flex justify-center">
+    <div className="flex flex-col items-center justify-center w-full gap-5">
+      <div ref={textContainerRef} className="w-5/6 text-4xl text-text relative overflow-hidden flex justify-center h-[192px]">
         <input
           ref={inputRef}
           autoFocus={true}
@@ -356,15 +488,73 @@ const TemplateInputComponent = ({
           onKeyDown={handleKeyPress}
           className="w-full px-14 pb-10 h-full absolute z-10 opacity-0"
         />
-        <span className="w-full pointer-events-none ">
-          {finalSentence.split("").map((e, index) => (
-            <span
-              key={index}
-              className={` ${indexedError.includes(index) ? `${e === " " && "bg-accent !opacity-100"} text-accent !opacity-100` : `${currentIndexRef.current > index ?  "text-text !opacity-100" : "text-text !opacity-20"}` }  ${currentIndexRef.current === index && "border-l-[2px] border-text duration-200 transition"} `}
-            >
-              {e}
-            </span>
-          ))}
+        <span className="w-full pointer-events-none flex flex-col whitespace-pre relative">
+          {(() => {
+            const { visibleLines, gradientLine, startLineIndex } = getVisibleLines();
+            
+            return (
+              <>
+                {visibleLines.map((line, displayIndex) => {
+                  const actualLineIndex = startLineIndex + displayIndex;
+                  
+                  // Calculer l'index de départ pour cette ligne
+                  let lineStartIndex = 0;
+                  for (let i = 0; i < actualLineIndex; i++) {
+                    lineStartIndex += lineCharCounts[i] || 0;
+                  }
+                  
+                  const isActiveLine = actualLineIndex === currentLineIndex;
+                  
+                  return (
+                    <div 
+                      key={`line-${actualLineIndex}`} 
+                      className="w-full h-[48px] flex items-center whitespace-pre absolute transition-all duration-300"
+                      style={{ 
+                        top: `${displayIndex * 48}px` 
+                      }}
+                    >
+                      {line.split('').map((char, charIndex) => {
+                        const actualIndex = lineStartIndex + charIndex;
+                        
+                        return (
+                          <span
+                            key={`char-${actualIndex}`}
+                            className={`
+                              ${indexedError.includes(actualIndex) 
+                                ? `${char === " " && "bg-accent !opacity-100"} text-accent !opacity-100` 
+                                : `${currentIndexRef.current > actualIndex 
+                                    ? "text-text !opacity-100" 
+                                    : "text-text/20"}`
+                              }
+                              ${isActiveLine && currentIndexRef.current === actualIndex && "border-l-[2px] border-text duration-200 transition"}
+                            `}
+                          >
+                            {char}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+                
+                {/* La ligne avec le gradient d'opacité */}
+                {gradientLine && (
+                  <div 
+                    className="w-full h-[48px] flex items-center whitespace-pre text-text bg-gradient-to-b from-text/10 to-transparent bg-clip-text text-transparent absolute transition-all duration-300"
+                    style={{ 
+                      top: `${3 * 48}px` 
+                    }}
+                  >
+                    {gradientLine.split('').map((char, index) => (
+                      <span key={`gradient-${index}`}>
+                        {char}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </>
+            );
+          })()}
         </span>
       </div>
       {typeof sentence !== "string" && (
