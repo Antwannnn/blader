@@ -219,7 +219,7 @@ export const achievements: Achievement[] = [
           <text x="100" y="160" fill='currentColor' font-family="Arial, sans-serif" font-size="14" text-anchor="middle">CHARACTERS</text>
         </svg>
       ),
-      condition: (stats: UserStats) => stats.profileStats.totalCharacters >= 400
+      condition: (stats: UserStats) => stats.profileStats.totalCharacters >= 10000
     }
   ];
 

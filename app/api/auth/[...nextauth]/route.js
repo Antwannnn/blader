@@ -1,14 +1,14 @@
-import NextAuth from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
-import CredentialProvider from 'next-auth/providers/credentials';
-require('dotenv').config();
 import User from '@models/User';
-import dbConnection from '@utils/mongodb'
-import dbConnect from '@utils/dbConnect';
 import MongooseAdapter from '@utils/adapter/mongoose-adapter';
+import dbConnect from '@utils/dbConnect';
+import dbConnection from '@utils/mongodb';
+import NextAuth from 'next-auth';
+import CredentialProvider from 'next-auth/providers/credentials';
 import DiscordProvider from 'next-auth/providers/discord';
+import GoogleProvider from 'next-auth/providers/google';
+require('dotenv').config();
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 
 const handler = NextAuth({
@@ -111,5 +111,5 @@ const handler = NextAuth({
 });
 
 
-export { handler as GET, handler as POST }
+export { handler as GET, handler as POST };
 

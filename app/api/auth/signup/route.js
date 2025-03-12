@@ -1,7 +1,7 @@
 import User from '@models/User';
 import dbConnect from '@utils/dbConnect';
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const SALT_WORK_FACTOR = 10;
 
 export async function POST(request, response) {
