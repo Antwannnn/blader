@@ -40,6 +40,8 @@ export const AchievementsProvider = ({ children }: { children: React.ReactNode }
       const statsResponse = await fetch(`/api/user/statistics/${userId}`);
       const statsData = await statsResponse.json();
 
+      const leaderboardResponse = await fetch(`/api/user/statistics`);
+
       const gameResults: GameResults = JSON.parse(localStorage.getItem('lastGameResults') || '{}');
 
       console.log(gameResults);
