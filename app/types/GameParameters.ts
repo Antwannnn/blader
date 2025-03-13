@@ -24,10 +24,16 @@ export enum GameState {
   ENDED,
 }
 
-export enum TimedDuration {
-  THIRTY = 30,
-  SIXTY = 60,
-  ONE_TWENTY = 120,
+export enum TimeParameter {
+  SECONDS_15 = "15s",
+  SECONDS_30 = "30s",
+  SECONDS_45 = "45s",
+  SECONDS_60 = "60s"
+}
+
+export enum StopwatchMode {
+  TIMER = "timer",
+  COUNTDOWN = "countdown"
 }
 
 export type Quote = {

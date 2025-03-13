@@ -1,5 +1,6 @@
 "use client";
 
+import { fetchQuote, fetchRandomSentence } from "@app/game/gameHandler";
 import { useStopwatch } from "@app/hooks/Stopwatch";
 import {
   GameState,
@@ -7,6 +8,7 @@ import {
   LengthParameter,
   Quote,
   SentenceParameter,
+  StopwatchMode,
 } from "@app/types/GameParameters";
 import { GameResults } from "@app/types/GameResults";
 import KeyboardLayout from "@components/KeyboardLayout";
@@ -28,6 +30,8 @@ interface TemplateProps {
   onGameStarts: () => void;
   onGameReset: () => void;
   inputRef?: React.RefObject<HTMLInputElement>;
+  stopwatchMode?: StopwatchMode;
+  countdownTime?: number;
 }
 
 const TemplateInputComponent = ({
@@ -41,6 +45,8 @@ const TemplateInputComponent = ({
   onGameReset,
   gameState,
   inputRef,
+  stopwatchMode = StopwatchMode.TIMER,
+  countdownTime = 0,
 }: TemplateProps) => {
   const [input, setInput] = useState<string>("");
   var [currentIndex, setCurrentIndex, currentIndexRef] = useState<number>(0);
@@ -48,17 +54,19 @@ const TemplateInputComponent = ({
   const [lineCharCounts, setLineCharCounts] = useState<number[]>([]);
   const [currentLineIndex, setCurrentLineIndex] = useState<number>(0);
   const textContainerRef = useRef<HTMLDivElement>(null);
+  
+  // État pour le contenu procédural
+  const [dynamicSentence, setDynamicSentence] = useState<string>("");
+  const [hasGeneratedMore, setHasGeneratedMore] = useState<boolean>(false);
 
-  const exampleSentence =
-    "Example sentence displayed when no sentence is provided.";
-  const quoteContentIfNotString =
-    typeof sentence !== "string" ? sentence.content : sentence;
-  const finalSentence = quoteContentIfNotString
-    ? quoteContentIfNotString
-    : exampleSentence;
-  const splittedSentence = finalSentence.split("");
-
-  const wordSplittedSentence = finalSentence.split(" ");
+  const exampleSentence = "Example sentence displayed when no sentence is provided.";
+  const quoteContentIfNotString = typeof sentence !== "string" ? sentence.content : sentence;
+  const finalSentence = quoteContentIfNotString ? quoteContentIfNotString : exampleSentence;
+  
+  // Utiliser la sentence dynamique si elle existe, sinon utiliser la sentence initiale
+  const effectiveSentence = dynamicSentence || finalSentence;
+  const splittedSentence = effectiveSentence.split("");
+  const wordSplittedSentence = effectiveSentence.split(" ");
 
   // Nettoyer le flag au démarrage d'une nouvelle partie
   useEffect(() => {
@@ -80,7 +88,15 @@ const TemplateInputComponent = ({
   // Statistics related variables
   const [wpm, setWpm] = useState<number>(0);
   const [accuracy, setAccuracy] = useState<number>(0);
-  const time = useStopwatch();
+  const time = useStopwatch({
+    mode: stopwatchMode,
+    initialTime: countdownTime,
+    onComplete: () => {
+      if (gameState === GameState.STARTED) {
+        handleGameEnd();
+      }
+    }
+  });
   const [totalErrors, setTotalErrors] = useState<number>(0);
   const [totalCharactersWithoutSpaces, setTotalCharactersWithoutSpaces] = useState<number>(0);
   const [averageWordLength, setAverageWordLength] = useState<number>(0);
@@ -103,7 +119,8 @@ const TemplateInputComponent = ({
     time.stop();
     time.reset();
     setGameResults({
-      sentence: finalSentence,
+      mode: stopwatchMode,
+      sentence: effectiveSentence,
       author: (typeof sentence !== "string" ? sentence.author : ""),
       wpmOverTime: [0],
       accuracyOverTime: [0],
@@ -122,14 +139,77 @@ const TemplateInputComponent = ({
     time.start();
   };
 
-  const getGrossWpm = () => {
-    const timeInMinutes = time.rawTime / 60000;
-    if (timeInMinutes <= 0) return 0;
+  // Fonction pour générer plus de contenu
+  const generateMoreContent = useCallback(async () => {
+    if (sentenceParameter === SentenceParameter.QUOTE) {
+      const newQuote = fetchQuote(lengthParameter);
+      const quoteContent = typeof newQuote !== "string" ? newQuote.content : newQuote;
+      setDynamicSentence(prev => prev + " " + quoteContent);
+    } else {
+      const newSentence = fetchRandomSentence(lengthParameter);
+      setDynamicSentence(prev => prev + " " + newSentence);
+    }
+    setHasGeneratedMore(true);
+  }, [sentenceParameter, lengthParameter]);
 
-    // input.length + indexedError.length donne le nombre total de frappes
-    const totalKeystrokes = input.length + indexedError.length;
-    // On divise par 5 qui est la longueur standard d'un mot
-    return Math.round((totalKeystrokes / 5) / timeInMinutes);
+  // Effet pour générer du contenu procéduralement en mode countdown
+  useEffect(() => {
+    if (stopwatchMode === StopwatchMode.COUNTDOWN && 
+        gameState === GameState.STARTED &&
+        currentIndex > 0 && // S'assurer que l'utilisateur a commencé à taper
+        !hasGeneratedMore && // Éviter les générations multiples en même temps
+        currentIndex >= splittedSentence.length * 0.8) { // Quand l'utilisateur est proche de la fin (80%)
+      
+      generateMoreContent();
+    }
+  }, [currentIndex, stopwatchMode, gameState, splittedSentence.length, hasGeneratedMore, generateMoreContent]);
+
+  // Réinitialiser le flag de génération quand l'utilisateur a avancé dans le nouveau contenu
+  useEffect(() => {
+    if (hasGeneratedMore && currentIndex < splittedSentence.length * 0.5) {
+      setHasGeneratedMore(false);
+    }
+  }, [currentIndex, hasGeneratedMore, splittedSentence.length]);
+
+  // Initialiser la phrase dynamique avec la phrase initiale au démarrage
+  useEffect(() => {
+    if (gameState === GameState.RESET || gameState === GameState.STARTED) {
+      setDynamicSentence(finalSentence);
+      setHasGeneratedMore(false);
+    }
+  }, [finalSentence, gameState]);
+
+  // Modifier le calcul du WPM pour prendre en compte le mode
+  const getWpm = () => {
+    if (stopwatchMode === StopwatchMode.TIMER) {
+      // Calcul normal pour le mode timer
+      const timeInMinutes = time.rawTime / 60000;
+      if (timeInMinutes <= 0) return 0;
+      return Math.round((input.length / 5) / timeInMinutes);
+    } else {
+      // Pour le mode countdown, utiliser le temps écoulé
+      const elapsedTime = countdownTime - time.rawTime;
+      const elapsedMinutes = elapsedTime / 60000;
+      if (elapsedMinutes <= 0) return 0;
+      return Math.round((input.length / 5) / elapsedMinutes);
+    }
+  };
+
+  const getGrossWpm = () => {
+    if (stopwatchMode === StopwatchMode.TIMER) {
+      // Calcul normal pour le mode timer
+      const timeInMinutes = time.rawTime / 60000;
+      if (timeInMinutes <= 0) return 0;
+      const totalKeystrokes = input.length + indexedError.length;
+      return Math.round((totalKeystrokes / 5) / timeInMinutes);
+    } else {
+      // Pour le mode countdown, utiliser le temps écoulé
+      const elapsedTime = countdownTime - time.rawTime;
+      const elapsedMinutes = elapsedTime / 60000;
+      if (elapsedMinutes <= 0) return 0;
+      const totalKeystrokes = input.length + indexedError.length;
+      return Math.round((totalKeystrokes / 5) / elapsedMinutes);
+    }
   };
 
   const getAccuracy = () => {
@@ -139,14 +219,6 @@ const TemplateInputComponent = ({
         ? 0
         : Math.floor(((input.length - totalErrors) / input.length) * 100);
     return accuracy;
-  };
-
-  const getWpm = () => {
-    const timeInMinutes = time.rawTime / 60000;
-    if (timeInMinutes <= 0) return 0;
-
-    // On ne compte que les caractères corrects (input.length)
-    return Math.round((input.length / 5) / timeInMinutes);
   };
 
   useEffect(() => {
@@ -170,8 +242,9 @@ const TemplateInputComponent = ({
           if (Math.abs(wpm - (lastWpm || 0)) > 5 || 
               Math.abs(accuracy - (lastAccuracy || 0)) > 2) {
             setGameResults({
-              sentence: finalSentence,
+              sentence: effectiveSentence,
               author: (typeof sentence !== "string" ? sentence.author : ""),
+              mode: stopwatchMode,
               wpmOverTime: [...gameResults.wpmOverTime, wpm],
               accuracyOverTime: [...gameResults.accuracyOverTime, accuracy],
               time: time.rawTime,
@@ -215,26 +288,23 @@ const TemplateInputComponent = ({
   const handleGameEnd = () => {
     time.stop();
     const finalResults = {
-      sentence: finalSentence,
+      sentence: effectiveSentence,
       author: (typeof sentence !== "string" ? sentence.author : ""),
       wpmOverTime: [...gameResults.wpmOverTime, wpm],
       accuracyOverTime: [...gameResults.accuracyOverTime, accuracy],
-      time: time.rawTime,
+      time: stopwatchMode === StopwatchMode.TIMER ? time.rawTime : countdownTime,
       errors: totalErrors,
       correct: input.length,
       totalWords: wordSplittedSentence.length,
       totalCharacters: splittedSentence.length,
       finalWpm: getWpm(),
-      finalAccuracy: accuracy
+      finalAccuracy: accuracy,
+      mode: stopwatchMode
     };
     
-    // Sauvegarder les résultats dans localStorage pour la transition
     localStorage.setItem('lastGameResults', JSON.stringify(finalResults));
-    console.log(lengthParameter);
-    console.log(sentenceParameter);
-
+    localStorage.setItem('lastGameStopwatchMode', stopwatchMode);
     
-    // Rediriger vers la page des résultats
     router.push('/game/results');
   };
 
@@ -244,7 +314,7 @@ const TemplateInputComponent = ({
       return;
     }
 
-    if(e.altKey && "®Òµ¬◊‡~".indexOf(e.key) !== -1) {
+    if(e.altKey && "®Òµ¬◊‡~≈†ë“‘".indexOf(e.key) !== -1) {
       e.preventDefault();
       return;
     }
@@ -327,7 +397,8 @@ const TemplateInputComponent = ({
 
       if (!isNaN(wpm) && !isNaN(accuracy)) {
         setGameResults({
-          sentence: finalSentence,
+          mode: stopwatchMode,
+          sentence: effectiveSentence,
           author: (typeof sentence !== "string" ? sentence.author : ""),
           wpmOverTime: [...gameResults.wpmOverTime, wpm],
           accuracyOverTime: [...gameResults.accuracyOverTime, accuracy],
@@ -471,6 +542,20 @@ const TemplateInputComponent = ({
       startLineIndex: startLineIndex
     };
   }, [lineCharCounts, currentLineIndex, splittedSentence]);
+
+  // Effet pour mettre à jour le temps de décompte en temps réel
+  useEffect(() => {
+    if (stopwatchMode === StopwatchMode.COUNTDOWN && gameState !== GameState.STARTED) {
+      time.setInitialCountdown(countdownTime);
+    }
+  }, [countdownTime, stopwatchMode, gameState, time]);
+
+  // Effet pour réinitialiser le chronomètre lorsque le mode change
+  useEffect(() => {
+    if (gameState !== GameState.STARTED) {
+      time.reset();
+    }
+  }, [stopwatchMode, time, gameState]);
 
   return (
     <div className="flex flex-col items-center justify-center w-full gap-5">

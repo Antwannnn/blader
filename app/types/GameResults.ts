@@ -1,7 +1,9 @@
+import { StopwatchMode } from "./GameParameters";
 
 export interface GameResults {
   sentence: string;
   author?: string;
+  mode: StopwatchMode;
   wpmOverTime: number[];
   accuracyOverTime: number[];
   time: number;

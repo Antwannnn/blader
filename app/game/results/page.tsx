@@ -1,11 +1,12 @@
 'use client';
 
 import { useAchievements } from '@/contexts/AchievementsContext';
+import { StopwatchMode } from '@app/types/GameParameters';
 import { GameResults } from '@app/types/GameResults';
 import Link from '@node_modules/next/link';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   CartesianGrid,
   Legend,
@@ -23,6 +24,7 @@ const ResultsPage = () => {
   const { data: session } = useSession();
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const { checkAchievements, showUnlockAnimation } = useAchievements();
+  const onUnmount = useRef(() => {});
 
   useEffect(() => {
     const savedResults = localStorage.getItem('lastGameResults');
@@ -41,6 +43,16 @@ const ResultsPage = () => {
       setHasSubmitted(true);
       localStorage.setItem('resultsSubmitted', 'true');
     }
+
+
+  }, [session?.user]);
+
+  useEffect(() => {
+    return () => {
+      if (localStorage.getItem('lastGameResults')) {
+        localStorage.removeItem('lastGameResults');
+      }
+    };
   }, []);
 
   const handleTryAgain = () => {
@@ -59,6 +71,8 @@ const ResultsPage = () => {
       const userId = userData.user._id;
       const lengthParameter = localStorage.getItem('lastGameLengthParameter');
       const sentenceParameter = localStorage.getItem('lastGameSentenceParameter');
+      const stopwatchMode = localStorage.getItem('lastGameStopwatchMode') || StopwatchMode.TIMER;
+      const timeParameter = localStorage.getItem('lastGameTimeParameter');
 
       // Sauvegarder les statistiques
       const response = await fetch(`/api/user/statistics/${userId}`, {
@@ -75,6 +89,8 @@ const ResultsPage = () => {
           totalErrors: gameResults.errors,
           lengthParameter: lengthParameter,
           sentenceParameter: sentenceParameter,
+          stopwatchMode: stopwatchMode,
+          timeParameter: timeParameter
         }),
       });
 
@@ -82,8 +98,11 @@ const ResultsPage = () => {
         throw new Error('Failed to save statistics');
       }
 
+      console.log(gameResults);
+
       // Vérifier les achievements
       const newAchievements = await checkAchievements(userId);
+      
       
       // Afficher les animations pour chaque nouvel achievement
       newAchievements.forEach(achievement => {
@@ -98,13 +117,14 @@ const ResultsPage = () => {
   if (!results) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-text text-xl">No results found</p>
+        <p className="text-text text-xl">What are you doing here?</p>
       </div>
     );
   }
 
   const timeInSeconds = results.time / 1000;
   const formattedTime = `${Math.floor(timeInSeconds / 60)}:${(timeInSeconds % 60).toFixed(1)}`;
+  const mode = results.mode || StopwatchMode.TIMER;
 
   const chartData = results.wpmOverTime.map((wpm, index) => ({
     time: index,
@@ -136,7 +156,9 @@ const ResultsPage = () => {
           <p className="text-text text-2xl font-bold">{results.finalAccuracy}%</p>
         </div>
         <div className="bg-secondary/40 backdrop-blur-sm rounded-xl p-6">
-          <h3 className="text-text/50 text-sm">Time</h3>
+          <h3 className="text-text/50 text-sm">
+            {mode === StopwatchMode.TIMER ? "Time" : "Time Limit"}
+          </h3>
           <p className="text-text text-2xl font-bold">{formattedTime}</p>
         </div>
         <div className="bg-secondary/40 backdrop-blur-sm rounded-xl p-6">

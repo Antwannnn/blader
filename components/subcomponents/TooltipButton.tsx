@@ -10,9 +10,10 @@ interface TooltipButtonProps {
   };
   className?: string;
   children: React.ReactNode;
+  disabled?: boolean;
 }
 
-const TooltipButton = ({ onClick, shortcut, className, children }: TooltipButtonProps) => {
+const TooltipButton = ({ onClick, shortcut, className, children, disabled }: TooltipButtonProps) => {
   const [modifierKey, setModifierKey] = useState('Alt');
 
   useEffect(() => {
@@ -24,6 +25,7 @@ const TooltipButton = ({ onClick, shortcut, className, children }: TooltipButton
       <button
         onClick={onClick}
         className={className}
+        disabled={disabled}
       >
         {children}
       </button>

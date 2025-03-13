@@ -6,6 +6,8 @@ import {
   LengthParameter,
   Quote,
   SentenceParameter,
+  StopwatchMode,
+  TimeParameter,
 } from "@app/types/GameParameters";
 import { GameResults } from "@app/types/GameResults";
 import TooltipButton from "@components/subcomponents/TooltipButton";
@@ -38,9 +40,14 @@ const TypeTester = () => {
     useState<SentenceParameter>(SentenceParameter.QUOTE);
   const [gameStatut, setGameStatut] = useState<GameState>(GameState.RESET);
   const [sentence, setSentence] = useState<string | Quote>("");
+  // Nouveaux états pour le mode et le temps
+  const [stopwatchMode, setStopwatchMode] = useState<StopwatchMode>(StopwatchMode.TIMER);
+  const [timeParameter, setTimeParameter] = useState<TimeParameter>(TimeParameter.SECONDS_30);
+  
   const inputRef = useRef<HTMLInputElement>(null);
   const animate = useAnimation();
   const [gameResults, setGameResults] = useState<GameResults>({
+    mode: stopwatchMode,
     sentence: "",
     author: "",
     wpmOverTime: [0],
@@ -89,15 +96,29 @@ const TypeTester = () => {
   useEffect(() => {
     const lengthParameter = localStorage.getItem('lastGameLengthParameter') as LengthParameter;
     const sentenceParameter = localStorage.getItem('lastGameSentenceParameter') as SentenceParameter;
-    console.log(lengthParameter);
-    console.log(sentenceParameter);
-    setLengthParameterSelector(lengthParameter);
-    setSentenceParameterSelector(sentenceParameter);
+    const savedStopwatchMode = localStorage.getItem('lastGameStopwatchMode') as StopwatchMode;
+    const savedTimeParameter = localStorage.getItem('lastGameTimeParameter') as TimeParameter;
+    
+    if (lengthParameter) setLengthParameterSelector(lengthParameter);
+    if (sentenceParameter) setSentenceParameterSelector(sentenceParameter);
+    if (savedStopwatchMode) setStopwatchMode(savedStopwatchMode);
+    if (savedTimeParameter) setTimeParameter(savedTimeParameter);
   }, []);
 
   useEffect(() => {
     handleSetSentence();
   }, [lengthParameterSelector, sentenceParameterSelector]);
+
+  // Convertir les secondes en millisecondes pour le mode countdown
+  const getCountdownTime = (): number => {
+    switch (timeParameter) {
+      case TimeParameter.SECONDS_15: return 15 * 1000;
+      case TimeParameter.SECONDS_30: return 30 * 1000;
+      case TimeParameter.SECONDS_45: return 45 * 1000;
+      case TimeParameter.SECONDS_60: return 60 * 1000;
+      default: return 30 * 1000;
+    }
+  };
 
   // Gestionnaire de raccourcis clavier séparé
   const handleShortcuts = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -130,9 +151,33 @@ const TypeTester = () => {
         setSentenceParameterSelector(SentenceParameter.QUOTE);
         localStorage.setItem('lastGameSentenceParameter', SentenceParameter.QUOTE);
           break;
-      case '‹':
+      case '~':
         setSentenceParameterSelector(SentenceParameter.RANDOM);
         localStorage.setItem('lastGameSentenceParameter', SentenceParameter.RANDOM);
+        break;
+      case '†':
+        setStopwatchMode(StopwatchMode.TIMER);
+        localStorage.setItem('lastGameStopwatchMode', StopwatchMode.TIMER);
+        break;
+      case '≈':
+        setStopwatchMode(StopwatchMode.COUNTDOWN);
+        localStorage.setItem('lastGameStopwatchMode', StopwatchMode.COUNTDOWN);
+        break;
+      case '':
+        setTimeParameter(TimeParameter.SECONDS_15);
+        localStorage.setItem('lastGameTimeParameter', TimeParameter.SECONDS_15);
+        break;
+      case 'ë':
+        setTimeParameter(TimeParameter.SECONDS_30);
+        localStorage.setItem('lastGameTimeParameter', TimeParameter.SECONDS_30);
+        break;
+      case '“':
+        setTimeParameter(TimeParameter.SECONDS_45);
+        localStorage.setItem('lastGameTimeParameter', TimeParameter.SECONDS_45);
+        break;
+      case '‘':
+        setTimeParameter(TimeParameter.SECONDS_60);
+        localStorage.setItem('lastGameTimeParameter', TimeParameter.SECONDS_60);
         break;
     }
   };
@@ -159,28 +204,58 @@ const TypeTester = () => {
           </div>
 
           <div className="flex flex-col justify-center gap-3 item-center">
-            <h3 className="opacity-50">Paragraph Length</h3>
-            <div className="flex flex-wrap justify-center gap-3">
-              {Object.values(LengthParameter)
-                .filter((value) => typeof value === "string")
-                .map((value) => {
+            <h3 className="opacity-50">Stopwatch Mode</h3>
+            <div className="flex gap-3">
+              {Object.values(StopwatchMode).map((value) => {
+                const shortcut = {
+                  [StopwatchMode.TIMER]: 'T',
+                  [StopwatchMode.COUNTDOWN]: 'C',
+                }[value];
+
+                return (
+                  <TooltipButton
+                    key={value}
+                    onClick={() => {
+                      setStopwatchMode(value as StopwatchMode);
+                      localStorage.setItem('lastGameStopwatchMode', value as StopwatchMode);
+                    }}
+                    shortcut={{ key: shortcut }}
+                    className={`px-4 py-1 rounded-md ${
+                      stopwatchMode === value 
+                        ? "bg-text text-background" 
+                        : "text-text bg-secondary hover:bg-tertiary"
+                    } duration-200 transition`}
+                  >
+                    {value === StopwatchMode.TIMER ? "Timer" : "Countdown"}
+                  </TooltipButton>
+                );
+              })}
+            </div>
+          </div>
+          
+          {/* Section temps de décompte (visible uniquement en mode countdown) */}
+          {stopwatchMode === StopwatchMode.COUNTDOWN && (
+            <div className="flex flex-col justify-center gap-3 item-center">
+              <h3 className="opacity-50">Time Limit</h3>
+              <div className="flex flex-wrap justify-center gap-3">
+                {Object.values(TimeParameter).map((value) => {
                   const shortcut = {
-                    [LengthParameter.SHORT]: 'S',
-                    [LengthParameter.MEDIUM]: 'M',
-                    [LengthParameter.LONG]: 'L',
-                    [LengthParameter.VERY_LONG]: 'V',
+                    [TimeParameter.SECONDS_15]: '1',
+                    [TimeParameter.SECONDS_30]: '2',
+                    [TimeParameter.SECONDS_45]: '3',
+                    [TimeParameter.SECONDS_60]: '4',
                   }[value];
 
                   return (
                     <TooltipButton
                       key={value}
                       onClick={() => {
-                        setLengthParameterSelector(value as LengthParameter);
-                        localStorage.setItem('lastGameLengthParameter', value as LengthParameter);
+                        setTimeParameter(value as TimeParameter);
+                        localStorage.setItem('lastGameTimeParameter', value as TimeParameter);
                       }}
                       shortcut={{ key: shortcut }}
                       className={`px-4 py-1 rounded-md ${
-                        lengthParameterSelector === value 
+                        timeParameter === value 
                           ? "bg-text text-background" 
                           : "text-text bg-secondary hover:bg-tertiary"
                       } duration-200 transition`}
@@ -189,8 +264,10 @@ const TypeTester = () => {
                     </TooltipButton>
                   );
                 })}
-            </div>  
-          </div>
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-col justify-center gap-3 item-center">
             <h3 className="opacity-50">Sentence Type</h3>
             <div className="flex gap-3">
@@ -220,6 +297,43 @@ const TypeTester = () => {
               })}
             </div>
           </div>
+
+          {/* N'afficher la section longueur que si on est en mode timer */}
+          {stopwatchMode === StopwatchMode.TIMER && (
+            <div className="flex flex-col justify-center gap-3 item-center">
+              <h3 className="opacity-50">Paragraph Length</h3>
+              <div className="flex flex-wrap justify-center gap-3">
+                {Object.values(LengthParameter)
+                  .filter((value) => typeof value === "string")
+                  .map((value) => {
+                    const shortcut = {
+                      [LengthParameter.SHORT]: 'S',
+                      [LengthParameter.MEDIUM]: 'M',
+                      [LengthParameter.LONG]: 'L',
+                      [LengthParameter.VERY_LONG]: 'V',
+                    }[value];
+
+                    return (
+                      <TooltipButton
+                        key={value}
+                        onClick={() => {
+                          setLengthParameterSelector(value as LengthParameter);
+                          localStorage.setItem('lastGameLengthParameter', value as LengthParameter);
+                        }}
+                        shortcut={{ key: shortcut }}
+                        className={`px-4 py-1 rounded-md ${
+                          lengthParameterSelector === value 
+                            ? "bg-text text-background" 
+                            : "text-text bg-secondary hover:bg-tertiary"
+                        } duration-200 transition`}
+                      >
+                        {value}
+                      </TooltipButton>
+                    );
+                  })}
+              </div>  
+            </div>
+          )}
         </div>
       </motion.div>
       {gameStatut !== GameState.ENDED ? (
@@ -235,6 +349,9 @@ const TypeTester = () => {
             inputRef={inputRef}
             onGameStarts={handleGameStart}
             onGameReset={handleGameReset}
+            // Nouveaux props pour le mode et le temps
+            stopwatchMode={stopwatchMode}
+            countdownTime={getCountdownTime()}
           />
         </div>
       ) : (
