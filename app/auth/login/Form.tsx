@@ -39,19 +39,15 @@ const Form = () => {
         console.log(response);
     }
 
-    async function handleGoogleLogin() {
-        signIn('google', { callbackUrl: '/' });
-    }
 
     useEffect(() => {
-
         const setUpProviders = async () => {
             const resp = await getProviders();
             setProviders(resp);
             setIsLoading(false);
         };
         setUpProviders();
-    }, [providers]);
+    }, []);
 
     return (
         <section
