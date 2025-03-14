@@ -1,6 +1,8 @@
 import UserStatistics from '@models/UserStatistics';
 import dbConnect from '@utils/dbConnect';
 
+
+
 export const GET = async (request, { params }) => {
     try {
         await dbConnect();
@@ -140,7 +142,9 @@ export const POST = async (request, { params }) => {
         await dbConnect();
 
         const body = await request.json();
-        const { _id, wpm, accuracy, totalWords, totalErrors, totalCharacters, lengthParameter, sentenceParameter } = body;
+        console.log("Données reçues:", body);
+        
+        const { wpm, accuracy, totalWords, totalErrors, totalCharacters, lengthParameter, sentenceParameter } = body;
 
         const created = await UserStatistics.create({ 
             userRef: params['id'],
@@ -152,7 +156,6 @@ export const POST = async (request, { params }) => {
             sentenceParameter,
             lengthParameter,
         });
-
 
         if(created) {
             return new Response(JSON.stringify({ created }), {
@@ -169,7 +172,7 @@ export const POST = async (request, { params }) => {
     }
     catch (error) {
         console.log(error);
-        return new Response(JSON.stringify({ message: 'An error occurred' + error }),
+        return new Response(JSON.stringify({ message: 'An error occurred: ' + error.message }),
             {
                 headers: { 'Content-Type': 'application/json' },
                 status: 500,

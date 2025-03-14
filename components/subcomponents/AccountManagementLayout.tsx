@@ -1,8 +1,7 @@
-import { useSession } from "next-auth/react";
-import { signOut } from "next-auth/react"
-import Link from 'next/link';
-import Image from "next/image";
 import { CiLogin, CiLogout } from "@node_modules/react-icons/ci";
+import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from 'next/link';
 import { BsPersonPlus } from "react-icons/bs";
 
 type AccountManagementLayoutProps = {
@@ -33,7 +32,7 @@ const AccountManagementLayout = ({isUserLoggedIn, username, className}: AccountM
               height={24}
               className='rounded-full'
               />
-              {username?.length && username.length > 10 ? username.slice(0, 10).concat('...') : username}</div>
+              {username?.length && username.length > 9 ? username.slice(0, 7).concat('...') : username}</div>
           </Link>
 
 

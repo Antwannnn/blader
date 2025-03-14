@@ -32,17 +32,12 @@ const Leaderboard = () => {
         const leaderboardData = await leaderboardResponse.json();
         setLeaderboard(leaderboardData);
 
-        if (session?.user?.name) {
-          // D'abord récupérer l'ID de l'utilisateur
-          const userResponse = await fetch(`/api/user/${session.user.name}`);
-          const userData = await userResponse.json();
-          if (userData.user._id) {
-            // Ensuite récupérer ses statistiques avec l'ID
-            const userStatsResponse = await fetch(`/api/user/statistics/${userData.user._id}`);
-            const userStats = await userStatsResponse.json();
-            setUserGamesPlayed(userStats?.totalGames || 0);
-          }
+        if (session?.user?.id) {
+          const userStatsResponse = await fetch(`/api/user/statistics/${session?.user?.id}`);
+          const userStats = await userStatsResponse.json();
+          setUserGamesPlayed(userStats?.totalGames || 0);
         }
+        
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {

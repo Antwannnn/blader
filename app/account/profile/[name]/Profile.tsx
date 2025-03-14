@@ -27,7 +27,7 @@ const Profile = () => {
         const keyboard = formData.get('keyboard') as string;
 
         try {
-            const response = await fetch(`/api/user/${userData?.username}`, {
+            const response = await fetch(`/api/user/profile/${userData?.username}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ const Profile = () => {
     useEffect(() => {
         const fetcher = async () => {
             const urlLastSegment = router.split('/').pop();
-            const res = await fetch(`/api/user/${urlLastSegment}`, {
+            const res = await fetch(`/api/user/profile/${urlLastSegment}`, {
                 method: 'GET',
             });
             const data = await res.json();

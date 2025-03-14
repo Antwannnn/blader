@@ -1,13 +1,12 @@
-import dbConnect from '@utils/dbConnect';
 import User from '@models/User';
-import UserStatistics from '@models/UserStatistics';
+import dbConnect from '@utils/dbConnect';
 
 export const GET = async (request, { params }) => {
     try {
 
         await dbConnect();
 
-        const user = await User.findOne({ name: params.name });
+        const user = await User.findById(params.id);
 
         if (!user) {
             return new Response(JSON.stringify({ error: 'User not found.' }), {
@@ -38,7 +37,7 @@ export const PUT = async (request, { params }) => {
 
     await dbConnect();
 
-    const user = await User.findOneAndUpdate({ name: params.name }, { bio, keyboard, avatar });
+    const user = await User.findOneAndUpdate({ name: params.id}, { bio, keyboard, avatar });
 
     return new Response(JSON.stringify({ message: 'Profile updated' }), {
             headers: { 'Content-Type': 'application/json' },

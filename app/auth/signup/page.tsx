@@ -28,7 +28,7 @@ const Signup = () => {
     clearTimeout(timer);
 
     const newTimer = setTimeout(async () => {
-      const res = await fetch(`/api/user/${pUsername}`);
+      const res = await fetch(`/api/user/profile/${pUsername}`);
 
       if (res.status === 404) {
         setUsernameAvailable(true);

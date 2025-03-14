@@ -2,55 +2,49 @@ import User from '@models/User';
 import MongooseAdapter from '@utils/adapter/mongoose-adapter';
 import dbConnect from '@utils/dbConnect';
 import dbConnection from '@utils/mongodb';
-import NextAuth from 'next-auth';
-import CredentialProvider from 'next-auth/providers/credentials';
+import bcrypt from 'bcryptjs';
+import NextAuth, { NextAuthOptions, Session } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import DiscordProvider from 'next-auth/providers/discord';
 import GoogleProvider from 'next-auth/providers/google';
 require('dotenv').config();
 
-const bcrypt = require('bcryptjs');
-
-
-const handler = NextAuth({
-
+export const authOptions: NextAuthOptions = {
     providers: [
         GoogleProvider({
             name: "Google",
             id: "google",
-            type: "oauth",
-            clientId: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            clientId: process.env.GOOGLE_CLIENT_ID || '',
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
 
             profile: (profileData) => {
                 return {
-                    id: profileData?.sub,
-                    name: profileData?.name,
-                    email: profileData?.email,
-                    image: profileData?.picture,
+                    id: profileData.sub,
+                    name: profileData.name,
+                    email: profileData.email,
+                    image: profileData.picture,
                 };
             },
-
         }),
 
         DiscordProvider({
             name: "Discord",
             id: "discord",
-            type: "oauth",
-            clientId: process.env.DISCORD_CLIENT_ID,
-            clientSecret: process.env.DISCORD_CLIENT_SECRET,
+            clientId: process.env.DISCORD_CLIENT_ID || '',
+            clientSecret: process.env.DISCORD_CLIENT_SECRET || '',
 
             profile: (profileData) => {
                 return {
-                    id: profileData?.id,
-                    name: profileData?.username,
-                    email: profileData?.email,
-                    image: 'https://cdn.discordapp.com/avatars/' + profileData?.id + '/' + profileData?.avatar + '.png',
+                    id: profileData.id,
+                    name: profileData.username,
+                    email: profileData.email,
+                    image: `https://cdn.discordapp.com/avatars/${profileData.id}/${profileData.avatar}.png`,
                 };
             },
         }),
 
-
-        CredentialProvider({
+        CredentialsProvider({
             name: "credentials",
 
             credentials: {
@@ -59,23 +53,27 @@ const handler = NextAuth({
             },
 
             async authorize(credentials, _req) {
+                if (!credentials) return null;
+                
                 try {
                     const { email, password } = credentials;
                     await dbConnect();
-                    const userExists = await User.findOne({ email: email })
+                    const userExists = await User.findOne({ email: email });
                     if (!userExists) {
-                        console.log("incorrect email or password")
+                        console.log("incorrect email or password");
                         throw new Error("User does not exist");
                     }
 
                     if (!(bcrypt.compareSync(password, userExists.password)) || userExists.email !== email) {
-
                         throw new Error("Incorrect email or password");
                     }
                     return userExists;
 
                 } catch (error) {
-                    throw new Error(error.message);
+                    if (error instanceof Error) {
+                        throw new Error(error.message);
+                    }
+                    throw new Error("An unexpected error occurred");
                 }
             },
         }),
@@ -94,22 +92,23 @@ const handler = NextAuth({
     adapter: MongooseAdapter(dbConnection),
 
     callbacks: {
-
         jwt: ({ token, user }) => {
             if (user) {
-                token.id = user._id;
+                token.id = user.id;
             }
             return token;
         },
-        session: ({ session, token }) => {
+        session: ({ session, token }: { session: Session; token: JWT }) => {
             if (token) {
-                session.user.id = token.id;
+                session.user.id = token.id as string;
             }
             return session;
         }
     }
-});
+};
 
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
 

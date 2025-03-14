@@ -15,6 +15,7 @@ import { GameResults } from "@app/types/GameResults";
 import KeyboardLayout from "@components/KeyboardLayout";
 import KeyIcon from "@components/subcomponents/KeyIcon";
 import { useSettings } from "@contexts/SettingsContext";
+import { encryptGameData } from "@utils/cryptoUtils";
 import { keyboardCodeAdapter } from "@utils/keyboard/keyboardCodeAdapter";
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef } from "react";
@@ -123,6 +124,20 @@ const TemplateInputComponent = ({
   const { parameters } = useSettings();
 
   const router = useRouter();
+
+  const [gameSessionId, setGameSessionId] = useState("");
+
+  useEffect(() => {
+    // Générer un ID de session unique pour cette partie
+    const sessionId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+    setGameSessionId(sessionId);
+    localStorage.setItem('currentGameSession', sessionId);
+    
+    // Nettoyage
+    return () => {
+      localStorage.removeItem('currentGameSession');
+    };
+  }, []);
 
   const verifyInputMatching = (key: string) => {
     if (
@@ -315,7 +330,15 @@ const TemplateInputComponent = ({
     }
   }, [time.rawTime]);
 
-  const handleGameEnd = () => {
+  const handleGameEnd = async () => {
+    // Vérifier que la session est toujours valide
+    const currentSession = localStorage.getItem('currentGameSession');
+    if (currentSession !== gameSessionId) {
+      console.error("Session de jeu invalide");
+      router.push('/game/typetester');
+      return;
+    }
+    
     time.stop();
     const finalResults = {
       sentence: effectiveSentence,
@@ -329,11 +352,26 @@ const TemplateInputComponent = ({
       totalCharacters: splittedSentence.length,
       finalWpm: getWpm(),
       finalAccuracy: accuracy,
-      mode: stopwatchMode
+      mode: stopwatchMode,
+      // Métriques de vérification
+      totalKeystrokes: input.length + indexedError.length,
+      avgTimePerKeystroke: time.rawTime / (input.length + indexedError.length),
+      keystrokesPerSecond: (input.length + indexedError.length) / (time.rawTime / 1000),
+      gameId: Date.now().toString(36) + Math.random().toString(36).substring(2)
     };
     
-    localStorage.setItem('lastGameResults', JSON.stringify(finalResults));
-    localStorage.setItem('lastGameStopwatchMode', stopwatchMode);
+    try {
+      const encryptedData = await encryptGameData(finalResults);
+      
+      if (encryptedData) {
+        localStorage.setItem('lastGameResults', encryptedData);
+        // Autres opérations...
+      } else {
+        console.error("Échec du chiffrement : résultat vide");
+      }
+    } catch (error) {
+      console.error("Erreur lors du chiffrement des résultats:", error);
+    }
     
     router.push('/game/results');
   };

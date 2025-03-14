@@ -205,6 +205,12 @@ const TypeTester = () => {
     }
   };
 
+  useEffect(() => {
+    // Forcer la suppression des résultats précédents lorsqu'on démarre un nouveau jeu
+    localStorage.removeItem('lastGameResults');
+    localStorage.removeItem('resultsSubmitted');
+  }, []);
+
   return (
     <section onKeyDown={handleShortcuts} className="flex flex-col overflow-auto  justify-center gap-1 lg:pt-32 md:pt-20 pt-10 items-center text-text z-30">
       <motion.div
