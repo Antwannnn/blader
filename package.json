@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "watch-files": "nodemon --watch src --exec 'node scripts/file-watcher.js'",
+    "auto-tests": "nodemon --watch src --ext js,jsx,ts,tsx --exec 'npm test'"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.8.0",

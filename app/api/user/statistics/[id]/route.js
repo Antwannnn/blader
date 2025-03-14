@@ -143,11 +143,21 @@ export const POST = async (request, { params }) => {
 
         const body = await request.json();
         console.log("Données reçues:", body);
-        
-        const { wpm, accuracy, totalWords, totalErrors, totalCharacters, lengthParameter, sentenceParameter } = body;
+
+        if(body.uniqueHash) {
+            const existingStat = await UserStatistics.findOne({ uniqueHash: body.uniqueHash });
+            if(existingStat) {
+                return new Response(JSON.stringify({ error: 'Statistic already exists' }), {
+                    headers: { 'Content-Type': 'application/json' },
+                    status: 400,
+                });
+            }
+        }
+        const { uniqueHash, wpm, accuracy, totalWords, totalErrors, totalCharacters, lengthParameter, sentenceParameter } = body;
 
         const created = await UserStatistics.create({ 
             userRef: params['id'],
+            uniqueHash,
             wpm, 
             accuracy, 
             totalWords, 

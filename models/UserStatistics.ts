@@ -10,6 +10,12 @@ const UserStatisticsSchema = new Schema({
     required: true,
   },
 
+  // Allow to avoid duplicate statistics
+  uniqueHash: {
+    type: String,
+    required: true,
+  },
+
   wpm: {
     type: Number,
     required: true,

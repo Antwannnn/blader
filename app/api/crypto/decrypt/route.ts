@@ -14,6 +14,8 @@ export async function POST(request: Request) {
       console.error('Données manquantes');
       return NextResponse.json({ error: 'Données chiffrées manquantes' }, { status: 400 });
     }
+
+    console.log('encryptedData', encryptedData);
         
     try {
       // Décoder la chaîne base64

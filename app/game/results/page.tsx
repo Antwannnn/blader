@@ -7,7 +7,7 @@ import { GameResults } from '@app/types/GameResults';
 import Link from '@node_modules/next/link';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   CartesianGrid,
   Legend,
@@ -23,10 +23,16 @@ const ResultsPage = () => {
   const [results, setResults] = useState<GameResults | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [renderCharts, setRenderCharts] = useState(false);
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
   const router = useRouter();
   const { data: session } = useSession();
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const { checkAchievements, showUnlockAnimation } = useAchievements();
+  
+  // Référence pour suivre les rendus
+  const renderCountRef = useRef(0);
+  const animationDisabledRef = useRef(false);
+  
   const onUnmount = useRef(() => {});
   const animationKey = useRef(0);
   const chartKey = useRef(Date.now());
@@ -62,10 +68,19 @@ const ResultsPage = () => {
         }, 100);
         
         if (session?.user && !hasSubmitted) {
-          await saveUserStatistics(decryptedResults);
-          setHasSubmitted(true);
-          
-          localStorage.removeItem('lastGameResults');
+          try {
+            await saveUserStatistics(decryptedResults);
+            setHasSubmitted(true);
+            
+            localStorage.removeItem('lastGameResults');
+          } catch (error: any) {
+            if (error.status === 400) {
+              setIsPreviewMode(true);
+              console.log('Résultats déjà soumis, affichage en mode preview');
+            } else {
+              console.error('Erreur lors de l\'enregistrement des statistiques:', error);
+            }
+          }
         }
       } catch (error) {
         console.error('Erreur lors du traitement des résultats:', error);
@@ -95,6 +110,7 @@ const ResultsPage = () => {
     try {
       console.log("Données à envoyer:", {
         wpm: gameResults.finalWpm,
+        uniqueHash: localStorage.getItem('lastGameResults') || '',
         accuracy: gameResults.finalAccuracy,
         totalWords: gameResults.totalWords,
         totalCharacters: gameResults.totalCharacters,
@@ -109,6 +125,7 @@ const ResultsPage = () => {
 
       const requestData = {
         userRef: session?.user?.id,
+        uniqueHash: localStorage.getItem('lastGameResults') || '',
         wpm: typeof gameResults.finalWpm === 'number' ? gameResults.finalWpm : 0,
         accuracy: typeof gameResults.finalAccuracy === 'number' ? gameResults.finalAccuracy : 0,
         totalWords: typeof gameResults.totalWords === 'number' ? gameResults.totalWords : 0,
@@ -131,7 +148,11 @@ const ResultsPage = () => {
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Erreur serveur:', errorData);
-        throw new Error(`Échec de l'enregistrement des statistiques: ${response.status} ${response.statusText}`);
+        
+        const error = new Error(`Échec de l'enregistrement des statistiques: ${response.statusText}`);
+        (error as any).status = response.status;
+        (error as any).data = errorData;
+        throw error;
       }
 
       const newAchievements = await checkAchievements(session?.user?.id!);
@@ -144,6 +165,16 @@ const ResultsPage = () => {
       console.error('Erreur lors de l\'enregistrement des statistiques:', error);
     }
   };
+
+  // Mémoriser les données du graphique pour éviter les re-calculs
+  const chartData = useMemo(() => {
+    if (!results) return [];
+    return results.wpmOverTime.map((wpm, index) => ({
+      time: index,
+      wpm: wpm,
+      accuracy: results.accuracyOverTime[index]
+    }));
+  }, [results]);
 
   if (isLoading) {
     return (
@@ -165,12 +196,6 @@ const ResultsPage = () => {
   const formattedTime = `${Math.floor(timeInSeconds / 60)}:${(timeInSeconds % 60).toFixed(1)}`;
   const mode = results.mode || StopwatchMode.TIMER;
 
-  const chartData = results.wpmOverTime.map((wpm, index) => ({
-    time: index,
-    wpm: wpm,
-    accuracy: results.accuracyOverTime[index]
-  }));
-
   return (
     <div className="min-h-screen mt-16 p-4 flex flex-col w-screen justify-center items-center gap-8" key={animationKey.current}>
       <div className="flex justify-between w-full items-center animate-fadeIn">
@@ -184,6 +209,19 @@ const ResultsPage = () => {
           </button>
         </div>
       </div>
+
+      {isPreviewMode && (
+        <div className="w-full px-4 py-3 bg-accent/20 border border-accent/40 rounded-lg animate-fadeIn">
+          <div className="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-accent" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+            </svg>
+            <p className="text-text font-medium">
+              Ces résultats ont déjà été enregistrés. Vous consultez une prévisualisation de résultats déjà sauvegardés.
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 w-full md:grid-cols-4 gap-4 animate-fadeIn animation-delay-200">
         <div className="bg-secondary/40 backdrop-blur-sm rounded-xl p-6">
@@ -215,8 +253,10 @@ const ResultsPage = () => {
         <div className="h-[400px] w-full">
           {renderCharts ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} key={Math.random()}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--text)/0.5)" key={chartKey.current} />
+              <LineChart 
+                data={chartData} 
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--text)/0.5)" />
                 <XAxis 
                   dataKey="time" 
                   stroke="rgb(var(--text))"
@@ -231,9 +271,8 @@ const ResultsPage = () => {
                   yAxisId="right"
                   orientation="right"
                   stroke="rgb(var(--text))"
-
                   domain={[0, 100]}
-                  label={{ value: 'Accuracy (%)', angle: 90, position: 'insideRight',  stroke: 'rgb(var(--text))' }}
+                  label={{ value: 'Accuracy (%)', angle: 90, position: 'insideRight', stroke: 'rgb(var(--text))' }}
                 />
                 <Tooltip
                   contentStyle={{ 
@@ -243,12 +282,7 @@ const ResultsPage = () => {
                     color: '#fff'
                   }}
                 />
-                <Legend 
-                  wrapperStyle={{
-                    
-                  }}
-
-                />
+                <Legend />
                 <Line
                   yAxisId="left"
                   type="monotone"
@@ -257,6 +291,11 @@ const ResultsPage = () => {
                   stroke="rgb(var(--text))"
                   strokeWidth={2}
                   dot={false}
+                  isAnimationActive={!animationDisabledRef.current}
+                  animationDuration={1000}
+                  onAnimationEnd={() => {
+                    animationDisabledRef.current = true;
+                  }}
                 />
                 <Line
                   yAxisId="right"
@@ -266,6 +305,8 @@ const ResultsPage = () => {
                   stroke="rgb(var(--accent))"
                   strokeWidth={2}
                   dot={false}
+                  isAnimationActive={!animationDisabledRef.current}
+                  animationDuration={1000}
                 />
               </LineChart>
             </ResponsiveContainer>

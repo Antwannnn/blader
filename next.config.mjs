@@ -21,7 +21,14 @@ const nextConfig = {
             }
         ],
     },
-    webpack(config) {
+    webpack(config, { isServer, dev }) {
+        if (!isServer && dev) {
+            config.watchOptions = {
+                ...config.watchOptions,
+                poll: 1000,
+                aggregateTimeout: 300,
+            };
+        }
         config.experiments = { 
             ...config.experiments, 
             topLevelAwait: true,
@@ -29,10 +36,6 @@ const nextConfig = {
         return config;
     },
     output: 'standalone',
-    typescript: {
-        // Pendant le développement, vous pouvez mettre ça à true
-        ignoreBuildErrors: true,
-    }
 };
 
 export default nextConfig;
