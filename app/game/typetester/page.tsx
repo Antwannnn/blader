@@ -35,7 +35,7 @@ const animationVariants = {
   },
 };
 
-const timeToLength = {
+export const timeToLength = {
   [TimeParameter.SECONDS_15]: LengthParameter.SHORT,
   [TimeParameter.SECONDS_30]: LengthParameter.MEDIUM,
   [TimeParameter.SECONDS_45]: LengthParameter.LONG,
@@ -374,6 +374,7 @@ const TypeTester = () => {
             onGameReset={handleGameReset}
             // Nouveaux props pour le mode et le temps
             stopwatchMode={stopwatchMode}
+            timeParameter={timeParameter}
             countdownTime={getCountdownTime()}
           />
         </div>

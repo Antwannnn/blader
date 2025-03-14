@@ -9,6 +9,7 @@ import {
   Quote,
   SentenceParameter,
   StopwatchMode,
+  TimeParameter,
 } from "@app/types/GameParameters";
 import { GameResults } from "@app/types/GameResults";
 import KeyboardLayout from "@components/KeyboardLayout";
@@ -19,6 +20,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef } from "react";
 import { GoTab } from "react-icons/go";
 import useState from "react-usestateref";
+import { timeToLength } from "./typetester/page";
 
 interface TemplateProps {
   gameType: GameTypeParameter;
@@ -32,6 +34,7 @@ interface TemplateProps {
   onGameReset: () => void;
   inputRef?: React.RefObject<HTMLInputElement>;
   stopwatchMode?: StopwatchMode;
+  timeParameter?: TimeParameter;
   countdownTime?: number;
 }
 
@@ -45,6 +48,7 @@ const TemplateInputComponent = ({
   onGameStarts,
   onGameReset,
   gameState,
+  timeParameter,
   inputRef,
   stopwatchMode = StopwatchMode.TIMER,
   countdownTime = 0,
@@ -157,8 +161,10 @@ const TemplateInputComponent = ({
 
   // Fonction pour générer plus de contenu
   const generateMoreContent = useCallback(async () => {
+
     if (sentenceParameter === SentenceParameter.QUOTE) {
-      const newQuote = await fetchQuote(lengthParameter);
+      // Convertir l'enum en clé littérale
+      const newQuote = await fetchQuote(timeToLength[timeParameter!]);
       if (typeof newQuote !== "string") {
         setDynamicSentence(prev => prev + " " + newQuote.content);
         // Mettre à jour l'auteur avec le nouvel auteur
@@ -167,7 +173,7 @@ const TemplateInputComponent = ({
         setDynamicSentence(prev => prev + " " + newQuote);
       }
     } else {
-      const newSentence = await fetchRandomSentence(lengthParameter);
+      const newSentence = await fetchRandomSentence(timeToLength[timeParameter!]);
       setDynamicSentence(prev => prev + " " + newSentence);
       // Pour les phrases aléatoires, pas d'auteur à mettre à jour
       setDynamicAuthor("");
