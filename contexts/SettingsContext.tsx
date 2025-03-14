@@ -2,10 +2,15 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
+export enum KeyboardLayout {
+  QWERTY = 'qwerty',
+  AZERTY = 'azerty',
+}
+
 // Type pour tous les paramètres possibles
 interface Parameters {
   keyboard: {
-    layout: 'qwerty' | 'azerty';
+    layout: KeyboardLayout;
     show: boolean;
   };
 }
@@ -13,7 +18,7 @@ interface Parameters {
 // Valeurs par défaut des paramètres
 const DEFAULT_PARAMETERS: Parameters = {
   keyboard: {
-    layout: 'qwerty',
+    layout: KeyboardLayout.QWERTY,
     show: true,
   },
 };

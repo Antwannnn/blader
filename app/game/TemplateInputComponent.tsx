@@ -14,6 +14,7 @@ import { GameResults } from "@app/types/GameResults";
 import KeyboardLayout from "@components/KeyboardLayout";
 import KeyIcon from "@components/subcomponents/KeyIcon";
 import { useSettings } from "@contexts/SettingsContext";
+import { keyboardCodeAdapter } from "@utils/keyboard/keyboardCodeAdapter";
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef } from "react";
 import { GoTab } from "react-icons/go";
@@ -57,16 +58,31 @@ const TemplateInputComponent = ({
   
   // État pour le contenu procédural
   const [dynamicSentence, setDynamicSentence] = useState<string>("");
+  const [dynamicAuthor, setDynamicAuthor] = useState<string>("");
   const [hasGeneratedMore, setHasGeneratedMore] = useState<boolean>(false);
+  const [initialSentenceLength, setInitialSentenceLength] = useState<number>(0);
+  const [displayedAuthor, setDisplayedAuthor] = useState<string>("");
 
   const exampleSentence = "Example sentence displayed when no sentence is provided.";
   const quoteContentIfNotString = typeof sentence !== "string" ? sentence.content : sentence;
+  const quoteAuthorIfNotString = typeof sentence !== "string" ? sentence.author : "";
   const finalSentence = quoteContentIfNotString ? quoteContentIfNotString : exampleSentence;
   
   // Utiliser la sentence dynamique si elle existe, sinon utiliser la sentence initiale
   const effectiveSentence = dynamicSentence || finalSentence;
   const splittedSentence = effectiveSentence.split("");
   const wordSplittedSentence = effectiveSentence.split(" ");
+
+  // Déterminer quel auteur afficher en fonction de la position actuelle
+  useEffect(() => {
+    if (currentIndex > initialSentenceLength && dynamicAuthor) {
+      // L'utilisateur tape dans la nouvelle citation
+      setDisplayedAuthor(dynamicAuthor);
+    } else {
+      // L'utilisateur tape dans la citation originale
+      setDisplayedAuthor(quoteAuthorIfNotString);
+    }
+  }, [currentIndex, initialSentenceLength, dynamicAuthor, quoteAuthorIfNotString]);
 
   // Nettoyer le flag au démarrage d'une nouvelle partie
   useEffect(() => {
@@ -121,7 +137,7 @@ const TemplateInputComponent = ({
     setGameResults({
       mode: stopwatchMode,
       sentence: effectiveSentence,
-      author: (typeof sentence !== "string" ? sentence.author : ""),
+      author: displayedAuthor,
       wpmOverTime: [0],
       accuracyOverTime: [0],
       totalWords: 0,
@@ -142,12 +158,19 @@ const TemplateInputComponent = ({
   // Fonction pour générer plus de contenu
   const generateMoreContent = useCallback(async () => {
     if (sentenceParameter === SentenceParameter.QUOTE) {
-      const newQuote = fetchQuote(lengthParameter);
-      const quoteContent = typeof newQuote !== "string" ? newQuote.content : newQuote;
-      setDynamicSentence(prev => prev + " " + quoteContent);
+      const newQuote = await fetchQuote(lengthParameter);
+      if (typeof newQuote !== "string") {
+        setDynamicSentence(prev => prev + " " + newQuote.content);
+        // Mettre à jour l'auteur avec le nouvel auteur
+        setDynamicAuthor(newQuote.author);
+      } else {
+        setDynamicSentence(prev => prev + " " + newQuote);
+      }
     } else {
-      const newSentence = fetchRandomSentence(lengthParameter);
+      const newSentence = await fetchRandomSentence(lengthParameter);
       setDynamicSentence(prev => prev + " " + newSentence);
+      // Pour les phrases aléatoires, pas d'auteur à mettre à jour
+      setDynamicAuthor("");
     }
     setHasGeneratedMore(true);
   }, [sentenceParameter, lengthParameter]);
@@ -171,13 +194,16 @@ const TemplateInputComponent = ({
     }
   }, [currentIndex, hasGeneratedMore, splittedSentence.length]);
 
-  // Initialiser la phrase dynamique avec la phrase initiale au démarrage
+  // Initialiser la phrase dynamique et l'auteur dynamique avec les valeurs initiales au démarrage
   useEffect(() => {
     if (gameState === GameState.RESET || gameState === GameState.STARTED) {
       setDynamicSentence(finalSentence);
+      setInitialSentenceLength(finalSentence.length);
+      setDynamicAuthor("");
+      setDisplayedAuthor(quoteAuthorIfNotString);
       setHasGeneratedMore(false);
     }
-  }, [finalSentence, gameState]);
+  }, [finalSentence, quoteAuthorIfNotString, gameState]);
 
   // Modifier le calcul du WPM pour prendre en compte le mode
   const getWpm = () => {
@@ -243,7 +269,7 @@ const TemplateInputComponent = ({
               Math.abs(accuracy - (lastAccuracy || 0)) > 2) {
             setGameResults({
               sentence: effectiveSentence,
-              author: (typeof sentence !== "string" ? sentence.author : ""),
+              author: displayedAuthor,
               mode: stopwatchMode,
               wpmOverTime: [...gameResults.wpmOverTime, wpm],
               accuracyOverTime: [...gameResults.accuracyOverTime, accuracy],
@@ -252,8 +278,6 @@ const TemplateInputComponent = ({
               correct: input.length,
               totalWords: wordSplittedSentence.length,
               totalCharacters: splittedSentence.length,
-              finalWpm: wpm,
-              finalAccuracy: accuracy,
             });
           }
         
@@ -267,7 +291,7 @@ const TemplateInputComponent = ({
         clearInterval(intervalId);
       }
     };
-  }, [gameState]);
+  }, [gameState, wpm, accuracy, time.rawTime, effectiveSentence, displayedAuthor]);
 
   // Mettre à jour WPM et accuracy en temps réel pour l'affichage
   useEffect(() => {
@@ -289,7 +313,7 @@ const TemplateInputComponent = ({
     time.stop();
     const finalResults = {
       sentence: effectiveSentence,
-      author: (typeof sentence !== "string" ? sentence.author : ""),
+      author: displayedAuthor,
       wpmOverTime: [...gameResults.wpmOverTime, wpm],
       accuracyOverTime: [...gameResults.accuracyOverTime, accuracy],
       time: stopwatchMode === StopwatchMode.TIMER ? time.rawTime : countdownTime,
@@ -309,12 +333,15 @@ const TemplateInputComponent = ({
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.ctrlKey && "cvxspwuaz".indexOf(e.key) !== -1) {
+
+    const code = keyboardCodeAdapter(e.code, parameters.keyboard.layout);
+
+    if(e.altKey && (code === "KeyC" || code === "KeyT" || code === "KeyN" || code === "KeyQ" || code === "KeyS" || code === "KeyM" || code === "KeyL" || code === "KeyV" || code === "KeyR" || code === "Digit1" || code === "Digit2" || code === "Digit3" || code === "Digit4")) {
       e.preventDefault();
       return;
     }
 
-    if(e.altKey && "®Òµ¬◊‡~≈†ë“‘".indexOf(e.key) !== -1) {
+    if (e.ctrlKey && "cvxspwuaz".indexOf(e.key) !== -1) {
       e.preventDefault();
       return;
     }
@@ -399,7 +426,7 @@ const TemplateInputComponent = ({
         setGameResults({
           mode: stopwatchMode,
           sentence: effectiveSentence,
-          author: (typeof sentence !== "string" ? sentence.author : ""),
+          author: displayedAuthor,
           wpmOverTime: [...gameResults.wpmOverTime, wpm],
           accuracyOverTime: [...gameResults.accuracyOverTime, accuracy],
           time: time.rawTime,
@@ -642,11 +669,11 @@ const TemplateInputComponent = ({
           })()}
         </span>
       </div>
-      {typeof sentence !== "string" && (
-        <div className=" p-2 text-text opacity-50">
-          <p>By {sentence.author}</p>
+      {displayedAuthor ? (
+        <div className="p-2 text-text opacity-50">
+          <p>By {displayedAuthor}</p>
         </div>
-      )}
+      ) : null}
       <div className="grid place-items-center sm:grid-cols-3 grid-cols-1 sm:grid-rows-1 grid-rows-3 gr sm:flex-row flex-col w-full justify-around">
         <div className="flex flex-row gap-2 sm:flex-col text-text text-md opacity-50">
           <h1>

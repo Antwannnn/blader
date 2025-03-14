@@ -11,6 +11,8 @@ import {
 } from "@app/types/GameParameters";
 import { GameResults } from "@app/types/GameResults";
 import TooltipButton from "@components/subcomponents/TooltipButton";
+import { useSettings } from "@contexts/SettingsContext";
+import { keyboardCodeAdapter } from "@utils/keyboard/keyboardCodeAdapter";
 import { motion, useAnimation } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -32,6 +34,13 @@ const animationVariants = {
     },
   },
 };
+
+const timeToLength = {
+  [TimeParameter.SECONDS_15]: LengthParameter.SHORT,
+  [TimeParameter.SECONDS_30]: LengthParameter.MEDIUM,
+  [TimeParameter.SECONDS_45]: LengthParameter.LONG,
+  [TimeParameter.SECONDS_60]: LengthParameter.VERY_LONG,
+}
 
 const TypeTester = () => {
   const [lengthParameterSelector, setLengthParameterSelector] =
@@ -58,6 +67,7 @@ const TypeTester = () => {
     errors: 0,
     correct: 0,
   });
+  const { parameters } = useSettings();
 
   const handleGameStart = () => {
     animate.start("hidden");
@@ -80,11 +90,19 @@ const TypeTester = () => {
     switch (sentenceParameterSelector) {
       case SentenceParameter.QUOTE:
         console.log('fetchQuote');
-        setSentence(fetchQuote(lengthParameterSelector));
+        if(stopwatchMode === StopwatchMode.COUNTDOWN) {
+          setSentence(fetchQuote(timeToLength[timeParameter]));
+        } else {
+          setSentence(fetchQuote(lengthParameterSelector));
+        }
         break;
       case SentenceParameter.RANDOM:
         console.log('fetchRandomSentence');
-        setSentence(fetchRandomSentence(lengthParameterSelector));
+        if(stopwatchMode === StopwatchMode.COUNTDOWN) {
+          setSentence(fetchRandomSentence(timeToLength[timeParameter]));
+        } else {
+          setSentence(fetchRandomSentence(lengthParameterSelector));
+        }
         break;
     }
 
@@ -107,7 +125,7 @@ const TypeTester = () => {
 
   useEffect(() => {
     handleSetSentence();
-  }, [lengthParameterSelector, sentenceParameterSelector]);
+  }, [lengthParameterSelector, sentenceParameterSelector, stopwatchMode, timeParameter]);
 
   // Convertir les secondes en millisecondes pour le mode countdown
   const getCountdownTime = (): number => {
@@ -120,62 +138,67 @@ const TypeTester = () => {
     }
   };
 
-  // Gestionnaire de raccourcis clavier séparé
+  // Gestionnaire de raccourcis clavier compatible multi-plateforme
   const handleShortcuts = (e: React.KeyboardEvent<HTMLInputElement>) => {
-
+    
     if (!e.altKey || gameStatut === GameState.STARTED) return;
 
-
+    // Prevent default browser behavior for these shortcut combinations
     e.preventDefault();
-    switch (e.key) {
-      case '®':
+    
+    // Use e.code instead of e.key to detect the physical key
+    // regardless of whether it produces a special character
+    const code = keyboardCodeAdapter(e.code, parameters.keyboard.layout);
+    
+    switch (code) {
+      case 'KeyR':
         handleSetSentence();
         break;
-      case 'Ò':
+      case 'KeyS':
         setLengthParameterSelector(LengthParameter.SHORT);
         localStorage.setItem('lastGameLengthParameter', LengthParameter.SHORT);
         break;
-      case 'µ':
+      case 'KeyM':
         setLengthParameterSelector(LengthParameter.MEDIUM);
         localStorage.setItem('lastGameLengthParameter', LengthParameter.MEDIUM);
         break;
-      case '¬':
+      case 'KeyL':
         setLengthParameterSelector(LengthParameter.LONG);
         localStorage.setItem('lastGameLengthParameter', LengthParameter.LONG);
         break;
-      case '◊':
+      case 'KeyV':
         setLengthParameterSelector(LengthParameter.VERY_LONG);
         localStorage.setItem('lastGameLengthParameter', LengthParameter.VERY_LONG);
         break;
-      case '‡':
+      case 'KeyQ':
         setSentenceParameterSelector(SentenceParameter.QUOTE);
         localStorage.setItem('lastGameSentenceParameter', SentenceParameter.QUOTE);
-          break;
-      case '~':
+        break;
+      case 'KeyN':
         setSentenceParameterSelector(SentenceParameter.RANDOM);
         localStorage.setItem('lastGameSentenceParameter', SentenceParameter.RANDOM);
         break;
-      case '†':
+      case 'KeyT':
         setStopwatchMode(StopwatchMode.TIMER);
         localStorage.setItem('lastGameStopwatchMode', StopwatchMode.TIMER);
         break;
-      case '≈':
+      case 'KeyC':
         setStopwatchMode(StopwatchMode.COUNTDOWN);
         localStorage.setItem('lastGameStopwatchMode', StopwatchMode.COUNTDOWN);
         break;
-      case '':
+      case 'Digit1':
         setTimeParameter(TimeParameter.SECONDS_15);
         localStorage.setItem('lastGameTimeParameter', TimeParameter.SECONDS_15);
         break;
-      case 'ë':
+      case 'Digit2':
         setTimeParameter(TimeParameter.SECONDS_30);
         localStorage.setItem('lastGameTimeParameter', TimeParameter.SECONDS_30);
         break;
-      case '“':
+      case 'Digit3':
         setTimeParameter(TimeParameter.SECONDS_45);
         localStorage.setItem('lastGameTimeParameter', TimeParameter.SECONDS_45);
         break;
-      case '‘':
+      case 'Digit4':
         setTimeParameter(TimeParameter.SECONDS_60);
         localStorage.setItem('lastGameTimeParameter', TimeParameter.SECONDS_60);
         break;

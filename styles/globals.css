@@ -154,8 +154,8 @@ input, textarea, button {
     --accent-disabled-hover: 96 96 96;
   }
   [data-theme='cyberpunk'] {
-    --background: 186 52 117;
-    --secondary: 179 77 126;
+    --background: 186 86 134;
+    --secondary: 156 70 111;
     --tertiary: 181 90 122;
     --text: 247 236 106;
     --text-secondary: 252 244 139;
@@ -207,10 +207,10 @@ input, textarea, button {
 
   [data-theme='neon'] {
     --background: 57 12 163;
-    --secondary: 62 55 201;
-    --tertiary: 67 98 238;
-    --text: 255 0 115;
-    --text-secondary: 207 78 136;
+    --secondary: 76 26 196;
+    --tertiary: 100 36 238;
+    --text: 255 110 175;
+    --text-secondary: 255 110 175;
     --text-error: 255 0 0;
     --accent: 255 204 0;
     --accent-hover: 255 79 79;
@@ -220,8 +220,8 @@ input, textarea, button {
 
   [data-theme='cream'] {
     --background: 242 233 228;
-    --secondary: 222 194 189;
-    --tertiary: 201 173 167;
+    --secondary: 230 218 211;
+    --tertiary: 217 202 193;
     --text: 34 34 59;
     --text-secondary: 54 54 89;
     --text-error: 255 0 0;
@@ -272,8 +272,8 @@ input, textarea, button {
 
   [data-theme='ocean'] {
     --background: 94 175 255;
-    --secondary: 68 161 252;
-    --tertiary: 37 142 245;
+    --secondary: 85 162 237;
+    --tertiary: 77 149 219;
     --text: 0 18 51;
     --text-secondary: 41 56 84;
     --text-error: 255 0 0;
@@ -300,8 +300,8 @@ input, textarea, button {
     --background: 44 43 60;
     --secondary: 54 53 70;
     --tertiary: 64 63 80;
-    --text: 183 109 104;
-    --text-secondary: 145 103 100;
+    --text: 232 154 149;
+    --text-secondary: 209 144 140;
     --text-error: 255 0 0;
     --accent: 201 52 52;
     --accent-hover: 255 79 79;
@@ -310,9 +310,9 @@ input, textarea, button {
   }
 
   [data-theme='amethyst'] {
-    --background: 153 51 255;
-    --secondary: 120 41 204;
-    --tertiary: 97 33 163;
+    --background: 123 65 181;
+    --secondary: 108 56 161;
+    --tertiary: 92 47 138;
     --text: 226 207 238;
     --text-secondary: 226 207 238;
     --text-error: 255 0 0;
@@ -362,8 +362,8 @@ input, textarea, button {
 
   [data-theme='mirage'] {
     --background: 255 208 157;
-    --secondary: 201 168 133;
-    --tertiary: 181 149 118;
+    --secondary: 235 190 143;
+    --tertiary: 215 169 118;
     --text: 18 79 99;
     --text-secondary: 39 79 92;
     --text-error: 255 0 0;
@@ -393,7 +393,7 @@ input, textarea, button {
     --text: 113 201 192;
     --text-secondary: 92 153 147;
     --text-error: 255 0 0;
-    --accent: 81 0 45;
+    --accent: 145 1 81;
     --accent-hover: 255 79 79;
     --accent-disabled: 178 178 178;
     --accent-disabled-hover: 96 96 96;
