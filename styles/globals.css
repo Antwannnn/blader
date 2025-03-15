@@ -411,6 +411,57 @@ input, textarea, button {
     --accent-disabled: 178 178 178;
     --accent-disabled-hover: 96 96 96;
   }
+
+  [data-theme='outer-space'] {
+    --background: 76 91 97;
+    --secondary: 86 103 110;
+    --tertiary: 96 115 123;
+    --text: 212 212 212;
+    --text-secondary: 191 191 191;
+    --text-error: 255 0 0;
+    --accent: 255 99 99;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='abyss'] {
+    --background: 23 23 56;
+    --secondary: 33 33 66;
+    --tertiary: 43 43 76;
+    --text: 223 243 228;
+    --text-secondary: 188 207 193;
+    --text-error: 255 0 0;
+    --accent: 255 99 99;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+
+  [data-theme='eggplant'] {
+    --background: 77 38 50;
+    --secondary: 92 45 59;
+    --tertiary: 112 59 73;
+    --text: 250 212 224;
+    --text-secondary: 212 178 188;
+    --text-error: 255 0 0;
+    --accent: 214 2 23;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+  [data-theme='contrast'] {
+    --background: 0 0 0;
+    --secondary: 25 25 25;
+    --tertiary: 35 35 35;
+    --text: 255 255 255;
+    --text-secondary: 212 212 212;
+    --text-error: 255 0 0;
+    --accent: 255 0 0;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
 }
 
 
@@ -475,4 +526,3 @@ div{
 .animation-delay-400 {
   animation-delay: 400ms;
 }
-

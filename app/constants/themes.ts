@@ -29,4 +29,8 @@ export const themes = [
     { name: 'Electric', value: 'electric', colors: { text: '#00adff', background: '#1B262C' } },
     { name: 'Twilight', value: 'twilight', colors: { text: '#032b21', background: '#71c9c0' } },
     { name: 'Lavender', value: 'lavender', colors: { text: '#DBD8E3', background: '#2A2438' } },
+    { name: 'Outer Space', value: 'outer-space', colors: { text: '#d4d4d4', background: '#4c5b61' } },
+    { name: 'Abyss', value: 'abyss', colors: { text: '#DFF3E4', background: '#171738' } },
+    { name: 'Eggplant', value: 'eggplant', colors: { text: '#fad4e0', background: '#4d2632' } },
+    { name: 'Contrast', value: 'contrast', colors: { text: '#ffffff', background: '#000000' } },
   ];
