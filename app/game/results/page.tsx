@@ -28,6 +28,8 @@ const ResultsPage = () => {
   const { data: session } = useSession();
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const { checkAchievements, showUnlockAnimation } = useAchievements();
+  const [isSaved, setIsSaved] = useState(false);
+  const [hash, setHash] = useState<string | null>(null);
   
   // Référence pour suivre les rendus
   const renderCountRef = useRef(0);
@@ -44,6 +46,7 @@ const ResultsPage = () => {
         setRenderCharts(false);
         
         const encryptedResults = localStorage.getItem('lastGameResults');
+        setHash(encryptedResults);
         
         if (!encryptedResults) {
           console.log('Aucun résultat trouvé dans localStorage');
@@ -74,12 +77,7 @@ const ResultsPage = () => {
             
             localStorage.removeItem('lastGameResults');
           } catch (error: any) {
-            if (error.status === 400) {
-              setIsPreviewMode(true);
-              console.log('Résultats déjà soumis, affichage en mode preview');
-            } else {
-              console.error('Erreur lors de l\'enregistrement des statistiques:', error);
-            }
+            console.error('Erreur lors de l\'enregistrement des statistiques:', error);
           }
         }
       } catch (error) {
@@ -105,6 +103,21 @@ const ResultsPage = () => {
     localStorage.removeItem('resultsSubmitted');
     router.push('/game/typetester');
   };
+
+  const handleSaveResults = async () => {
+    if (!session?.user || !hash || isPreviewMode || isSaved) {
+      return;
+    }
+    const savedResults = localStorage.getItem('resultsHistory');
+    if (!savedResults) {
+      localStorage.setItem('resultsHistory', JSON.stringify([hash]));
+    } else {
+      const parsedResults = JSON.parse(savedResults);
+      parsedResults.push(hash);
+      localStorage.setItem('resultsHistory', JSON.stringify(parsedResults));
+    }
+    setIsSaved(true);
+  }
 
   const saveUserStatistics = async (gameResults: GameResults) => {
     try {
@@ -148,6 +161,13 @@ const ResultsPage = () => {
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Erreur serveur:', errorData);
+
+        if (response.status === 400) {
+          setIsPreviewMode(true);
+          console.log('Résultats déjà soumis, affichage en mode preview');
+        } else {
+          console.error('Erreur lors de l\'enregistrement des statistiques:', response.statusText);
+        }
         
         const error = new Error(`Échec de l'enregistrement des statistiques: ${response.statusText}`);
         (error as any).status = response.status;
@@ -201,6 +221,14 @@ const ResultsPage = () => {
       <div className="flex justify-between w-full items-center animate-fadeIn">
         <h1 className="text-4xl font-bold text-text">Results</h1>
         <div className="flex gap-4">
+          { !isPreviewMode && session?.user && (
+            <button
+              onClick={handleSaveResults}
+              className="px-4 py-2 bg-secondary backdrop-blur-sm duration-300 text-text rounded-lg hover:bg-tertiary"
+          >
+            {isSaved ? "Saved" : "Save Results"}
+            </button>
+          )}
           <button
             onClick={handleTryAgain}
             className="px-4 py-2 bg-secondary backdrop-blur-sm duration-300 text-text rounded-lg hover:bg-tertiary"
@@ -217,7 +245,7 @@ const ResultsPage = () => {
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
             </svg>
             <p className="text-text font-medium">
-              Ces résultats ont déjà été enregistrés. Vous consultez une prévisualisation de résultats déjà sauvegardés.
+              These results have already been saved. You are viewing a preview of already saved results.
             </p>
           </div>
         </div>

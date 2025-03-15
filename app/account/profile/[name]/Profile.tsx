@@ -6,9 +6,154 @@ import LoadableWrapper from "@components/subcomponents/LoadableWrapper"
 import { getAchievement } from "@contexts/Achievements"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { CiCalendar, CiEdit, CiKeyboard, CiMedal } from "react-icons/ci"
+import { CiCalendar, CiClock2, CiEdit, CiKeyboard, CiMedal } from "react-icons/ci"
+
+// Composant modal pour l'historique des parties
+const HistoryModal = ({ 
+  isOpen, 
+  onClose 
+}: { 
+  isOpen: boolean; 
+  onClose: () => void; 
+}) => {
+  const [history, setHistory] = useState<Array<{hash: string, date: string, results?: any}>>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const loadHistory = async () => {
+      setIsLoading(true);
+      try {
+        // Récupérer l'historique du localStorage
+        const savedHistory = localStorage.getItem('resultsHistory');
+        if (savedHistory) {
+          const parsedHistory = JSON.parse(savedHistory);
+        
+          
+          // Déchiffrer chaque élément
+          const decryptedHistory = [];
+          for (const item of parsedHistory) {
+            try {
+              // Appeler l'API pour déchiffrer
+              const response = await fetch('/api/crypto/decrypt', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ encryptedData: item , isHistory: true}),
+              });
+              if (response.ok) {
+                const data = await response.json();
+                if (data.valid && data.data) {
+                  decryptedHistory.push({
+                    hash: item,
+                    results: data.data
+                  });
+                } else {
+                  decryptedHistory.push(item);
+                }
+              } else {
+                decryptedHistory.push(item);
+              }
+            } catch (error) {
+              console.error('Erreur lors du déchiffrement:', error);
+              decryptedHistory.push(item);
+            }
+          }
+          
+          setHistory(decryptedHistory);
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement de l\'historique:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    if (isOpen) {
+      loadHistory();
+    }
+  }, [isOpen]);
+
+  const handleViewResults = (hash: string) => {
+    localStorage.setItem('lastGameResults', hash);
+    router.push('/game/results');
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-secondary rounded-xl p-6 w-full max-w-3xl max-h-[80vh] flex flex-col">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold text-text">Game History</h2>
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => {
+                localStorage.removeItem('resultsHistory');
+                setHistory([]);
+              }}
+              className="text-text bg-accent/20 px-2 py-1 rounded-md hover:bg-accent/30 transition-colors hover:text-text/80"
+            >
+              Clear history
+            </button>
+            <button 
+              onClick={onClose}
+              className="text-text hover:text-text/80"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+        
+        <div className="overflow-y-auto flex-1">
+          {isLoading ? (
+            <div className="flex justify-center items-center h-40">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-text"></div>
+            </div>
+          ) : history.length === 0 ? (
+            <p className="text-text_secondary text-center py-8">No history available</p>
+          ) : (
+            <div className="space-y-3">
+              {history.map((item, index) => (
+                <div 
+                  key={index}
+                  className="bg-tertiary/40 rounded-lg p-4 hover:bg-tertiary/60 transition-colors"
+                >
+                  <div className="flex justify-between mb-2">
+                    <span className="text-text font-medium">
+                      {"Mode: " + (item.results ? item.results.mode.toUpperCase() : 'Non disponible')}
+                    </span>
+                    <span className="text-accent">
+                      {item.results ? `${item.results.finalWpm} WPM` : 'Non disponible'}
+                    </span>
+                  </div>
+                  {item.results && (
+                    <div className="grid grid-cols-1 grid-rows-3 gap-2 text-sm text-text_secondary mb-3">
+                      <div>Accuracy: {item.results.finalAccuracy?.toFixed(1)}%</div>
+                      <div>Errors: {item.results.errors}</div>
+                      <div>Time: {(item.results.time / 1000).toFixed(2)}s</div>
+                    </div>
+                  )}
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() => handleViewResults(item.hash)}
+                      className="px-3 py-1 bg-accent/20 text-accent text-sm rounded hover:bg-accent/30 transition-colors"
+                    >
+                      See details
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Profile = () => {
     const { data: session, status } = useSession();
@@ -19,6 +164,8 @@ const Profile = () => {
     const router = usePathname();
     const isOwnProfile = session?.user?.name === userData?.username;
     const [showStatsModal, setShowStatsModal] = useState<'wpm' | 'accuracy' | 'errors' | null>(null);
+    const [showHistoryModal, setShowHistoryModal] = useState(false);
+    const [hasHistory, setHasHistory] = useState(false);
 
     const handleEditSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -96,6 +243,17 @@ const Profile = () => {
         fetcher();
     }, [session, router]);
 
+    // Vérifier si l'historique existe
+    useEffect(() => {
+        if (isOwnProfile) {
+            try {
+                const savedHistory = localStorage.getItem('resultsHistory');
+                setHasHistory(!!savedHistory && JSON.parse(savedHistory).length > 0);
+            } catch (error) {
+                console.error('Erreur lors de la vérification de l\'historique:', error);
+            }
+        }
+    }, [isOwnProfile, userData]);
 
     const StatCard = ({ title, value, className = "" }: { title: string, value: string | number, className?: string }) => (
         <div className={`bg-secondary/40 hover:bg-secondary/100 duration-300 backdrop-blur-sm rounded-xl p-4 ${className}`}>
@@ -193,6 +351,15 @@ const Profile = () => {
                                             title="Edit profile"
                                         >
                                             <CiEdit className="w-5 h-5 text-text" />
+                                        </button>
+                                    )}
+                                    {isOwnProfile && hasHistory && (
+                                        <button
+                                            onClick={() => setShowHistoryModal(true)}
+                                            className="p-2 rounded-full hover:bg-tertiary/40 transition-colors"
+                                            title="View game history"
+                                        >
+                                            <CiClock2 className="w-5 h-5 text-text" />
                                         </button>
                                     )}
                                     {userData.isAdmin && (
@@ -327,6 +494,14 @@ const Profile = () => {
                             }
                             data={userStatistics as ProfileStatisticsData}
                             defaultMetric={showStatsModal}
+                        />
+                    )}
+                    
+                    {/* Modal pour l'historique des parties */}
+                    {showHistoryModal && (
+                        <HistoryModal
+                            isOpen={showHistoryModal}
+                            onClose={() => setShowHistoryModal(false)}
                         />
                     )}
                 </div>

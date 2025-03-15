@@ -142,7 +142,6 @@ export const POST = async (request, { params }) => {
         await dbConnect();
 
         const body = await request.json();
-        console.log("Données reçues:", body);
 
         if(body.uniqueHash) {
             const existingStat = await UserStatistics.findOne({ uniqueHash: body.uniqueHash });
