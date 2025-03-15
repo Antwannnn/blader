@@ -33,4 +33,12 @@ export const themes = [
     { name: 'Abyss', value: 'abyss', colors: { text: '#DFF3E4', background: '#171738' } },
     { name: 'Eggplant', value: 'eggplant', colors: { text: '#fad4e0', background: '#4d2632' } },
     { name: 'Contrast', value: 'contrast', colors: { text: '#ffffff', background: '#000000' } },
+    { name: 'Ebony', value: 'ebony', colors: { text: '#e0dbd7', background: '#605856' } },
+    { name: 'Scarlet Snow', value: 'scarlet-snow', colors: { text: '#8C271E', background: '#ded8d8' } },
+    { name: 'Cinder', value: 'cinder', colors: { text: '#F7FFF7', background: '#343434' } },
+    { name: 'Astral', value: 'astral', colors: { text: '#ffe6c4', background: '##2e294d' } },
+    { name: 'Anthracite', value: 'anthracite', colors: { text: '#C1BDB3', background: '#323031' } },
+    { name: 'Indigo', value: 'indigo', colors: { text: '#D9D9D9', background: '#284B63' } },
+    { name: 'Oak', value: 'oak', colors: { text: '#edd7b9', background: '#534D41' } },
+    { name: 'Eclipse', value: 'eclipse', colors: { text: '#EEC643', background: '#011638' } },
   ];

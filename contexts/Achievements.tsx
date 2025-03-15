@@ -166,7 +166,7 @@ export const achievements: Achievement[] = [
           <circle cx="100" cy="100" r="90" fill="transparent" stroke="currentColor" strokeWidth="3"/>
           <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" strokeDasharray="3,2"/>
           <path fill="currentColor" d="m40 50 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1ZM150 40l2 5 6 1-4 4 1 6-5-3-5 3 1-6-4-4 6-1ZM160 70l1 3h4l-3 3 1 4-3-2-3 2 1-4-3-3h4ZM60 30l1 3h4l-3 3 1 4-3-2-3 2 1-4-3-3h4ZM130 120l1 3h4l-3 3 1 4-3-2-3 2 1-4-3-3h4ZM70 110l1 3h4l-3 3 1 4-3-2-3 2 1-4-3-3h4ZM70 80c0-20 15-35 35-35-15 0-30 15-30 35s15 35 30 35c-20 0-35-15-35-35Z"/>
-          <text x="100" y="150" fontFamily="Arial, sans-serif" fontSize="16" fontWeight="bold" textAnchor="middle">NIGHT OWL</text>
+          <text x="100" y="150" fontFamily="Arial, sans-serif" fill='currentColor' fontSize="16" fontWeight="bold" textAnchor="middle">NIGHT OWL</text>
         </svg>
       ),
       condition: () => {
