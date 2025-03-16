@@ -41,6 +41,11 @@ const fetchRandomSentence = (len: LengthParameter, language: string): string => 
   for (let i = 0; i < wordCount; i++) {
     const randomIndex = Math.floor(Math.random() * languageWords.length);
     const word = languageWords[randomIndex];
+
+    if(word === sentence.split(' ').at(i-1)) {
+      i--;
+      continue;
+    }
     
     sentence += word + ' ';
   }

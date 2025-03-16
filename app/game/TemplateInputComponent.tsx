@@ -139,6 +139,41 @@ const TemplateInputComponent = ({
     };
   }, []);
 
+  // Timer d'inactivité
+  const [inactivityTimer, setInactivityTimer] = useState<NodeJS.Timeout | null>(null);
+  
+  // Fonction pour réinitialiser le timer d'inactivité
+  const resetInactivityTimer = useCallback(() => {
+    // Nettoyer le timer existant si présent
+    if (inactivityTimer) {
+      clearTimeout(inactivityTimer);
+    }
+    
+    // Ne créer un nouveau timer que si le jeu est en cours
+    if (gameState === GameState.STARTED) {
+      const newTimer = setTimeout(() => {
+        // Réinitialiser le jeu après 10 secondes d'inactivité
+        console.log("Inactivité détectée: réinitialisation du jeu");
+        resetGame();
+      }, 10000); // 10 secondes
+      
+      setInactivityTimer(newTimer);
+    }
+  }, [gameState, inactivityTimer]);
+  
+  // Réinitialiser le timer d'inactivité quand le jeu démarre
+  useEffect(() => {
+    if (gameState === GameState.STARTED) {
+      resetInactivityTimer();
+    }
+    
+    return () => {
+      if (inactivityTimer) {
+        clearTimeout(inactivityTimer);
+      }
+    };
+  }, [gameState]);
+
   const verifyInputMatching = (key: string) => {
     if (
       key === splittedSentence[currentIndex] &&
@@ -356,6 +391,8 @@ const TemplateInputComponent = ({
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Réinitialiser le timer d'inactivité à chaque frappe clavier
+    resetInactivityTimer();
 
     const code = keyboardCodeAdapter(e.code, parameters.keyboard.layout);
 

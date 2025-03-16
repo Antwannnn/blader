@@ -69,6 +69,16 @@ const TypeTester = () => {
   });
   const { parameters } = useSettings();
 
+  // Add a mounted ref to track component mount state
+  const isMounted = useRef(false);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
   const handleGameStart = () => {
     animate.start("hidden");
 
@@ -76,7 +86,10 @@ const TypeTester = () => {
   };
 
   const handleGameReset = () => {
-    animate.start("visible");
+    // Only start animation if component is mounted
+    if (isMounted.current) {
+      animate.start("visible");
+    }
     setGameStatut(GameState.RESET);
   };
 
