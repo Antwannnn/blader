@@ -13,7 +13,7 @@ const qwertyToAzerty = {
     'KeyJ': 'KeyJ',
     'KeyK': 'KeyK',
     'KeyL': 'KeyL',
-    'KeyM': 'KeyM',
+    'Semicolon': 'KeyM',
     'KeyN': 'KeyN',
     'KeyO': 'KeyO',
     'KeyP': 'KeyB',

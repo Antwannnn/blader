@@ -174,15 +174,12 @@ const TemplateInputComponent = ({
     time.start();
   };
 
-  // Fonction pour générer plus de contenu
   const generateMoreContent = useCallback(async () => {
 
     if (sentenceParameter === SentenceParameter.QUOTE) {
-      // Convertir l'enum en clé littérale
       const newQuote = await fetchQuote(timeToLength[timeParameter!]);
       if (typeof newQuote !== "string") {
         setDynamicSentence(prev => prev + " " + newQuote.content);
-        // Mettre à jour l'auteur avec le nouvel auteur
         setDynamicAuthor(newQuote.author);
       } else {
         setDynamicSentence(prev => prev + " " + newQuote);
@@ -190,32 +187,27 @@ const TemplateInputComponent = ({
     } else {
       const newSentence = await fetchRandomSentence(timeToLength[timeParameter!]);
       setDynamicSentence(prev => prev + " " + newSentence);
-      // Pour les phrases aléatoires, pas d'auteur à mettre à jour
       setDynamicAuthor("");
     }
     setHasGeneratedMore(true);
   }, [sentenceParameter, lengthParameter]);
 
-  // Effet pour générer du contenu procéduralement en mode countdown
   useEffect(() => {
     if (stopwatchMode === StopwatchMode.COUNTDOWN && 
         gameState === GameState.STARTED &&
-        currentIndex > 0 && // S'assurer que l'utilisateur a commencé à taper
-        !hasGeneratedMore && // Éviter les générations multiples en même temps
-        currentIndex >= splittedSentence.length * 0.8) { // Quand l'utilisateur est proche de la fin (80%)
-      
+        currentIndex > 0 && 
+        !hasGeneratedMore && 
+        currentIndex >= splittedSentence.length * 0.8) { 
       generateMoreContent();
     }
   }, [currentIndex, stopwatchMode, gameState, splittedSentence.length, hasGeneratedMore, generateMoreContent]);
 
-  // Réinitialiser le flag de génération quand l'utilisateur a avancé dans le nouveau contenu
   useEffect(() => {
     if (hasGeneratedMore && currentIndex < splittedSentence.length * 0.5) {
       setHasGeneratedMore(false);
     }
   }, [currentIndex, hasGeneratedMore, splittedSentence.length]);
 
-  // Initialiser la phrase dynamique et l'auteur dynamique avec les valeurs initiales au démarrage
   useEffect(() => {
     if (gameState === GameState.RESET || gameState === GameState.STARTED) {
       setDynamicSentence(finalSentence);
@@ -226,15 +218,12 @@ const TemplateInputComponent = ({
     }
   }, [finalSentence, quoteAuthorIfNotString, gameState]);
 
-  // Modifier le calcul du WPM pour prendre en compte le mode
   const getWpm = () => {
     if (stopwatchMode === StopwatchMode.TIMER) {
-      // Calcul normal pour le mode timer
       const timeInMinutes = time.rawTime / 60000;
       if (timeInMinutes <= 0) return 0;
       return Math.round((input.length / 5) / timeInMinutes);
     } else {
-      // Pour le mode countdown, utiliser le temps écoulé
       const elapsedTime = countdownTime - time.rawTime;
       const elapsedMinutes = elapsedTime / 60000;
       if (elapsedMinutes <= 0) return 0;
@@ -244,13 +233,11 @@ const TemplateInputComponent = ({
 
   const getGrossWpm = () => {
     if (stopwatchMode === StopwatchMode.TIMER) {
-      // Calcul normal pour le mode timer
       const timeInMinutes = time.rawTime / 60000;
       if (timeInMinutes <= 0) return 0;
       const totalKeystrokes = input.length + indexedError.length;
       return Math.round((totalKeystrokes / 5) / timeInMinutes);
     } else {
-      // Pour le mode countdown, utiliser le temps écoulé
       const elapsedTime = countdownTime - time.rawTime;
       const elapsedMinutes = elapsedTime / 60000;
       if (elapsedMinutes <= 0) return 0;
@@ -271,21 +258,17 @@ const TemplateInputComponent = ({
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
 
-    // Calcul correct de la longueur moyenne des mots
     const totalCharactersWithoutSpaces = wordSplittedSentence.reduce((sum, word) => sum + word.length, 0);
     setTotalCharactersWithoutSpaces(totalCharactersWithoutSpaces);
     setAverageWordLength(Math.round(totalCharactersWithoutSpaces / wordSplittedSentence.length));
 
 
     if (gameState === GameState.STARTED) {
-      // Créer un intervalle de 500ms pour capturer les stats
       intervalId = setInterval(() => {
           
-          // Vérifier si les nouvelles valeurs sont significativement différentes
           const lastWpm = gameResults.wpmOverTime[gameResults.wpmOverTime.length - 1];
           const lastAccuracy = gameResults.accuracyOverTime[gameResults.accuracyOverTime.length - 1];
           
-          // Ne mettre à jour que si les changements sont significatifs
           if (Math.abs(wpm - (lastWpm || 0)) > 5 || 
               Math.abs(accuracy - (lastAccuracy || 0)) > 2) {
             setGameResults({
@@ -314,7 +297,6 @@ const TemplateInputComponent = ({
     };
   }, [gameState, wpm, accuracy, time.rawTime, effectiveSentence, displayedAuthor]);
 
-  // Mettre à jour WPM et accuracy en temps réel pour l'affichage
   useEffect(() => {
     if (gameState === GameState.STARTED) {
       const currentWpm = getGrossWpm();
@@ -331,7 +313,6 @@ const TemplateInputComponent = ({
   }, [time.rawTime]);
 
   const handleGameEnd = async () => {
-    // Vérifier que la session est toujours valide
     const currentSession = localStorage.getItem('currentGameSession');
     if (currentSession !== gameSessionId) {
       console.error("Session de jeu invalide");
@@ -353,7 +334,6 @@ const TemplateInputComponent = ({
       finalWpm: getWpm(),
       finalAccuracy: accuracy,
       mode: stopwatchMode,
-      // Métriques de vérification
       totalKeystrokes: input.length + indexedError.length,
       avgTimePerKeystroke: time.rawTime / (input.length + indexedError.length),
       keystrokesPerSecond: (input.length + indexedError.length) / (time.rawTime / 1000),
@@ -365,7 +345,6 @@ const TemplateInputComponent = ({
       
       if (encryptedData) {
         localStorage.setItem('lastGameResults', encryptedData);
-        // Autres opérations...
       } else {
         console.error("Échec du chiffrement : résultat vide");
       }
@@ -483,20 +462,17 @@ const TemplateInputComponent = ({
     }
   };
 
-  // Utilisons useRef pour éviter des boucles infinies
   const previousCalculatedLineIndex = useRef<number>(-1);
   const previousLineCharCounts = useRef<number[]>([]);
 
-  // Calculer les lignes en fonction de la taille du conteneur - une seule fois au début et lors des redimensionnements
   useEffect(() => {
     const calculateLines = () => {
       if (textContainerRef.current) {
         const container = textContainerRef.current;
-        // On utilise une span temporaire pour mesurer la largeur d'un caractère
         const tempSpan = document.createElement('span');
-        tempSpan.style.fontSize = '2.25rem'; // text-4xl equivalent
+        tempSpan.style.fontSize = '2.25rem'; 
         tempSpan.style.visibility = 'hidden';
-        tempSpan.textContent = 'M'; // Utiliser 'M' comme référence de largeur
+        tempSpan.textContent = 'M'; 
         container.appendChild(tempSpan);
         
         const charWidth = tempSpan.getBoundingClientRect().width;
@@ -504,10 +480,8 @@ const TemplateInputComponent = ({
         
         container.removeChild(tempSpan);
         
-        // Calculer combien de caractères peuvent tenir sur une ligne
         const maxCharsPerLine = Math.floor(containerWidth / charWidth) - 2;
         
-        // Calculer les longueurs réelles de chaque ligne
         const lineLengths: number[] = [];
         let currentLine = '';
         let currentWord = '';
@@ -532,12 +506,10 @@ const TemplateInputComponent = ({
           }
         }
         
-        // Ajouter la dernière ligne si elle n'est pas vide
         if (currentLine) {
           lineLengths.push(currentLine.length);
         }
         
-        // Vérification stricte pour ne mettre à jour que si nécessaire
         if (JSON.stringify(lineLengths) !== JSON.stringify(previousLineCharCounts.current)) {
           previousLineCharCounts.current = lineLengths;
           setLineCharCounts(lineLengths);
@@ -551,7 +523,6 @@ const TemplateInputComponent = ({
     return () => window.removeEventListener('resize', calculateLines);
   }, [splittedSentence]);
 
-  // Fonction pure pour calculer la ligne courante en fonction de l'index
   const calculateCurrentLineIndex = useCallback((index: number, lineCounts: number[]) => {
     if (lineCounts.length === 0 || index < 0) return 0;
     if (index >= splittedSentence.length) return lineCounts.length - 1;
@@ -570,18 +541,15 @@ const TemplateInputComponent = ({
     return Math.max(0, lineIndex - 1);
   }, [splittedSentence.length]);
 
-  // Utiliser useEffect pour mettre à jour currentLineIndex une seule fois lorsque currentIndex change
   useEffect(() => {
     const newLineIndex = calculateCurrentLineIndex(currentIndex, lineCharCounts);
     
-    // Vérifier si la ligne a changé pour éviter les mises à jour inutiles
     if (newLineIndex !== previousCalculatedLineIndex.current) {
       previousCalculatedLineIndex.current = newLineIndex;
       setCurrentLineIndex(newLineIndex);
     }
   }, [currentIndex, lineCharCounts, calculateCurrentLineIndex]);
 
-  // Fonction pour obtenir les lignes visibles - rendue pure pour éviter les effets de bord
   const getVisibleLines = useCallback(() => {
     if (lineCharCounts.length === 0) {
       return {
@@ -594,17 +562,14 @@ const TemplateInputComponent = ({
     const allLines: string[] = [];
     let startIndex = 0;
     
-    // Construire toutes les lignes
     for (let i = 0; i < lineCharCounts.length; i++) {
       const lineLength = lineCharCounts[i];
       allLines.push(splittedSentence.slice(startIndex, startIndex + lineLength).join(''));
       startIndex += lineLength;
     }
     
-    // Déterminer l'index de la ligne à partir de laquelle afficher
     let startLineIndex = Math.max(0, currentLineIndex - 1);
     
-    // Assurer que nous ne dépassons pas les bornes à la fin
     startLineIndex = Math.min(startLineIndex, Math.max(0, allLines.length - 3));
     
     return {
@@ -614,14 +579,12 @@ const TemplateInputComponent = ({
     };
   }, [lineCharCounts, currentLineIndex, splittedSentence]);
 
-  // Effet pour mettre à jour le temps de décompte en temps réel
   useEffect(() => {
     if (stopwatchMode === StopwatchMode.COUNTDOWN && gameState !== GameState.STARTED) {
       time.setInitialCountdown(countdownTime);
     }
   }, [countdownTime, stopwatchMode, gameState, time]);
 
-  // Effet pour réinitialiser le chronomètre lorsque le mode change
   useEffect(() => {
     if (gameState !== GameState.STARTED) {
       time.reset();
@@ -653,7 +616,6 @@ const TemplateInputComponent = ({
                 {visibleLines.map((line, displayIndex) => {
                   const actualLineIndex = startLineIndex + displayIndex;
                   
-                  // Calculer l'index de départ pour cette ligne
                   let lineStartIndex = 0;
                   for (let i = 0; i < actualLineIndex; i++) {
                     lineStartIndex += lineCharCounts[i] || 0;
@@ -693,7 +655,6 @@ const TemplateInputComponent = ({
                   );
                 })}
                 
-                {/* La ligne avec le gradient d'opacité */}
                 {gradientLine && (
                   <div 
                     className="w-full h-[48px] flex items-center whitespace-pre text-text bg-gradient-to-b from-text/10 to-transparent bg-clip-text text-transparent absolute transition-all duration-300"

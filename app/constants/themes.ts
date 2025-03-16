@@ -41,4 +41,7 @@ export const themes = [
     { name: 'Indigo', value: 'indigo', colors: { text: '#D9D9D9', background: '#284B63' } },
     { name: 'Oak', value: 'oak', colors: { text: '#edd7b9', background: '#534D41' } },
     { name: 'Eclipse', value: 'eclipse', colors: { text: '#EEC643', background: '#011638' } },
+    { name: 'Cake', value: 'cake', colors: { text: '#F9DBBD', background: '#450920' } },
+    { name: 'Evernight', value: 'evernight', colors: { text: '#CAD2C5', background: '#2F3E460' } },
+    { name: 'Duskwood', value: 'duskwood', colors: { text: '#e3ddf0', background: '#3D2C2E' } },
   ];
