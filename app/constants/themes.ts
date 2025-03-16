@@ -44,4 +44,5 @@ export const themes = [
     { name: 'Cake', value: 'cake', colors: { text: '#F9DBBD', background: '#450920' } },
     { name: 'Evernight', value: 'evernight', colors: { text: '#CAD2C5', background: '#2F3E460' } },
     { name: 'Duskwood', value: 'duskwood', colors: { text: '#e3ddf0', background: '#3D2C2E' } },
+    { name: 'Petal Veil', value: 'petal-veil', colors: { text: '#FFD9DA', background: '#30343F' } },
   ];

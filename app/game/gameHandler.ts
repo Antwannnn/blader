@@ -7,6 +7,8 @@ import quotes from "@scrapping/quotesSorted.json";
 import words from "@scrapping/words.json";
 
 const fetchQuote = (len: LengthParameter): Quote => {
+
+  
   const key = valueStringToKeyFormat(len) as keyof typeof quotes;
   const quoteSection = quotes[key];
   const quote =
@@ -22,38 +24,28 @@ const fetchQuote = (len: LengthParameter): Quote => {
   return quoteObject;
 };
 
-const fetchRandomSentence = (len: LengthParameter): string => {
-  const wordKeys: string[] = Object.keys(words);
-  const wordCount = wordKeys.length;
-  
-  const key = valueStringToKeyFormat(len) as keyof typeof quotes;
-  const quoteSection = quotes[key];
-  const quoteLengths = Object.values(quoteSection).map(quote => quote.content.length);
-  const averageQuoteLength = Math.floor(
-    quoteLengths.reduce((acc, curr) => acc + curr, 0) / quoteLengths.length
-  );
-
-  const variation = Math.floor(averageQuoteLength * 0.1);
-  const targetLength = averageQuoteLength + (Math.random() * variation * 2 - variation);
-
-  const wordList: string[] = [];
-  let currentLength = 0;
-
-  while (currentLength < targetLength) {
-    const randomIndex = Math.floor(Math.random() * wordCount);
-    const word = wordKeys[randomIndex];
-
-    if (currentLength + word.length + 1 <= targetLength + 5) {
-      wordList.push(word);
-      currentLength += word.length + 1;
-    } else {
-      break;
-    }
+const fetchRandomSentence = (len: LengthParameter, language: string): string => {
+  const languageWords = words[language as keyof typeof words] as string[];
+  if (!languageWords || languageWords.length === 0) {
+    throw new Error(`Language ${language} not found in words dictionary or is empty`);
   }
-
-  return wordList[0].charAt(0).toUpperCase() + wordList[0].slice(1) + 
-         (wordList.length > 1 ? ' ' + wordList.slice(1).join(' ') : '') + 
-         '.';
+  
+  const wordCount = {
+    "short": 10,
+    "medium": 15,
+    "long": 20,
+    "very_long": 30
+  }[valueStringToKeyFormat(len).toLowerCase()] || 8;
+  
+  let sentence = '';
+  for (let i = 0; i < wordCount; i++) {
+    const randomIndex = Math.floor(Math.random() * languageWords.length);
+    const word = languageWords[randomIndex];
+    
+    sentence += word + ' ';
+  }
+  
+  return sentence.trimEnd();
 };
 
 export { fetchQuote, fetchRandomSentence };

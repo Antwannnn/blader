@@ -595,6 +595,19 @@ input, textarea, button {
     --accent-disabled: 178 178 178;
     --accent-disabled-hover: 96 96 96;
   }
+  [data-theme='petal-veil'] {
+    --background: 48 52 63;
+    --secondary: 58 62 73;
+    --tertiary: 68 72 83;
+    --text: 255 217 218;
+    --text-secondary: 213 217 228;
+    --text-error: 255 0 0;
+    --accent: 234 99 139;
+    --accent-hover: 255 79 79;
+    --accent-disabled: 178 178 178;
+    --accent-disabled-hover: 96 96 96;
+  }
+  
   
 }
 

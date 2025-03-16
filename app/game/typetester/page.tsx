@@ -99,9 +99,9 @@ const TypeTester = () => {
       case SentenceParameter.RANDOM:
         console.log('fetchRandomSentence');
         if(stopwatchMode === StopwatchMode.COUNTDOWN) {
-          setSentence(fetchRandomSentence(timeToLength[timeParameter]));
+          setSentence(fetchRandomSentence(timeToLength[timeParameter], parameters.language.value));
         } else {
-          setSentence(fetchRandomSentence(lengthParameterSelector));
+          setSentence(fetchRandomSentence(lengthParameterSelector, parameters.language.value));
         }
         break;
     }
@@ -125,7 +125,7 @@ const TypeTester = () => {
 
   useEffect(() => {
     handleSetSentence();
-  }, [lengthParameterSelector, sentenceParameterSelector, stopwatchMode, timeParameter]);
+  }, [lengthParameterSelector, sentenceParameterSelector, stopwatchMode, timeParameter, parameters.language.value]);
 
   // Convertir les secondes en millisecondes pour le mode countdown
   const getCountdownTime = (): number => {

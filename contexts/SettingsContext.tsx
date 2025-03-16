@@ -7,11 +7,33 @@ export enum KeyboardLayout {
   AZERTY = 'azerty',
 }
 
+export const languages = [
+  { name: 'English', value: 'english' },
+  { name: 'Java', value: 'java' },
+  { name: 'C#', value: 'csharp' },
+  { name: 'Python', value: 'python' },
+  { name: 'JavaScript', value: 'javascript' },
+  { name: 'TypeScript', value: 'typescript' },
+  { name: 'Ruby', value: 'ruby' },
+  { name: 'PHP', value: 'php' },
+  { name: 'Swift', value: 'swift' },
+  { name: 'Go', value: 'golang' },
+  { name: 'Kotlin', value: 'kotlin' },
+  { name: 'C++', value: 'cpp' },
+  { name: 'C', value: 'c' },
+  { name: 'Rust', value: 'rust' },
+  { name: 'SQL', value: 'sql' },
+  
+] as const;
+
 // Type pour tous les paramètres possibles
 interface Parameters {
   keyboard: {
     layout: KeyboardLayout;
     show: boolean;
+  };
+  language: {
+    value: typeof languages[number]['value'];
   };
 }
 
@@ -20,6 +42,9 @@ const DEFAULT_PARAMETERS: Parameters = {
   keyboard: {
     layout: KeyboardLayout.QWERTY,
     show: true,
+  },
+  language: {
+    value: 'english',
   },
 };
 
@@ -78,7 +103,7 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
     setParameters(prev => ({
       ...prev,
       [category]: {
-        ...prev[category],
+        ...(prev[category] as Record<string, unknown>),
         [key]: value,
       },
     }));

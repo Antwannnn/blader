@@ -185,7 +185,7 @@ const TemplateInputComponent = ({
         setDynamicSentence(prev => prev + " " + newQuote);
       }
     } else {
-      const newSentence = await fetchRandomSentence(timeToLength[timeParameter!]);
+      const newSentence = await fetchRandomSentence(timeToLength[timeParameter!], parameters.language.value);
       setDynamicSentence(prev => prev + " " + newSentence);
       setDynamicAuthor("");
     }

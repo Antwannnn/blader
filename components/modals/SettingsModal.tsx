@@ -1,6 +1,6 @@
 'use client';
 
-import { useSettings } from '@/contexts/SettingsContext';
+import { KeyboardLayout, languages, useSettings } from '@/contexts/SettingsContext';
 import { useEffect } from 'react';
 import { IoClose } from 'react-icons/io5';
 
@@ -60,9 +60,9 @@ const SettingsModal = () => {
               <label className="text-sm text-text/80">Keyboard Layout</label>
               <div className="flex gap-2">
                 <button
-                  onClick={() => updateParameter('keyboard', 'layout', 'qwerty')}
+                  onClick={() => updateParameter('keyboard', 'layout', KeyboardLayout.QWERTY)}
                   className={`px-4 py-2 rounded-lg ${
-                    parameters.keyboard.layout === 'qwerty'
+                    parameters.keyboard.layout === KeyboardLayout.QWERTY
                       ? 'bg-text text-background'
                       : 'bg-secondary text-text hover:bg-text/10'
                   }`}
@@ -70,9 +70,9 @@ const SettingsModal = () => {
                   qwerty
                 </button>
                 <button
-                  onClick={() => updateParameter('keyboard', 'layout', 'azerty')}
+                  onClick={() => updateParameter('keyboard', 'layout', KeyboardLayout.AZERTY)}
                   className={`px-4 py-2 rounded-lg ${
-                    parameters.keyboard.layout === 'azerty'
+                    parameters.keyboard.layout === KeyboardLayout.AZERTY
                       ? 'bg-text text-background'
                       : 'bg-secondary text-text hover:bg-text/10'
                   }`}
@@ -80,6 +80,7 @@ const SettingsModal = () => {
                   azerty
                 </button>
               </div>
+
             </div>
 
             {/* Show Keyboard Setting */}
@@ -98,6 +99,20 @@ const SettingsModal = () => {
                 />
               </button>
             </div>
+            <div className="flex items-center justify-between gap-2">
+              <label className="text-sm text-text/80">Random words language</label>
+              <select
+                value={parameters.language?.value}
+                onChange={(e) => updateParameter('language', 'value', e.target.value as typeof languages[number]['value'])}
+                className="px-2 py-2 outline-none rounded-lg bg-secondary text-text"
+              >
+                {languages.map((language) => (
+                  <option key={language.value} value={language.value}>
+                    {language.name}
+                  </option>
+                ))}
+              </select>
+              </div>
           </div>
         </div>
       </div>

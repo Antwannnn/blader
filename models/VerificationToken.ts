@@ -1,5 +1,5 @@
-import mongoose, {Model} from "mongoose";
-import type {VerificationToken} from "next-auth/adapters";
+import mongoose, { Model } from "mongoose";
+import type { VerificationToken } from "next-auth/adapters";
 
 // @Schema
 const VerificationTokenSchema = new mongoose.Schema<VerificationToken>({
@@ -16,6 +16,8 @@ const VerificationTokenSchema = new mongoose.Schema<VerificationToken>({
     trim: true,
   },
 });
+
+
 
 // @Model
 const registeredModel: Model<VerificationToken> =
