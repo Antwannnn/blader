@@ -1,8 +1,9 @@
 import User from "@models/User";
 import dbConnect from "@utils/dbConnect";
 import { NextResponse } from "next/server";
+import { cache } from "react";
 
-export const POST = async (
+export const POST = cache(async (
   request: Request,
   { params }: { params: { id: string } }
 ) => {
@@ -26,4 +27,4 @@ export const POST = async (
       { status: 500 }
     );
   }
-}; 
+}); 

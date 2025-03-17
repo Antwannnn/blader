@@ -1,9 +1,9 @@
 import UserStatistics from '@models/UserStatistics';
 import dbConnect from '@utils/dbConnect';
+import { cache } from 'react';
 
 
-
-export const GET = async (request, { params }) => {
+export const GET = cache(async (request, { params }) => {
     try {
         await dbConnect();
 
@@ -91,7 +91,7 @@ export const GET = async (request, { params }) => {
                 status: 500,
             });
     }
-}
+});
 
 function getPreferedLengthParameter(statistics) {
     if(statistics.length === 0) {
@@ -137,7 +137,7 @@ function getPreferedSentenceParameter(statistics) {
     return mostFrequent.type;
 }
 
-export const POST = async (request, { params }) => {
+export const POST = cache(async (request, { params }) => {
     try {
         await dbConnect();
 
@@ -187,4 +187,4 @@ export const POST = async (request, { params }) => {
                 status: 500,
             });
     }
-}
+});

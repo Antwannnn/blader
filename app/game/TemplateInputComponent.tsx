@@ -179,6 +179,7 @@ const TemplateInputComponent = ({
       key === splittedSentence[currentIndex] &&
       splittedSentence[input.length] === key
     ) {
+      console.log("true");
       return true;
     } else {
       return false;
@@ -463,21 +464,27 @@ const TemplateInputComponent = ({
         if (verifyInputMatching(e.key)) {
           const newInput = input + e.key;
           setInput(newInput);
+
           
-          if (newInput.length === splittedSentence.length) {
+          if (newInput.length === splittedSentence.length && indexedError.length === 0) {
             handleGameEnd();
           }
         } else {
           indexedError.push(currentIndex);
+          const newInput = input + e.key;
+          setInput(newInput);
           setTotalErrors(totalErrors + 1);
         }
       } else {
         if (currentIndexRef.current > 0) {
           setCurrentIndex(currentIndex - 1);
           if (indexedError.includes(currentIndexRef.current)) {
+            const newInput = input.slice(0, -1);
+            setInput(newInput);
             indexedError.pop();
           } else {
-            setInput(input.slice(0, -1));
+            const newInput = input.slice(0, -1);
+            setInput(newInput);
           }
         }
       }

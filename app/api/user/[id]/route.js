@@ -1,7 +1,8 @@
 import User from '@models/User';
 import dbConnect from '@utils/dbConnect';
+import { cache } from 'react';
 
-export const GET = async (request, { params }) => {
+export const GET = cache(async (request, { params }) => {
     try {
 
         await dbConnect();
@@ -28,9 +29,9 @@ export const GET = async (request, { params }) => {
         });
     }
 
-}
+}); 
 
-export const PUT = async (request, { params }) => {
+export const PUT = cache(async (request, { params }) => {
     try {
         const { bio, keyboard, avatar } = await request.json();
         console.log(bio, keyboard, avatar);
@@ -49,4 +50,4 @@ export const PUT = async (request, { params }) => {
             status: 500,
         });
     }
-}
+});

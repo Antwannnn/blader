@@ -26,17 +26,14 @@ const HistoryModal = ({
     const loadHistory = async () => {
       setIsLoading(true);
       try {
-        // Récupérer l'historique du localStorage
         const savedHistory = localStorage.getItem('resultsHistory');
         if (savedHistory) {
           const parsedHistory = JSON.parse(savedHistory);
         
           
-          // Déchiffrer chaque élément
           const decryptedHistory = [];
           for (const item of parsedHistory) {
             try {
-              // Appeler l'API pour déchiffrer
               const response = await fetch('/api/crypto/decrypt', {
                 method: 'POST',
                 headers: {

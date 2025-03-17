@@ -170,7 +170,7 @@ const Nav = () => {
             )}
           </svg>
         </button>
-        <motion.div className='place-self-end absolute z-40 bg-background bg-opacity-40 rounded-md shadow-lg'
+        <motion.div className='place-self-end absolute z-40 bg-background bg-opacity-80 backdrop-blur-sm rounded-md shadow-lg'
           initial={'hidden'}
           variants={appearVariants}
           animate={appear}
