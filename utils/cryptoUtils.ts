@@ -1,4 +1,3 @@
-
 const SERVER_KEY = process.env.CRYPTO_SECRET;
 
 export async function encryptGameData(data: any): Promise<string> {
@@ -23,33 +22,31 @@ export async function encryptGameData(data: any): Promise<string> {
   }
 }
 
-export async function decryptGameData(encryptedData: string): Promise<any> {
+export const decryptGameData = async (encryptedData: string) => {
   try {
-    const response = await fetch('/api/crypto/decrypt', {
+    // Utiliser URL complète avec origine
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+                   (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+    
+    const response = await fetch(`${baseUrl}/api/crypto/decrypt`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ encryptedData }),
     });
-    
+
     if (!response.ok) {
-      throw new Error('Échec du déchiffrement');
+      throw new Error(`Déchiffrement échoué avec le statut: ${response.status}`);
     }
-    
-    const result = await response.json();
-    
-    if (!result.valid && result.data === null) {
-      console.warn(result.warning || 'Données invalides');
-      return null;
-    }
-    
-    return result.data;
+
+    const { data } = await response.json();
+    return data;
   } catch (error) {
     console.error('Erreur lors du déchiffrement:', error);
     return null;
   }
-}
+};
 
 // Fonction pour vérifier si les données semblent valides
 export function validateGameResults(results: any): boolean {

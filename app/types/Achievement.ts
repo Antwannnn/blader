@@ -5,8 +5,8 @@ export interface Achievement {
   id: string;
   name: string;
   description: string;
-  image: ReactNode;
-  condition: (stats: UserStats) => boolean;
+  image?: ReactNode;
+  condition?: (stats: UserStats) => boolean;
   unlockedAt?: Date;
 }
 

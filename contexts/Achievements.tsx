@@ -1,4 +1,4 @@
-import { Achievement, UserStats } from '@app/types/Achievement';
+import { Achievement } from '@app/types/Achievement';
 
 export const achievements: Achievement[] = [
     {
@@ -15,7 +15,6 @@ export const achievements: Achievement[] = [
           <text x="100" y="160" fontFamily="Arial, sans-serif" fontSize="16" textAnchor="middle">GAMES</text>
         </svg>
       ),
-      condition: (stats: UserStats) => stats.profileStats.totalGames >= 100
     },
     {
       id: 'play-500-games',
@@ -31,7 +30,6 @@ export const achievements: Achievement[] = [
           <text x="100" y="160" fontFamily="Arial, sans-serif" fontSize="16" textAnchor="middle">GAMES</text>
         </svg>
       ),
-      condition: (stats: UserStats) => stats.profileStats.totalGames >= 500
     },
     {
       id: 'reach-100-wpm',
@@ -48,7 +46,6 @@ export const achievements: Achievement[] = [
           <text x="100" y="160" fontFamily="Arial, sans-serif" fontSize="16" textAnchor="middle">WPM</text>
         </svg>
       ),
-      condition: (stats: UserStats) => stats.profileStats.maxWpm >= 100
     },
     {
       id: 'reach-150-wpm',
@@ -66,7 +63,6 @@ export const achievements: Achievement[] = [
         <text x="100" y="160" fontFamily="Arial, sans-serif" fontSize="16" textAnchor="middle">WPM</text>
       </svg>
       ),
-      condition: (stats: UserStats) => stats.profileStats.maxWpm >= 150
     },
     {
       id: 'pixel-perfect',
@@ -84,7 +80,6 @@ export const achievements: Achievement[] = [
           <text x="100" y="160" fontFamily="Arial, sans-serif" fontSize="16" textAnchor="middle">PRECISION</text>
         </svg>
       ),
-      condition: (stats: UserStats) => stats.profileStats.maxAccuracy >= 100
     },
     {
       id: 'chain-reaction',
@@ -102,9 +97,7 @@ export const achievements: Achievement[] = [
         <text x="100" y="160" fontFamily="Arial, sans-serif" fontSize="16" textAnchor="middle">PERFECT</text>
       </svg>
       ),
-      condition: (stats: UserStats) => 
-        stats.profileStats.last10Accuracies.length >= 10 && 
-        stats.profileStats.last10Accuracies.every((accuracy: number) => accuracy === 100)
+
     },
     {
       id: 'misclick-marathon',
@@ -119,7 +112,6 @@ export const achievements: Achievement[] = [
           <text x="100" y="160" fontFamily="Arial, sans-serif" fontSize="16" textAnchor="middle">ERRORS</text>
         </svg>
       ),
-      condition: (stats: UserStats) => stats.gameStats.errors > 10
     },
     {
       id: 'coffee-break',
@@ -136,7 +128,6 @@ export const achievements: Achievement[] = [
           <text x="100" y="160" fontFamily="Arial, sans-serif" fontSize="16" textAnchor="middle">DAYS</text>
         </svg>
       ),
-      condition: (stats: UserStats) => stats.profileStats.daysSinceLastGame >= 3 && stats.profileStats.totalGames > 0
     },
     {
       id: 'eequalsmc2',
@@ -155,7 +146,6 @@ export const achievements: Achievement[] = [
           <text x="100" y="140" fontFamily="Arial, sans-serif" fontSize="18" fontWeight="bold" textAnchor="middle">E=MC²</text>
         </svg>
       ),
-      condition: (stats: UserStats) => stats.gameStats.author === 'Albert Einstein'
     },
     {
       id: 'night-owl',
@@ -169,11 +159,6 @@ export const achievements: Achievement[] = [
           <text x="100" y="150" fontFamily="Arial, sans-serif" fill='currentColor' fontSize="16" fontWeight="bold" textAnchor="middle">NIGHT OWL</text>
         </svg>
       ),
-      condition: () => {
-        const now = new Date();
-        const hours = now.getHours();
-        return hours >= 0 && hours < 6;
-      }
     },
     {
       id: 'endless-prose',
@@ -188,7 +173,6 @@ export const achievements: Achievement[] = [
           <text x="100" y="150" fill="currentColor" fontFamily="Arial, sans-serif" fontSize="12" fontWeight="bold" textAnchor="middle">ENDLESS PROSE</text>
         </svg>
       ),
-      condition: (stats: UserStats) => stats.gameStats.totalCharacters >= 200
     },
     {
       id: 'practice-makes-perfect',
@@ -203,7 +187,6 @@ export const achievements: Achievement[] = [
           <text x="100" fill='currentColor' y="160" fontFamily="Arial, sans-serif" fontSize="16" textAnchor="middle">ERRORS</text>
         </svg>
       ),
-      condition: (stats: UserStats) => stats.profileStats.totalErrors >= 1000
     },
     {
       id: "broken-keyboard",
@@ -219,7 +202,6 @@ export const achievements: Achievement[] = [
           <text x="100" y="160" fill='currentColor' fontFamily="Arial, sans-serif" fontSize="14" textAnchor="middle">CHARACTERS</text>
         </svg>
       ),
-      condition: (stats: UserStats) => stats.profileStats.totalCharacters >= 10000
     },
     {
       id: "top-100",
@@ -235,7 +217,6 @@ export const achievements: Achievement[] = [
           <text x="100" y="160" fontFamily="Arial, sans-serif" fontSize="18" textAnchor="middle">100</text>
         </svg>
       ),
-      condition: (stats: UserStats) => stats.profileStats.globalRank <= 100
     }
   ];
 

@@ -1,10 +1,9 @@
 'use client';
 
-import { Achievement, UserStats } from '@app/types/Achievement';
-import { decryptGameData } from '@utils/cryptoUtils';
+import { Achievement } from '@app/types/Achievement';
 import { useSession } from 'next-auth/react';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { achievements } from './Achievements';
+import { getAchievement } from './Achievements';
 
 interface AchievementsContextType {
   unlockedAchievements: Achievement[];
@@ -37,47 +36,41 @@ export const AchievementsProvider = ({ children }: { children: React.ReactNode }
 
   const checkAchievements = async (userId: string) => {
     try {
-      const statsResponse = await fetch(`/api/user/statistics/${userId}`);
-      const statsData = await statsResponse.json();
-      
-      const leaderboardResponse = await fetch(`/api/user/statistics`);
-      
       const encryptedResults = localStorage.getItem('lastGameResults');
-      const gameResults = await decryptGameData(encryptedResults!);
-      
-      const stats: UserStats = {
-        gameStats: gameResults,
-        profileStats: statsData
-      };
-      
-      const newlyUnlocked = achievements.filter(achievement => {
-        const alreadyUnlocked = unlockedAchievements.find(a => a.id === achievement.id);
-        return !alreadyUnlocked && achievement.condition(stats);
-      });
-      
-      if (newlyUnlocked.length > 0) {
-        // Mettre à jour les badges dans la BD
-        const response = await fetch(`/api/user/badges/${userId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            badges: [...unlockedAchievements, ...newlyUnlocked]
-          }),
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to update badges');
-        }
-        
-        // Mettre à jour l'état local
-        setUnlockedAchievements(prev => [...prev, ...newlyUnlocked]);
+      if (!encryptedResults) {
+        return [];
       }
       
-      return newlyUnlocked;
+      const response = await fetch('/api/achievements/check', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          encryptedGameResults: encryptedResults
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to check achievements');
+      }
+      
+      const { newAchievements } = await response.json();
+      
+      if (newAchievements.length > 0) {
+        // Récupérer les détails des nouveaux achievements
+        const achievementDetails = newAchievements.map((id: string) => getAchievement(id)).filter(Boolean);
+        
+        // Mettre à jour l'état local
+        setUnlockedAchievements(prev => [...prev, ...achievementDetails]);
+        
+        return achievementDetails;
+      }
+      
+      return [];
     } catch (error) {
-      console.error('Error updating achievements:', error);
+      console.error('Error checking achievements:', error);
       return [];
     }
   };
