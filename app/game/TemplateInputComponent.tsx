@@ -454,8 +454,7 @@ const TemplateInputComponent = ({
       e.key !== "OS"
     ) {
       if (
-        e.key !== "Backspace" &&
-        input.length + indexedError.length - 1 < splittedSentence.length
+        e.key !== "Backspace"
       ) {
         if (gameState !== GameState.STARTED) {
           startGame();

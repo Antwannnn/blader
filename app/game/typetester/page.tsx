@@ -16,7 +16,7 @@ import { keyboardCodeAdapter } from "@utils/keyboard/keyboardCodeAdapter";
 import { motion, useAnimation } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { IoReload } from "react-icons/io5";
+import { IoInformationCircleOutline, IoReload, IoStopwatchOutline, IoTimerOutline } from "react-icons/io5";
 import { fetchQuote, fetchRandomSentence } from "../gameHandler";
 import TemplateInputComponent from "../TemplateInputComponent";
 
@@ -52,6 +52,7 @@ const TypeTester = () => {
   // Nouveaux états pour le mode et le temps
   const [stopwatchMode, setStopwatchMode] = useState<StopwatchMode>(StopwatchMode.TIMER);
   const [timeParameter, setTimeParameter] = useState<TimeParameter>(TimeParameter.SECONDS_30);
+  const [showInfoModal, setShowInfoModal] = useState(false);
   
   const inputRef = useRef<HTMLInputElement>(null);
   const animate = useAnimation();
@@ -232,7 +233,16 @@ const TypeTester = () => {
         animate={animate}
         initial="visible"
       >
-        <h1 className="text-4xl text-primary_light">Type Testing</h1>
+        <div className="flex items-center justify-center gap-3">
+          <h1 className="text-4xl text-primary_light">Type Testing</h1>
+          <button 
+            onClick={() => setShowInfoModal(true)}
+            className="text-primary_light hover:text-text transition-colors duration-200"
+            aria-label="Game information"
+          >
+            <IoInformationCircleOutline size={24} />
+          </button>
+        </div>
         <div className="flex md:flex-row flex-col items-center gap-7 py-6">
           <div className="flex flex-col justify-center gap-3 item-center">
             <h3 className="opacity-50">Reload</h3>
@@ -407,6 +417,115 @@ const TypeTester = () => {
         className="absolute opacity-[2%] pointer-events-none"
         src="/assets/images/logo-white.png"
       />
+      
+      {/* Modal d'information sur le jeu */}
+      {showInfoModal && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-secondary rounded-xl p-6 w-full max-w-3xl max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-text">Game Rules & Modes</h2>
+              <button 
+                onClick={() => setShowInfoModal(false)}
+                className="p-1 px-2 rounded-full bg-tertiary text-text hover:bg-text hover:text-background"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-6 text-text">
+              <div>
+                <h3 className="text-xl font-semibold mb-2">How to Play</h3>
+                <p className="text-text_secondary">Type the displayed text as quickly and accurately as possible. Your performance will be measured by Words Per Minute (WPM) and accuracy percentage.</p>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Game Modes</h3>
+                <div className="space-y-3">
+                  <div className="bg-tertiary/20 p-3 rounded-lg">
+                    <h4 className="font-medium flex items-center gap-2"><IoTimerOutline size={20} /> Timer Mode</h4>
+                    <p className="text-text_secondary">Type at your own pace - the timer counts up. The test ends when you complete the text.</p>
+                  </div>
+                  <div className="bg-tertiary/20 p-3 rounded-lg">
+                    <h4 className="font-medium flex items-center gap-2"><IoStopwatchOutline size={20} /> Countdown Mode</h4>
+                    <p className="text-text_secondary">Race against the clock! You have a limited time to type as much text as possible.</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Text Options</h3>
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="font-medium">Text Types</h4>
+                    <ul className="list-disc pl-5">
+                      <li><strong>Quote:</strong><span className="text-text_secondary"> Famous quotes with their authors</span></li>
+                      <li><strong>Random:</strong><span className="text-text_secondary"> Randomly generated sentences</span></li>
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-medium">Length Options</h4>
+                    <ul className="list-disc pl-5">
+                      <li><strong>Short:</strong><span className="text-text_secondary"> Brief sentences, perfect for quick practice</span></li>
+                      <li><strong>Medium:</strong><span className="text-text_secondary"> Standard length for balanced practice</span></li>
+                      <li><strong>Long:</strong><span className="text-text_secondary"> Extended text for endurance training</span></li>
+                      <li><strong>Very Long:</strong><span className="text-text_secondary"> Maximum challenge for typing marathon</span></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Keyboard Shortcuts</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <div className="bg-secondary/50 p-2 rounded-lg">
+                    <span className="font-mono bg-tertiary/70 px-2 py-1 rounded">Alt+R</span>
+                    <span className="text-text_secondary ml-2">Reload text</span>
+                  </div>
+                  <div className="bg-secondary/50 p-2 rounded-lg">
+                    <span className="font-mono bg-tertiary/70 px-2 py-1 rounded">Alt+T</span>
+                    <span className="text-text_secondary ml-2">Switch to Timer mode</span>
+                  </div>
+                  <div className="bg-secondary/50 p-2 rounded-lg">
+                    <span className="font-mono bg-tertiary/70 px-2 py-1 rounded">Alt+C</span>
+                    <span className="text-text_secondary ml-2">Switch to Countdown mode</span>
+                  </div>
+                  <div className="bg-secondary/50 p-2 rounded-lg">
+                    <span className="font-mono bg-tertiary/70 px-2 py-1 rounded">Alt+Q</span>
+                    <span className="text-text_secondary ml-2">Switch to Quote mode</span>
+                  </div>
+                  <div className="bg-secondary/50 p-2 rounded-lg">
+                    <span className="font-mono bg-tertiary/70 px-2 py-1 rounded">Alt+N</span>
+                    <span className="text-text_secondary ml-2">Switch to Random mode</span>
+                  </div>
+                  <div className="bg-secondary/50 p-2 rounded-lg">
+                    <span className="font-mono bg-tertiary/70 px-2 py-1 rounded">Alt+S/M/L/V</span>
+                    <span className="text-text_secondary ml-2">Set length (Short/Medium/Long/Very Long)</span>
+                  </div>
+                  <div className="bg-secondary/50 p-2 rounded-lg">
+                    <span className="font-mono bg-tertiary/70 px-2 py-1 rounded">Alt+1/2/3/4</span>
+                    <span className="text-text_secondary ml-2">Set countdown time (15/30/45/60 seconds)</span>
+                  </div>
+                  <div className="bg-secondary/50 p-2 rounded-lg">
+                    <span className="font-mono bg-tertiary/70 px-2 py-1 rounded">Tab</span>
+                    <span className="text-text_secondary ml-2">Reset current game</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Tips</h3>
+                <ul className="list-disc pl-5">
+                  <li>Focus on accuracy first, then speed</li>
+                  <li>Take regular breaks to avoid fatigue</li>
+                  <li>Practice with different text lengths and types</li>
+                  <li>Complete games to unlock achievements</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

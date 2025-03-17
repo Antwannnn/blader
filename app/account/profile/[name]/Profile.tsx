@@ -350,7 +350,7 @@ const Profile = () => {
                                             <CiEdit className="w-5 h-5 text-text" />
                                         </button>
                                     )}
-                                    {isOwnProfile && hasHistory && (
+                                    {isOwnProfile && (
                                         <button
                                             onClick={() => setShowHistoryModal(true)}
                                             className="p-2 rounded-full hover:bg-tertiary/40 transition-colors"
