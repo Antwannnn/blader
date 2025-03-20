@@ -4,11 +4,13 @@ import { useAchievements } from '@/contexts/AchievementsContext';
 import { decryptGameData } from '@/utils/cryptoUtils';
 import { StopwatchMode } from '@app/types/GameParameters';
 import { GameResults } from '@app/types/GameResults';
+import GameReplay from '@components/GameReplay';
 import ShareResults from '@components/ShareResults';
 import Link from '@node_modules/next/link';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { FaPlay } from 'react-icons/fa';
 import {
   CartesianGrid,
   Legend,
@@ -31,6 +33,8 @@ const ResultsPage = () => {
   const { checkAchievements, showUnlockAnimation } = useAchievements();
   const [isSaved, setIsSaved] = useState(false);
   const [hash, setHash] = useState<string | null>(null);
+  const [showReplay, setShowReplay] = useState(false);
+  const replayAvailable = useRef(false);
   
   // Référence pour suivre les rendus
   const renderCountRef = useRef(0);
@@ -62,6 +66,9 @@ const ResultsPage = () => {
           router.replace('/game/typetester');
           return;
         }
+        
+        // Vérifier si les données de keyStrokes sont disponibles pour le replay
+        replayAvailable.current = Boolean(decryptedResults.keyStrokes && decryptedResults.keyStrokes.length > 0);
         
         setResults(decryptedResults);
         setIsLoading(false);
@@ -197,6 +204,16 @@ const ResultsPage = () => {
     }));
   }, [results]);
 
+  const handleShowReplay = () => {
+    if (results && results.keyStrokes && results.keyStrokes.length > 0) {
+      setShowReplay(true);
+    }
+  };
+
+  const handleCloseReplay = () => {
+    setShowReplay(false);
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -222,14 +239,25 @@ const ResultsPage = () => {
       <div className="flex justify-between w-full items-center animate-fadeIn">
         <h1 className="text-4xl font-bold text-text">Results</h1>
         <div className="flex gap-4">
+          {replayAvailable.current && (
+            <button
+              onClick={handleShowReplay}
+              className="flex items-center gap-2 px-4 py-2 bg-secondary backdrop-blur-sm duration-300 text-text rounded-lg hover:bg-tertiary"
+              title="Watch replay of your typing"
+            >
+              <FaPlay size={14} />
+              <span>Replay</span>
+            </button>
+          )}
+          
           <ShareResults gameResults={results} />
-
+          
           { !isPreviewMode && session?.user && (
             <button
               onClick={handleSaveResults}
               className="px-4 py-2 bg-secondary backdrop-blur-sm duration-300 text-text rounded-lg hover:bg-tertiary"
-          >
-            {isSaved ? "Saved" : "Save Results"}
+            >
+              {isSaved ? "Saved" : "Save Results"}
             </button>
           )}
           <button
@@ -353,6 +381,13 @@ const ResultsPage = () => {
           )}
         </div>
       </div>
+      
+      {showReplay && results && (
+        <GameReplay 
+          gameResults={results} 
+          onClose={handleCloseReplay} 
+        />
+      )}
     </div>
   );
 };

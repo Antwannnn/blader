@@ -101,6 +101,7 @@ const TemplateInputComponent = ({
     setCurrentIndex(0);
     setTotalErrors(0);
     setWpm(0);
+    setKeyStrokes([]);
     setAccuracy(0);
     indexedError.splice(0, indexedError.length);
     localStorage.removeItem('resultsSubmitted'); // Nettoyer aussi lors du reset
@@ -179,7 +180,6 @@ const TemplateInputComponent = ({
       key === splittedSentence[currentIndex] &&
       splittedSentence[input.length] === key
     ) {
-      console.log("true");
       return true;
     } else {
       return false;
@@ -195,6 +195,7 @@ const TemplateInputComponent = ({
       author: displayedAuthor,
       wpmOverTime: [0],
       accuracyOverTime: [0],
+      keyStrokes: [],
       totalWords: 0,
       totalCharacters: 0,
       time: 0,
@@ -357,6 +358,7 @@ const TemplateInputComponent = ({
     }
     
     time.stop();
+    setInactivityTimer(null);
     const finalResults = {
       sentence: effectiveSentence,
       author: displayedAuthor,
@@ -395,6 +397,8 @@ const TemplateInputComponent = ({
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // Réinitialiser le timer d'inactivité à chaque frappe clavier
     resetInactivityTimer();
+
+    // Enregistrer les données de frappe pour le replay
 
     const code = keyboardCodeAdapter(e.code, parameters.keyboard.layout);
 
@@ -454,12 +458,14 @@ const TemplateInputComponent = ({
       e.key !== "Clear" &&
       e.key !== "OS"
     ) {
+
       if (
         e.key !== "Backspace"
       ) {
         if (gameState !== GameState.STARTED) {
           startGame();
         }
+        handleKeyDown(e);
         setCurrentIndex(currentIndex + 1);
         if (verifyInputMatching(e.key)) {
           const newInput = input + e.key;
@@ -477,6 +483,7 @@ const TemplateInputComponent = ({
         }
       } else {
         if (currentIndexRef.current > 0) {
+
           setCurrentIndex(currentIndex - 1);
           if (indexedError.includes(currentIndexRef.current)) {
             const newInput = input.slice(0, -1);
@@ -486,13 +493,21 @@ const TemplateInputComponent = ({
             const newInput = input.slice(0, -1);
             setInput(newInput);
           }
+          handleKeyDown(e);
         }
       }
+
 
       if (!isNaN(wpm) && !isNaN(accuracy)) {
         setGameResults({
           mode: stopwatchMode,
           sentence: effectiveSentence,
+          keyStrokes: [...keyStrokes, {
+            key: e.key,
+            timestamp: Date.now(),
+            position: currentIndex,
+            isError: splittedSentence[currentIndex] !== e.key
+          }],
           author: displayedAuthor,
           wpmOverTime: [...gameResults.wpmOverTime, wpm],
           accuracyOverTime: [...gameResults.accuracyOverTime, accuracy],
@@ -641,14 +656,12 @@ const TemplateInputComponent = ({
     // Logique existante...
     
     // Enregistrer la frappe
-    if (gameState === GameState.STARTED) {
       setKeyStrokes(prev => [...prev, {
         key: e.key,
         timestamp: Date.now(),
         position: currentIndex,
         isError: splittedSentence[currentIndex] !== e.key
       }]);
-    }
   };
 
   return (

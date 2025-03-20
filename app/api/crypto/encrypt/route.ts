@@ -10,6 +10,7 @@ const usedNonces = new Set();
 export async function POST(request: Request) {
   try {
     const data = await request.json();
+
     const session = await getServerSession(authOptions);
     
     const nonce = CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex);
