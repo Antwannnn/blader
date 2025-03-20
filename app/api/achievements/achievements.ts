@@ -97,7 +97,21 @@ export const achievements: Achievement[] = [
     name: "Speed God",
     description: "Reach 250 WPM in a game",
     condition: (stats: UserStats) => stats.profileStats.maxWpm >= 250
-  }
+  },
+  {
+    id: "ashen-one",
+    name: "Ashen One",
+    description: "Type a Dark Souls III quote.",
+    condition: (stats: UserStats) => stats.gameStats.author === 'Lothric, Younger Prince'
+  },
+  {
+    id: "tarnished",
+    name: "Tarnished",
+    description: "Type a quote from Elden Ring.",
+    condition: (stats: UserStats) => stats.gameStats.author === 'Malenia, Blade of Miquella'
+  },
+
+
 
 ];
 

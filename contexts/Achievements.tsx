@@ -224,12 +224,40 @@ export const achievements: Achievement[] = [
       description: "Reach 250 WPM in a game",
       image: (
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 200 200">
-          <circle cx="100" cy="100" r="90" fill="transparent" stroke="currentColor" strokeWidth="3"/>
-          <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" strokeDasharray="3,2"/>
-          <path fill="none" stroke="currentColor" strokeWidth="2" d="M85 60h30v10s10 0 10 10-10 10-10 10c0 10-10 15-15 15s-15-5-15-15c0 0-10 0-10-10s10-10 10-10V60z"/>
-          <path fill="none" stroke="currentColor" strokeWidth="2" d="M95 95h10v15H95zM85 110h30v5H85z"/>
-          <text x="100" y="140" fontFamily="Arial, sans-serif" fontSize="24" fontWeight="bold" textAnchor="middle">250+</text>
-          <text x="100" y="160" fontFamily="Arial, sans-serif" fontSize="18" textAnchor="middle">WPM</text>
+          <circle cx="100" cy="100" r="90" fill="transparent" stroke="currentColor"/>
+          <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor"/>
+          <path fill="none" stroke="currentColor" d="M75 75h50l-25 35zM100 75V65"/>
+          <path fill="none" stroke="currentColor" d="M50 85a50 50 0 0 1 100 0"/>
+          <path fill="none" stroke="currentColor" d="M60 70s10-5 20 0m60 0s-10-5-20 0M100 120c-15 0-20-5-20-5s5-5 20-5 20 5 20 5-5 5-20 5z"/>
+          <text fill="currentColor" x="100" y="140">250+</text>
+          <text fill="currentColor" x="100" y="160">WPM</text>
+        </svg>
+      ),
+    },
+    {
+      id: "ashen-one",
+      name: "Ashen One",
+      description: "Type a Dark Souls III quote.",
+      image: (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="90" fill="transparent" stroke="currentColor"/>
+          <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor"/>
+          <circle cx="100" cy="100" r="76" fill="none" stroke="currentColor"/>
+          <circle cx="100" cy="80" r="20"/>
+          <circle cx="100" cy="80" r="20" fill="none" stroke="currentColor"/>
+          <circle cx="93" cy="75" r="15" fill="transparent" stroke="currentColor"/>
+          <circle cx="100" cy="80" r="23" fill="none" stroke="currentColor"/>
+          <circle cx="100" cy="80" r="26" fill="none" stroke="currentColor"/>
+          <path stroke="currentColor" d="M100 100v25M95 105h10M90 110h20"/>
+          <circle stroke="currentColor" cx="75" cy="75" r="1"/>
+          <circle stroke="currentColor" cx="125" cy="75" r="1"/>
+          <circle stroke="currentColor" cx="70" cy="85" r="1.5"/>
+          <circle stroke="currentColor" cx="130" cy="85" r="1.5"/>
+          <circle stroke="currentColor" cx="80" cy="90" r="1"/>
+          <circle stroke="currentColor" cx="120" cy="90" r="1"/>
+          <circle stroke="currentColor" cx="85" cy="120" r="1"/>
+          <circle stroke="currentColor" cx="115" cy="120" r="1"/>
+          <text x="100" y="150" fill="currentColor" fontFamily="Arial, sans-serif" fontSize="16" fontWeight="bold" textAnchor="middle">ASHEN ONE</text>
         </svg>
       ),
     },
