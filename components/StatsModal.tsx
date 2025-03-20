@@ -54,10 +54,10 @@ const StatsModal = ({ onClose, title, data, defaultMetric }: StatsModalProps) =>
         .map((point, index) => ({
           index,
           [metric]: metric === 'wpm' 
-            ? point.wpm 
+            ? point?.wpm 
             : metric === 'accuracy' 
-              ? point.accuracy 
-              : point.errors
+              ? point?.accuracy 
+              : point?.errors
         }));
     }
 
@@ -68,10 +68,10 @@ const StatsModal = ({ onClose, title, data, defaultMetric }: StatsModalProps) =>
       .map((point, index) => ({
         index,
         [metric]: metric === 'wpm' 
-          ? point.wpm 
+          ? point?.wpm 
           : metric === 'accuracy' 
-            ? point.accuracy 
-            : point.errors
+            ? point?.accuracy 
+            : point?.errors
       }));
   };
 

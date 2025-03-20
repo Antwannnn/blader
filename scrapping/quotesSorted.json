@@ -13,6 +13,45 @@
             "dateModified": "2023-04-14"
         },
         {
+            "_id": "-CXvcGgvAuTw-",
+            "author": "Malenia, Blade of Miquella",
+            "content": "Heed my words. I am Malenia. Blade of Miquella. And I have never known defeat.",
+            "tags": [
+                "Famous Quotes",
+                "Elden Ring"
+            ],
+            "authorSlug": "malenia-blade-of-miquella",
+            "length": 100,
+            "dateAdded": "2025-03-19",
+            "dateModified": "2025-03-19"
+        },
+        {
+            "_id": "2r5oVq3vwnS",
+            "author": "Solaire of Astora",
+            "content": "So, what do you say? Why not help one another on this lonely journey?",
+            "tags": [
+                "Famous Quotes",
+                "Dark Souls"
+            ],
+            "authorSlug": "solaire-of-astora",
+            "length": 100,
+            "dateAdded": "2025-03-19",
+            "dateModified": "2025-03-19"
+        },
+        {
+            "_id": "-4WQ_JwFWIog6sT",
+            "author": "Lothric, Younger Prince",
+            "content": "Rise, if you would. For that is our curse.",
+            "tags": [
+                "Famous Quotes",
+                "Dark Souls 3"
+            ],
+            "authorSlug": "lothric-younger-prince",
+            "length": 100,
+            "dateAdded": "2025-03-19",
+            "dateModified": "2025-03-19"
+        },
+        {
             "_id": "bfNpGC2NI",
             "author": "Thomas Edison",
             "content": "As a cure for worrying, work is better than whisky.",
@@ -84741,6 +84780,19 @@
             "dateModified": "2023-04-14"
         },
         {
+            "_id": "5_6lVaEPNVd3P",
+            "author": "Pot Noble Harunaga",
+            "content": "Listen... I want to become a carp. A giant carp that will continue growing, and live a long, long life. A carp that never grows old...",
+            "tags": [
+                "Famous Quotes",
+                "Sekiro: Shadows Die Twice"
+            ],
+            "authorSlug": "pot-noble-harunaga",
+            "length": 100,
+            "dateAdded": "2025-03-19",
+            "dateModified": "2025-03-19"
+        },
+        {
             "_id": "b437W9Z_RN_",
             "author": "Albert Einstein",
             "content": "Reading, after a certain age, diverts the mind too much from its creative pursuits. Any man who reads too much and uses his own brain too little falls into lazy habits of thinking.",
@@ -84801,6 +84853,19 @@
             "length": 202,
             "dateAdded": "2021-04-23",
             "dateModified": "2023-04-14"
+        },
+        {
+            "_id": "aEPNVog6sT",
+            "author": "Aldia",
+            "content": "There is no path. Beyond the scope of light, beyond the reach of dark... What could possibly await us? And yet, we seek it, insatiably... Such is our fate",
+            "tags": [
+                "Famous Quotes",
+                "Dark Souls 2"
+            ],
+            "authorSlug": "aldia",
+            "length": 100,
+            "dateAdded": "2025-03-19",
+            "dateModified": "2025-03-19"
         },
         {
             "_id": "-Hqy06gxrO",

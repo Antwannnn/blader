@@ -426,7 +426,7 @@ const TypeTester = () => {
               <h2 className="text-2xl font-bold text-text">Game Rules & Modes</h2>
               <button 
                 onClick={() => setShowInfoModal(false)}
-                className="p-1 px-2 rounded-full bg-tertiary text-text hover:bg-text hover:text-background"
+                className="p-1 px-3 rounded-full bg-tertiary text-text hover:bg-text hover:text-background"
               >
                 ✕
               </button>
@@ -516,7 +516,6 @@ const TypeTester = () => {
               <div>
                 <h3 className="text-xl font-semibold mb-2">Tips</h3>
                 <ul className="list-disc pl-5">
-                  <li>Focus on accuracy first, then speed</li>
                   <li>Take regular breaks to avoid fatigue</li>
                   <li>Practice with different text lengths and types</li>
                   <li>Complete games to unlock achievements</li>

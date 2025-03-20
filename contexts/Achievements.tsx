@@ -217,7 +217,22 @@ export const achievements: Achievement[] = [
           <text x="100" y="160" fontFamily="Arial, sans-serif" fontSize="18" textAnchor="middle">100</text>
         </svg>
       ),
-    }
+    },
+    {
+      id: "speed-god",
+      name: "Speed God",
+      description: "Reach 250 WPM in a game",
+      image: (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="90" fill="transparent" stroke="currentColor" strokeWidth="3"/>
+          <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" strokeDasharray="3,2"/>
+          <path fill="none" stroke="currentColor" strokeWidth="2" d="M85 60h30v10s10 0 10 10-10 10-10 10c0 10-10 15-15 15s-15-5-15-15c0 0-10 0-10-10s10-10 10-10V60z"/>
+          <path fill="none" stroke="currentColor" strokeWidth="2" d="M95 95h10v15H95zM85 110h30v5H85z"/>
+          <text x="100" y="140" fontFamily="Arial, sans-serif" fontSize="24" fontWeight="bold" textAnchor="middle">250+</text>
+          <text x="100" y="160" fontFamily="Arial, sans-serif" fontSize="18" textAnchor="middle">WPM</text>
+        </svg>
+      ),
+    },
   ];
 
 export function getAchievement(id: string): Achievement | undefined {

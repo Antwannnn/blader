@@ -11,7 +11,7 @@ import {
   StopwatchMode,
   TimeParameter,
 } from "@app/types/GameParameters";
-import { GameResults } from "@app/types/GameResults";
+import { GameResults, KeyStroke } from "@app/types/GameResults";
 import KeyboardLayout from "@components/KeyboardLayout";
 import KeyIcon from "@components/subcomponents/KeyIcon";
 import { useSettings } from "@contexts/SettingsContext";
@@ -373,7 +373,8 @@ const TemplateInputComponent = ({
       totalKeystrokes: input.length + indexedError.length,
       avgTimePerKeystroke: time.rawTime / (input.length + indexedError.length),
       keystrokesPerSecond: (input.length + indexedError.length) / (time.rawTime / 1000),
-      gameId: Date.now().toString(36) + Math.random().toString(36).substring(2)
+      gameId: Date.now().toString(36) + Math.random().toString(36).substring(2),
+      keyStrokes: keyStrokes,
     };
     
     try {
@@ -633,6 +634,22 @@ const TemplateInputComponent = ({
       time.reset();
     }
   }, [stopwatchMode, time, gameState]);
+
+  const [keyStrokes, setKeyStrokes] = useState<KeyStroke[]>([]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Logique existante...
+    
+    // Enregistrer la frappe
+    if (gameState === GameState.STARTED) {
+      setKeyStrokes(prev => [...prev, {
+        key: e.key,
+        timestamp: Date.now(),
+        position: currentIndex,
+        isError: splittedSentence[currentIndex] !== e.key
+      }]);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center w-full gap-5">

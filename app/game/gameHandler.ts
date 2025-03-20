@@ -7,12 +7,16 @@ import quotes from "@scrapping/quotesSorted.json";
 import words from "@scrapping/words.json";
 
 const fetchQuote = (len: LengthParameter): Quote => {
-
-  
   const key = valueStringToKeyFormat(len) as keyof typeof quotes;
   const quoteSection = quotes[key];
-  const quote =
+
+  const quoteIds = Object.keys(quoteSection);
+  
+  
+  let quote =
     quoteSection[Math.floor(Math.random() * Object.keys(quoteSection).length)];
+
+
   const quoteObject: Quote = {
     _id: quote._id,
     content: quote.content,
@@ -20,6 +24,8 @@ const fetchQuote = (len: LengthParameter): Quote => {
     length: quote.length,
     tags: quote.tags,
   };
+  
+  
 
   return quoteObject;
 };

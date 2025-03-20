@@ -1,5 +1,12 @@
 import { StopwatchMode } from "./GameParameters";
 
+export interface KeyStroke {
+  key: string;
+  timestamp: number;
+  position: number; // Position dans le texte
+  isError: boolean;
+}
+
 export interface GameResults {
   sentence: string;
   author?: string;
@@ -13,5 +20,5 @@ export interface GameResults {
   totalCharacters: number;
   finalWpm?: number;
   finalAccuracy?: number;
-
+  keyStrokes?: KeyStroke[];
 }

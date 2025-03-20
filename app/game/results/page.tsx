@@ -4,6 +4,7 @@ import { useAchievements } from '@/contexts/AchievementsContext';
 import { decryptGameData } from '@/utils/cryptoUtils';
 import { StopwatchMode } from '@app/types/GameParameters';
 import { GameResults } from '@app/types/GameResults';
+import ShareResults from '@components/ShareResults';
 import Link from '@node_modules/next/link';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -217,10 +218,12 @@ const ResultsPage = () => {
   const mode = results.mode || StopwatchMode.TIMER;
 
   return (
-    <div className="min-h-screen mt-16 p-4 flex flex-col w-screen justify-center items-center gap-8" key={animationKey.current}>
+    <div id="shareableStats" className="min-h-screen mt-16 p-4 flex flex-col w-screen justify-center items-center gap-4" key={animationKey.current}>
       <div className="flex justify-between w-full items-center animate-fadeIn">
         <h1 className="text-4xl font-bold text-text">Results</h1>
         <div className="flex gap-4">
+          <ShareResults gameResults={results} />
+
           { !isPreviewMode && session?.user && (
             <button
               onClick={handleSaveResults}
@@ -251,7 +254,10 @@ const ResultsPage = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 w-full md:grid-cols-4 gap-4 animate-fadeIn animation-delay-200">
+      <div 
+
+        className="grid grid-cols-1 w-full md:grid-cols-4 gap-4 animate-fadeIn animation-delay-200 bg-primary/80 rounded-xl"
+      >
         <div className="bg-secondary/40 backdrop-blur-sm rounded-xl p-6">
           <h3 className="text-text/50 text-sm">Final WPM</h3>
           <p className="text-text text-2xl font-bold">{results.finalWpm}</p>
@@ -271,11 +277,13 @@ const ResultsPage = () => {
           <p className="text-text text-2xl font-bold">{results.errors}</p>
         </div>
       </div>
+      
       {
         !session?.user && (
             <h2 className="text-xl font-bold text-text"><Link href="/auth/login">Login to save your results</Link></h2>
         )
       }
+      
       <div className="bg-secondary/40 backdrop-blur-sm w-full rounded-xl p-6">
         <h2 className="text-xl font-bold text-text mb-4">Performance Over Time</h2>
         <div className="h-[400px] w-full">

@@ -91,9 +91,14 @@ export const achievements: Achievement[] = [
     name: "Top 100",
     description: "Reach the top 100 in the global leaderboard",
     condition: (stats: UserStats) => stats.profileStats.globalRank <= 100
+  },
+  {
+    id: "speed-god",
+    name: "Speed God",
+    description: "Reach 250 WPM in a game",
+    condition: (stats: UserStats) => stats.profileStats.maxWpm >= 250
   }
 
-  // ... tous les autres achievements
 ];
 
 export function getAchievement(id: string): Achievement | undefined {

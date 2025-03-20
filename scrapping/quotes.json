@@ -3492,6 +3492,20 @@
             "dateModified": "2023-04-14"
         },
         {
+            "_id": "-CXvcGgvAuTw-",
+            "author": "Malenia, Blade of Miquella",
+            "content": "Heed my words. I am Malenia. Blade of Miquella. And I have never known defeat.",
+            "tags": [
+                "Famous Quotes",
+                "Elden Ring"
+            ],
+            "authorSlug": "malenia-blade-of-miquella",
+            "length": 100,
+            "dateAdded": "2025-03-19",
+            "dateModified": "2025-03-19"
+        },
+
+        {
             "_id": "aEPNVog6sT",
             "author": "Eric Hoffer",
             "content": "In times of change, learners inherit the earth, while the learned find themselves beautifully equipped to deal with a world that no longer exists.",
