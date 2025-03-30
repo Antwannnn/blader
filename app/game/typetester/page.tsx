@@ -226,7 +226,7 @@ const TypeTester = () => {
   }, []);
 
   return (
-    <section onKeyDown={handleShortcuts} className="flex flex-col overflow-auto  justify-center gap-1 lg:pt-32 md:pt-20 pt-10 items-center text-text z-30">
+    <section onKeyDown={handleShortcuts} className="flex flex-col justify-center gap-1 lg:pt-32 md:pt-20 pt-10 items-center text-text z-30">
       <motion.div
         className="flex flex-col justify-center items-center"
         variants={animationVariants}
