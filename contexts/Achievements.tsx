@@ -261,6 +261,29 @@ export const achievements: Achievement[] = [
         </svg>
       ),
     },
+    {
+      id: "tarnished",
+      name: "Tarnished",
+      description: "Type a quote from Elden Ring.",
+      image: (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="90" fill="transparent" stroke="currentColor" stroke-width="2"/>
+          <path fill="transparent" stroke="currentColor" stroke-width="3" d="M100 10a90 90 0 0 1 90 90"/>
+          <path fill="transparent" stroke="currentColor" stroke-dasharray="15,5" stroke-width="2" d="M190 100a90 90 0 0 1-90 90"/>
+          <path fill="transparent" stroke="currentColor" stroke-width="3" d="M100 190a90 90 0 0 1-90-90"/>
+          <path fill="transparent" stroke="currentColor" stroke-dasharray="10,5" stroke-width="2" d="M10 100a90 90 0 0 1 90-90"/>
+          <path fill="transparent" stroke="currentColor" stroke-width="4" d="M100 30v110"/>
+          <path fill="transparent" stroke="currentColor" stroke-width="3" d="M70 60q30-30 60 0"/>
+          <path fill="transparent" stroke="currentColor" stroke-width="3" d="M60 80q40-40 80 0"/>
+          <path fill="transparent" stroke="currentColor" stroke-width="3" d="M50 100q50-50 100 0"/>
+          <path fill="transparent" stroke="currentColor" stroke-width="1.5" d="m90 140-20 30M100 140v35M110 140l20 30"/>
+          <circle cx="100" cy="140" r="6"/>
+          <circle cx="100" cy="140" r="10" fill="transparent" stroke="currentColor"/>
+          <path fill="transparent" stroke="currentColor" stroke-width="2" d="M65 120q35-30 70 0"/>
+          <text x="100" y="160" font-family="Georgia, serif" font-size="16" font-weight="bold" text-anchor="middle">TARNISHED</text>
+          </svg>
+      )
+    },
   ];
 
 export function getAchievement(id: string): Achievement | undefined {
