@@ -463,7 +463,7 @@ const GameReplay = ({ gameResults, onClose }: GameReplayProps) => {
           ) : (
             <button 
               onClick={startReplay}
-              className="p-4 bg-accent rounded-full text-text hover:bg-opacity-80 transition-colors"
+              className="p-4 bg-tertiary rounded-full text-text hover:bg-opacity-80 transition-colors"
               aria-label="Lecture"
             >
               <FaPlay size={24} />
@@ -494,7 +494,7 @@ const GameReplay = ({ gameResults, onClose }: GameReplayProps) => {
               onClick={() => setPlaybackSpeed(speed)}
               className={`px-3 py-1 rounded-md ${
                 playbackSpeed === speed 
-                  ? 'bg-accent text-text' 
+                  ? 'bg-tertiary text-text' 
                   : 'bg-primary/20 text-text_secondary hover:bg-primary/40'
               }`}
             >
