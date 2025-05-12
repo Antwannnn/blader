@@ -19,4 +19,14 @@ a long time ago which makes it the undisputed best typing speed test out there.
 I'm Antoine, a passionate french computer science student. I'm the only person developing on blader. I started this project a year and a half ago
 while the initial goal was to train myself on new web technologies. This is the reason why this project was developed in NextJS. I learned by doing and this is the reason why if you look at the source code, there might be some code that is not consistent with current React / NextJS standards.
 
+## Can I contribute to the source code ?
+
+Of course, Blader is probably the most accomplished web development project I’ve ever made, and I’d be glad to see people contribute to make it even better. However, keep in mind that I'm a complete beginner in open-source project management.
+
+## Is the project deployed ?
+
+Unfortunately, for now, I don't have the necessary funds to pay for servers (AWS Cloud, VPS, MongoDB cluster ...). But as soon as my financial priorities change, a complete deployment will be made.
+
+
+
 
