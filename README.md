@@ -55,17 +55,17 @@ In this section, you will find every feature per category that is ready (✅), n
     </tr>
     <tr>
       <td>Database</td>
-      <td>✅/td>
+      <td>✅</td>
       <td>MongoDB Cluster set-up with adapter for OAuth.</td>
     </tr>
     <tr>
       <td>Username check</td>
-      <td>✅/td>
+      <td>✅/<td>
       <td>Realtime username check with credentials sign-up.</td>
     </tr>
     <tr>
       <td>Error handling</td>
-      <td>🟡/td>
+      <td>🟡</td>
       <td>Already in use OAuth username, unexpected errors, etc.</td>
     </tr>
   </tbody>
