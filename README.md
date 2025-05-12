@@ -60,7 +60,7 @@ In this section, you will find every feature per category that is ready (✅), n
     </tr>
     <tr>
       <td>Username check</td>
-      <td>✅/<td>
+      <td>✅/</td>
       <td>Realtime username check with credentials sign-up.</td>
     </tr>
     <tr>
