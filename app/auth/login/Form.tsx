@@ -1,5 +1,6 @@
 "use client"
 
+import ErrorModal from '@components/modals/ErrorModal';
 import ErrorBlock from '@components/subcomponents/ErrorBlock';
 import { ElementLoader } from '@components/subcomponents/Loader';
 import { BuiltInProviderType } from 'next-auth/providers/index';
@@ -16,6 +17,31 @@ const Form = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const router = useRouter();
 
+    const [errorModal, setErrorModal] = useState<boolean>(false);
+
+    const [errorModalFields, setErrorModalFields] = useState<{
+        title: string;
+        message: string;
+        isOpen: boolean;
+    }>({
+        title: '',
+        message: '',
+        isOpen: false,
+    });
+
+    const handleLoginWithProvider = async (provider: LiteralUnion<BuiltInProviderType, string>) => {
+        const response = await signIn(provider, { callbackUrl: '/' });
+        if (response?.ok) {
+            router.push('/');
+        } else {
+            setErrorModal(true);
+            setErrorModalFields({
+                title: 'Login error',
+                message: response?.error || 'Something went wrong',
+                isOpen: true,
+            });
+        }
+    }
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const loginData = new FormData(e.currentTarget);
@@ -66,11 +92,11 @@ const Form = () => {
                         <button type='submit' className="w-full rounded-full text-text py-2 bg-secondary hover:bg-tertiary transition duration-200">Login</button>
                         {!isLoading ? (
                             <div className='flex flex-col gap-3 w-full text-text '>
-                                <button type='button' onClick={() => { signIn('google', { callbackUrl: '/' }) }} className='w-full rounded-full flex justify-center items-center gap-4 py-3 bg-secondary hover:bg-tertiary transition duration-200'>
+                                <button type='button' onClick={() => { handleLoginWithProvider('google') }} className='w-full rounded-full flex justify-center items-center gap-4 py-3 bg-secondary hover:bg-tertiary transition duration-200'>
                                     <p>Continue with Google</p>
                                     <FaGoogle className='w-5 h-5' />
                                 </button>
-                                <button type='button' onClick={() => { signIn('discord', { callbackUrl: '/' }) }} className='w-full rounded-full flex justify-center items-center gap-4 py-3 bg-secondary hover:bg-tertiary transition duration-200'>
+                                <button type='button' onClick={() => { handleLoginWithProvider('discord') }} className='w-full rounded-full flex justify-center items-center gap-4 py-3 bg-secondary hover:bg-tertiary transition duration-200'>
                                     <p>Continue with Discord</p>
                                     <FaDiscord className='w-5 h-5' />
                                 </button>
@@ -79,6 +105,11 @@ const Form = () => {
                     </div>
                 </form>
             </div>
+            <ErrorModal
+                title={errorModalFields.title}
+                message={errorModalFields.message}
+                isOpen={errorModalFields.isOpen}
+            />
         </section>
 
     )
