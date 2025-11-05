@@ -1,22 +1,26 @@
-version: '3'
+version: '3.8'
 services:
-  # ... other services ...
-
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.development
+  # Service MongoDB pour la base de données
+  mongodb:
+    image: mongo:7.0
+    container_name: blader-mongodb
     ports:
-      - "3000:3000"
-    volumes:
-      - ./:/app  # Synchronisation bidirectionnelle du code source
-      - /app/node_modules  # Préserver les node_modules du conteneur
-      - /app/.next  # Préserver le dossier .next généré dans le conteneur
+      - "27017:27017"
     environment:
-      - NODE_ENV=development
-      - WATCHPACK_POLLING=true  # Activer le polling pour le hot reload
-      - CHOKIDAR_USEPOLLING=true  # Pour la surveillance des fichiers
+      - MONGO_INITDB_ROOT_USERNAME=bladertyping
+      - MONGO_INITDB_ROOT_PASSWORD=Gnqeu4BP9Ys3MLkl
+      - MONGO_INITDB_DATABASE=blader_db
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     restart: unless-stopped
-    # Script personnalisé qui inclut la préparation et le lancement du serveur
-    command: >
-      sh -c "npm install && npm run dev"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  mongodb_data:
+    driver: local
